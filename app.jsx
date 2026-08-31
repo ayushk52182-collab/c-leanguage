@@ -244,7 +244,7 @@ const Header = ({ currentLang, onSelectLang }) => {
 
         <div className="main-title-row">
           <h1 className="main-title">
-            {isPython ? "Python & PPS Master Blueprint" : "C Language & PPS Master Blueprint"}
+            {isPython ? "Python Master Blueprint" : "C Language Master Blueprint"}
           </h1>
           <span className="badge-pro">PRO 3D</span>
         </div>
@@ -392,7 +392,7 @@ const SuccessProtocol = ({ currentLang }) => {
     <div className="glass-panel protocol-panel 3d-protocol">
       <div className="protocol-title layer-depth-mid">
         <Icon name="lightbulb" size={18} />
-        <span>PPS SUCCESS PROTOCOL:</span>
+        <span>SUCCESS PROTOCOL:</span>
       </div>
       <div className="protocol-items layer-depth-high">
         {protocols.map((item, idx) => (
