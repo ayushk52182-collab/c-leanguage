@@ -576,6 +576,19 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
   );
 };
 
+// Helper to parse HH:MM:SS or MM:SS timestamp string into total seconds
+const parseTimestampToSeconds = (timeStr) => {
+  if (typeof timeStr === 'number') return timeStr;
+  if (!timeStr) return 0;
+  const parts = timeStr.split(':').map(Number);
+  if (parts.length === 3) {
+    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  } else if (parts.length === 2) {
+    return parts[0] * 60 + parts[1];
+  }
+  return 0;
+};
+
 // One-Shot Masterclass Structured Data (C Language & Python)
 const ONE_SHOT_DATA = {
   c: {
@@ -583,7 +596,7 @@ const ONE_SHOT_DATA = {
     langLabel: "C Language One-Shot",
     title: "Complete C Language Masterclass in 1 Video",
     subtitle: "End-to-end C programming marathon tutorial covering variables, memory pointers, recursion & exam questions.",
-    embedUrl: "https://www.youtube.com/embed/aZb0iu4uGwA?autoplay=1&rel=0",
+    embedUrl: "https://www.youtube.com/embed/aZb0iu4uGwA?autoplay=0&rel=0&enablejsapi=1",
     youtubeUrl: "https://youtu.be/aZb0iu4uGwA",
     videoId: "aZb0iu4uGwA",
     cheatsheetTitle: "C Language Complete Revision Notes & Cheatsheet (PDF)",
@@ -602,7 +615,7 @@ const ONE_SHOT_DATA = {
     langLabel: "Python One-Shot",
     title: "Complete Python Masterclass in 1 Video",
     subtitle: "Complete Python programming tutorial covering fundamentals, OOPs, data structures & real-world projects.",
-    embedUrl: "https://www.youtube.com/embed/UrsmFxEIp5k?autoplay=1&rel=0",
+    embedUrl: "https://www.youtube.com/embed/UrsmFxEIp5k?autoplay=0&rel=0&enablejsapi=1",
     youtubeUrl: "https://youtu.be/UrsmFxEIp5k",
     videoId: "UrsmFxEIp5k",
     cheatsheetTitle: "Python Programming Master Revision Notes (PDF)",
@@ -620,6 +633,7 @@ const ONE_SHOT_DATA = {
 
 // One-Shot Tutorial View Component with Course Switcher & Embedded YouTube Player
 const OneShotView = ({ onTopicClick, setToastMessage }) => {
+  const iframeRef = useRef(null);
   const [activeCourse, setActiveCourse] = useState(() => {
     return localStorage.getItem("oneshot_preferred_course") || "c";
   });
@@ -630,6 +644,36 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
   };
 
   const currentData = ONE_SHOT_DATA[activeCourse];
+
+  const handleTimestampClick = (ts) => {
+    const seconds = parseTimestampToSeconds(ts.sec !== undefined ? ts.sec : ts.time);
+    
+    // PostMessage seekTo command via YouTube iframe API
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      try {
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({
+            event: 'command',
+            func: 'seekTo',
+            args: [seconds, true]
+          }),
+          '*'
+        );
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({
+            event: 'command',
+            func: 'playVideo',
+            args: []
+          }),
+          '*'
+        );
+      } catch (err) {
+        console.error("PostMessage seek error:", err);
+      }
+    }
+    
+    setToastMessage(`Jumped to ${ts.time} — ${ts.label}`);
+  };
 
   const handleDownloadPdf = () => {
     setToastMessage(`Downloading ${currentData.cheatsheetTitle}...`);
@@ -693,6 +737,8 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
 
           <div className="iframe-container oneshot-iframe-box">
             <iframe
+              ref={iframeRef}
+              id={`oneshot-iframe-${activeCourse}`}
               src={currentData.embedUrl}
               title={currentData.title}
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -729,12 +775,7 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
               <div
                 key={idx}
                 className="timestamp-item"
-                onClick={() => onTopicClick({
-                  title: `${ts.label} (${ts.time})`,
-                  url: `${currentData.youtubeUrl}&t=${ts.sec}`,
-                  lang: activeCourse === 'c' ? 'C' : 'Python',
-                  phase: 'ONE-SHOT'
-                })}
+                onClick={() => handleTimestampClick(ts)}
               >
                 <span className="ts-time">{ts.time}</span>
                 <span className="ts-label">{ts.label}</span>
