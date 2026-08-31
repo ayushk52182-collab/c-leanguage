@@ -1,5 +1,8 @@
 const { useState, useEffect, useRef } = React;
 
+const TEMP_USERNAME = "aayush";
+const TEMP_PASSWORD = "1234";
+
 // Lucide Icon Helper using SVG rendering fallback for smooth standalone UMD compatibility
 const Icon = ({ name, size = 18, className = "" }) => {
   useEffect(() => {
@@ -205,8 +208,75 @@ const PYTHON_ROADMAP_DATA = [
   }
 ];
 
-// Header Component with Language Selector
-const Header = ({ currentLang, onSelectLang }) => {
+// Login Component
+const LoginPage = ({ onLogin }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (username === TEMP_USERNAME && password === TEMP_PASSWORD) {
+      onLogin(username);
+    } else {
+      setError("Invalid username or password. Try: aayush / 1234");
+    }
+  };
+
+  return (
+    <div className="login-overlay">
+      <div className="glass-panel login-card">
+        <div className="login-header">
+          <span className="badge-3d">
+            <Icon name="shield-check" size={13} />
+            STUDENT PORTAL
+          </span>
+          <h2 className="login-title">Master Blueprint Portal</h2>
+          <p className="login-subtitle">Enter credentials to unlock 3D Roadmaps</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="login-form">
+          {error && <div className="login-error">{error}</div>}
+          
+          <div className="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              className="login-input"
+              placeholder="e.g. aayush"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <label>Password</label>
+            <input
+              type="password"
+              className="login-input"
+              placeholder="••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+            />
+          </div>
+
+          <button type="submit" className="login-submit-btn">
+            Unlock Roadmap Access
+          </button>
+        </form>
+
+        <div className="login-hint">
+          <span>Demo Access:</span> <strong>aayush</strong> / <strong>1234</strong>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Header Component with Language Selector & Logout
+const Header = ({ currentLang, onSelectLang, user, onLogout }) => {
   const isPython = currentLang === 'python';
 
   return (
@@ -238,6 +308,15 @@ const Header = ({ currentLang, onSelectLang }) => {
               aria-label="Switch to Python Roadmap"
             >
               PYTHON
+            </button>
+          </div>
+
+          {/* User Status / Logout */}
+          <div className="user-badge-pill">
+            <Icon name="user-check" size={13} />
+            <span className="user-name">{user}</span>
+            <button className="logout-btn" onClick={onLogout} title="Lock Access">
+              <Icon name="log-out" size={12} />
             </button>
           </div>
         </div>
@@ -317,7 +396,6 @@ const PhaseCard = ({ phase, onTopicClick, animationDelay }) => {
     const centerX = rect.width / 2;
     const centerY = rect.height / 2;
     
-    // Rotate subtle max 2.5 degrees for maximum readability and visual stability
     const rotateX = ((centerY - y) / centerY) * 2.5;
     const rotateY = ((x - centerX) / centerX) * 2.5;
     
@@ -442,7 +520,7 @@ const Toast = ({ message, onClose }) => {
   );
 };
 
-// Main App Component with Route/State Synchronization
+// Main App Component with Authentication Guard
 const App = () => {
   const getInitialLang = () => {
     const path = window.location.pathname.toLowerCase();
@@ -452,6 +530,7 @@ const App = () => {
     return 'c';
   };
 
+  const [user, setUser] = useState(() => localStorage.getItem("roadmap_user"));
   const [currentLang, setCurrentLang] = useState(getInitialLang);
   const [toastMessage, setToastMessage] = useState(null);
 
@@ -459,7 +538,7 @@ const App = () => {
     if (window.lucide) {
       window.lucide.createIcons();
     }
-  }, [currentLang]);
+  }, [currentLang, user]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -468,6 +547,17 @@ const App = () => {
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  const handleLogin = (username) => {
+    setUser(username);
+    localStorage.setItem("roadmap_user", username);
+    setToastMessage(`Welcome back, ${username}!`);
+  };
+
+  const handleLogout = () => {
+    setUser(null);
+    localStorage.removeItem("roadmap_user");
+  };
 
   const handleSelectLang = (lang) => {
     setCurrentLang(lang);
@@ -491,22 +581,33 @@ const App = () => {
       <div className="perspective-grid-floor"></div>
       <div className="horizon-glow"></div>
 
-      <Header currentLang={currentLang} onSelectLang={handleSelectLang} />
-      
-      <main className="roadmap-grid">
-        {currentRoadmap.map((phase, idx) => (
-          <PhaseCard 
-            key={phase.id} 
-            phase={phase} 
-            onTopicClick={handleTopicClick}
-            animationDelay={100 * idx}
+      {!user ? (
+        <LoginPage onLogin={handleLogin} />
+      ) : (
+        <React.Fragment>
+          <Header
+            currentLang={currentLang}
+            onSelectLang={handleSelectLang}
+            user={user}
+            onLogout={handleLogout}
           />
-        ))}
-      </main>
+          
+          <main className="roadmap-grid">
+            {currentRoadmap.map((phase, idx) => (
+              <PhaseCard 
+                key={phase.id} 
+                phase={phase} 
+                onTopicClick={handleTopicClick}
+                animationDelay={100 * idx}
+              />
+            ))}
+          </main>
 
-      <SuccessProtocol currentLang={currentLang} />
+          <SuccessProtocol currentLang={currentLang} />
 
-      <Footer />
+          <Footer />
+        </React.Fragment>
+      )}
 
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
