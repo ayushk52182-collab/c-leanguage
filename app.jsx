@@ -248,20 +248,49 @@ const LoginPage = ({ onLogin }) => {
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+  const [shake, setShake] = useState(false);
+  const [mouseOffset, setMouseOffset] = useState({ x: 0, y: 0 });
+
+  const handleMouseMove = (e) => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const { clientX, clientY } = e;
+    const x = (clientX / window.innerWidth - 0.5) * 30;
+    const y = (clientY / window.innerHeight - 0.5) * 30;
+    setMouseOffset({ x, y });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === TEMP_USERNAME && password === TEMP_PASSWORD) {
-      onLogin(username);
-    } else {
-      setError("Incorrect username or password.");
-    }
+    setError("");
+    setIsLoading(true);
+
+    setTimeout(() => {
+      if (username === TEMP_USERNAME && password === TEMP_PASSWORD) {
+        setIsLoading(false);
+        setIsSuccess(true);
+        setTimeout(() => {
+          onLogin(username);
+        }, 800);
+      } else {
+        setIsLoading(false);
+        setShake(true);
+        setError("Incorrect username or password.");
+        setTimeout(() => setShake(false), 500);
+      }
+    }, 600);
   };
 
   return (
-    <div className="login-overlay">
-      {/* 3D Background Illustration for Login Screen */}
-      <div className="login-3d-bg-container">
+    <div className="login-overlay" onMouseMove={handleMouseMove}>
+      {/* Dynamic Background Parallax & Floating Code Particles */}
+      <div 
+        className="login-3d-bg-container"
+        style={{
+          transform: `translate(calc(-50% + ${mouseOffset.x}px), calc(-50% + ${mouseOffset.y}px))`
+        }}
+      >
         <div className="bg-floating-code-window glass-panel">
           <div className="window-bar">
             <span className="dot red"></span>
@@ -287,67 +316,92 @@ const LoginPage = ({ onLogin }) => {
         <div className="bg-learning-ring"></div>
       </div>
 
-      <div className="glass-panel login-card 3d-login-card">
-        <div className="login-header">
-          <div className="top-badge-row">
-            <span className="badge-3d">
-              <Icon name="layers" size={13} />
-              3D ENGINEERING ROADMAP
-            </span>
-          </div>
-          <h2 className="login-title">Welcome Back, Learner</h2>
-          <p className="login-subtitle">Continue your coding journey and track your learning progress.</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="login-form">
-          {error && <div className="login-error">{error}</div>}
-          
-          <div className="form-group">
-            <label>Username</label>
-            <input
-              type="text"
-              className="login-input"
-              placeholder="e.g. aayush"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <label>Password</label>
-            <div className="password-input-wrapper">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="login-input password-field"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-password-btn"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
-              </button>
+      {/* Floating Antigravity Glassmorphism Card */}
+      <div className={`glass-panel login-card antigravity-float-card ${shake ? 'shake-animation' : ''} ${isSuccess ? 'success-scale' : ''}`}>
+        {isSuccess ? (
+          <div className="login-success-state">
+            <div className="success-checkmark-wrapper">
+              <Icon name="check-circle-2" size={64} className="success-icon-anim" />
             </div>
+            <h2 className="login-title">Access Granted!</h2>
+            <p className="login-subtitle">Loading your student portal...</p>
           </div>
+        ) : (
+          <React.Fragment>
+            <div className="login-header">
+              <div className="top-badge-row">
+                <span className="badge-3d">
+                  <Icon name="layers" size={13} />
+                  3D ENGINEERING ROADMAP
+                </span>
+              </div>
+              <h2 className="login-title">Welcome Back, Learner</h2>
+              <p className="login-subtitle">Continue your coding journey and track your learning progress.</p>
+            </div>
 
-          <button type="submit" className="login-submit-btn">
-            Login to Dashboard →
-          </button>
-        </form>
+            <form onSubmit={handleSubmit} className="login-form">
+              {error && <div className="login-error shake-text">{error}</div>}
+              
+              {/* Username Field with Floating Label */}
+              <div className="form-group floating-group">
+                <input
+                  type="text"
+                  id="login-username"
+                  className="login-input floating-input"
+                  placeholder=" "
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
+                <label htmlFor="login-username" className="floating-label">Username</label>
+              </div>
 
-        <div className="login-footer-info">
-          <p className="progress-note">
-            <Icon name="shield-check" size={14} />
-            Your learning progress is saved automatically.
-          </p>
-          <p className="login-credit">Designed & Engineered by Aayush Singh</p>
-        </div>
+              {/* Password Field with Floating Label */}
+              <div className="form-group floating-group">
+                <div className="password-input-wrapper">
+                  <input
+                    type={showPassword ? "text" : "password"}
+                    id="login-password"
+                    className="login-input password-field floating-input"
+                    placeholder=" "
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    required
+                  />
+                  <label htmlFor="login-password" className="floating-label">Password</label>
+                  <button
+                    type="button"
+                    className="toggle-password-btn"
+                    onClick={() => setShowPassword(!showPassword)}
+                    aria-label={showPassword ? "Hide password" : "Show password"}
+                  >
+                    <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
+                  </button>
+                </div>
+              </div>
+
+              <button 
+                type="submit" 
+                className={`login-submit-btn interactive-ripple-btn ${isLoading ? 'btn-loading' : ''}`}
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <span className="btn-spinner"></span>
+                ) : (
+                  <span>Login to Dashboard →</span>
+                )}
+              </button>
+            </form>
+
+            <div className="login-footer-info">
+              <p className="progress-note">
+                <Icon name="shield-check" size={14} />
+                Your learning progress is saved automatically.
+              </p>
+              <p className="login-credit">Designed & Engineered by Aayush Singh</p>
+            </div>
+          </React.Fragment>
+        )}
       </div>
     </div>
   );
