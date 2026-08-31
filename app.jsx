@@ -883,129 +883,66 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
   );
 };
 
-// Clean Top Navigation Bar Component for PPS LAB
-const Navbar = ({ activeTab, onSelectTab, currentLang, onSelectLang, user, onLogout }) => {
+// Navigation Bar Component
+const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => {
   return (
-    <nav className="top-navbar">
-      <div className="nav-brand" onClick={() => onSelectTab('dashboard')}>
-        <Icon name="code" size={22} style={{ color: '#2563EB' }} />
-        <span>PPS LAB</span>
-        <span className="brand-badge">PORTAL</span>
+    <nav className="glass-panel nav-bar">
+      <div className="nav-logo" onClick={() => onSelectTab('dashboard')}>
+        <Icon name="graduation-cap" size={22} className="logo-icon" />
+        <span className="logo-text">EduPortal 3D</span>
       </div>
 
-      <div className="nav-menu-links">
+      <div className="nav-links">
         <button
-          className={`nav-link-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+          className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
           onClick={() => onSelectTab('dashboard')}
         >
-          <Icon name="layout-dashboard" size={16} />
+          <Icon name="layout-dashboard" size={15} />
           <span>Dashboard</span>
         </button>
         <button
-          className={`nav-link-btn ${activeTab === 'oneshot' ? 'active' : ''}`}
+          className={`nav-btn ${activeTab === 'oneshot' ? 'active' : ''}`}
           onClick={() => onSelectTab('oneshot')}
         >
-          <Icon name="zap" size={16} />
-          <span>One-Shot</span>
+          <Icon name="flame" size={15} />
+          <span>One-Shot 1-Video</span>
         </button>
         <button
-          className={`nav-link-btn ${activeTab === 'c' ? 'active' : ''}`}
+          className={`nav-btn ${activeTab === 'c' ? 'active' : ''}`}
           onClick={() => onSelectTab('c')}
         >
-          <Icon name="code-2" size={16} />
+          <Icon name="code-2" size={15} />
           <span>C Roadmap</span>
         </button>
         <button
-          className={`nav-link-btn ${activeTab === 'python' ? 'active' : ''}`}
+          className={`nav-btn ${activeTab === 'python' ? 'active' : ''}`}
           onClick={() => onSelectTab('python')}
         >
-          <Icon name="terminal" size={16} />
+          <Icon name="terminal" size={15} />
           <span>Python Roadmap</span>
         </button>
         <button
-          className={`nav-link-btn ${activeTab === 'progress' ? 'active' : ''}`}
-          onClick={() => onSelectTab('progress')}
+          className={`nav-btn ${activeTab === 'practice' ? 'active' : ''}`}
+          onClick={() => onSelectTab('practice')}
         >
-          <Icon name="bar-chart-2" size={16} />
-          <span>Progress</span>
+          <Icon name="brain-circuit" size={15} />
+          <span>Practice</span>
         </button>
-
-        {/* Language Selector Pill */}
-        <div className="lang-toggle-box">
-          <button
-            className={`lang-btn ${currentLang === 'c' ? 'active' : ''}`}
-            onClick={() => onSelectLang('c')}
-          >
-            C
-          </button>
-          <button
-            className={`lang-btn ${currentLang === 'python' ? 'active' : ''}`}
-            onClick={() => onSelectLang('python')}
-          >
-            PYTHON
-          </button>
-        </div>
       </div>
 
       <div className="nav-user-area">
-        <div className="user-profile-badge">
-          <div className="user-avatar">AS</div>
-          <span className="user-name-text">Aayush Singh</span>
+        <div className="nav-profile-chip">
+          <div className="avatar-circle">AS</div>
+          <div className="user-details">
+            <span className="user-profile-name">Aayush Singh</span>
+            <span className="user-role">Coding Learner</span>
+          </div>
         </div>
-        <button className="logout-icon-btn" onClick={onLogout} aria-label="Logout">
-          <Icon name="log-out" size={16} />
+        <button className="nav-logout-btn" onClick={onLogout} aria-label="Logout">
+          <Icon name="log-out" size={15} />
         </button>
       </div>
     </nav>
-  );
-};
-
-// Compact Left Sidebar Component
-const Sidebar = ({ activeTab, onSelectTab, onLogout }) => {
-  return (
-    <aside className="sidebar">
-      <div className="sidebar-menu">
-        <div className="sidebar-title">NAVIGATE</div>
-        <button
-          className={`sidebar-item ${activeTab === 'dashboard' ? 'active' : ''}`}
-          onClick={() => onSelectTab('dashboard')}
-        >
-          <Icon name="grid" size={17} />
-          <span>Overview</span>
-        </button>
-        <button
-          className={`sidebar-item ${activeTab === 'c' || activeTab === 'python' ? 'active' : ''}`}
-          onClick={() => onSelectTab('c')}
-        >
-          <Icon name="book-open" size={17} />
-          <span>Learning Paths</span>
-        </button>
-        <button
-          className={`sidebar-item ${activeTab === 'progress' ? 'active' : ''}`}
-          onClick={() => onSelectTab('progress')}
-        >
-          <Icon name="trending-up" size={17} />
-          <span>My Progress</span>
-        </button>
-        <button
-          className={`sidebar-item ${activeTab === 'oneshot' ? 'active' : ''}`}
-          onClick={() => onSelectTab('oneshot')}
-        >
-          <Icon name="award" size={17} />
-          <span>Masterclass</span>
-        </button>
-      </div>
-
-      <div className="sidebar-footer">
-        <button
-          className="sidebar-item"
-          onClick={() => onSelectTab('settings')}
-        >
-          <Icon name="settings" size={17} />
-          <span>Settings & Reset</span>
-        </button>
-      </div>
-    </aside>
   );
 };
 
@@ -1654,7 +1591,10 @@ const App = () => {
   };
 
   return (
-    <div className="app-container">
+    <React.Fragment>
+      <div className="perspective-grid-floor"></div>
+      <div className="horizon-glow"></div>
+
       {!user ? (
         <LoginPage onLogin={handleLogin} />
       ) : (
@@ -1662,86 +1602,78 @@ const App = () => {
           <Navbar
             activeTab={activeTab}
             onSelectTab={handleSelectTab}
-            currentLang={activeTab === 'python' ? 'python' : 'c'}
-            onSelectLang={handleSelectTab}
             user={user}
             onLogout={handleLogout}
           />
 
-          <div className="main-wrapper">
-            <Sidebar
-              activeTab={activeTab}
+          {activeTab === 'dashboard' && (
+            <DashboardView
               onSelectTab={handleSelectTab}
-              onLogout={handleLogout}
+              onTopicClick={handleTopicClick}
+              userProgress={userProgress}
+              onResetTracking={handleResetTracking}
             />
+          )}
 
-            <main className="content-area">
-              {activeTab === 'dashboard' && (
-                <DashboardView
-                  onSelectTab={handleSelectTab}
-                  onTopicClick={handleTopicClick}
-                  userProgress={userProgress}
-                  onResetTracking={handleResetTracking}
-                />
-              )}
+          {activeTab === 'oneshot' && (
+            <OneShotView
+              onTopicClick={handleTopicClick}
+              setToastMessage={setToastMessage}
+            />
+          )}
 
-              {activeTab === 'oneshot' && (
-                <OneShotView
-                  onTopicClick={handleTopicClick}
-                  setToastMessage={setToastMessage}
-                />
-              )}
+          {(activeTab === 'c' || activeTab === 'python') && (
+            <React.Fragment>
+              <RoadmapHeader
+                currentLang={activeTab}
+                onSelectLang={handleSelectTab}
+              />
 
-              {(activeTab === 'c' || activeTab === 'python') && (
-                <React.Fragment>
-                  <RoadmapHeader
-                    currentLang={activeTab}
-                    onSelectLang={handleSelectTab}
+              <main className="roadmap-grid">
+                {(activeTab === 'python' ? PYTHON_ROADMAP_DATA : C_ROADMAP_DATA).map((phase, idx) => (
+                  <PhaseCard
+                    key={phase.id}
+                    phase={phase}
+                    lang={activeTab === 'python' ? 'Python' : 'C'}
+                    userProgress={userProgress}
+                    onTopicClick={handleTopicClick}
+                    animationDelay={100 * idx}
                   />
+                ))}
+              </main>
 
-                  <main className="roadmap-grid">
-                    {(activeTab === 'python' ? PYTHON_ROADMAP_DATA : C_ROADMAP_DATA).map((phase, idx) => (
-                      <PhaseCard
-                        key={phase.id}
-                        phase={phase}
-                        lang={activeTab === 'python' ? 'Python' : 'C'}
-                        userProgress={userProgress}
-                        onTopicClick={handleTopicClick}
-                        animationDelay={100 * idx}
-                      />
-                    ))}
-                  </main>
-                </React.Fragment>
-              )}
+              <SuccessProtocol currentLang={activeTab} />
+            </React.Fragment>
+          )}
 
-              {activeTab === 'progress' && (
-                <div className="white-card">
-                  <h2>My Learning Progress</h2>
-                  <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>Track completed phases, video playback history, and overall progress.</p>
-                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginTop: '1.5rem' }}>
-                    <div className="white-card">
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: '700' }}>COMPLETED LESSONS</span>
-                      <h3 style={{ fontSize: '2.2rem', color: 'var(--success-green)', marginTop: '0.4rem' }}>
-                        {Object.values(userProgress).filter(v => v.isCompleted).length}
-                      </h3>
-                    </div>
-                    <div className="white-card">
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: '700' }}>IN PROGRESS</span>
-                      <h3 style={{ fontSize: '2.2rem', color: 'var(--primary-blue)', marginTop: '0.4rem' }}>
-                        {Object.values(userProgress).filter(v => !v.isCompleted && v.percent > 0).length}
-                      </h3>
-                    </div>
-                    <div className="white-card">
-                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: '700' }}>TOTAL ROADMAP UNITS</span>
-                      <h3 style={{ fontSize: '2.2rem', color: 'var(--text-primary)', marginTop: '0.4rem' }}>32</h3>
-                    </div>
-                  </div>
+          {activeTab === 'practice' && (
+            <div className="glass-panel practice-zone-view">
+              <div className="practice-header">
+                <Icon name="brain-circuit" size={32} className="practice-icon" />
+                <h2>Algorithmic Practice Zone</h2>
+                <p>Sharpen your C and Python logic with university-level problem sets.</p>
+              </div>
+              <div className="practice-grid">
+                <div className="glass-panel p-card">
+                  <h4>Star & Pyramid Patterns</h4>
+                  <span className="p-tag easy">EASY</span>
+                  <button className="quick-btn" onClick={() => setToastMessage("Opening problem editor...")}>Solve Problem</button>
                 </div>
-              )}
+                <div className="glass-panel p-card">
+                  <h4>Prime & Armstrong Numbers</h4>
+                  <span className="p-tag medium">MEDIUM</span>
+                  <button className="quick-btn" onClick={() => setToastMessage("Opening problem editor...")}>Solve Problem</button>
+                </div>
+                <div className="glass-panel p-card">
+                  <h4>Matrix Multiplication (2D Array)</h4>
+                  <span className="p-tag hard">HARD</span>
+                  <button className="quick-btn" onClick={() => setToastMessage("Opening problem editor...")}>Solve Problem</button>
+                </div>
+              </div>
+            </div>
+          )}
 
-              <Footer />
-            </main>
-          </div>
+          <Footer />
         </React.Fragment>
       )}
 
@@ -1759,7 +1691,7 @@ const App = () => {
       {toastMessage && (
         <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
       )}
-    </div>
+    </React.Fragment>
   );
 };
 
