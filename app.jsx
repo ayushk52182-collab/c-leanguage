@@ -1253,11 +1253,14 @@ const App = () => {
     const saved = localStorage.getItem(`pps-video-progress-${username}`);
     setUserProgress(saved ? JSON.parse(saved) : {});
     setToastMessage(`Welcome back, ${username}!`);
+    setActiveTab('dashboard');
+    window.history.pushState({}, '', '/dashboard');
   };
 
   const handleLogout = () => {
     setUser(null);
     sessionStorage.removeItem("roadmap_user");
+    window.history.pushState({}, '', '/login');
   };
 
   const handleSelectTab = (tab) => {

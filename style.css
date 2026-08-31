@@ -1365,20 +1365,25 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  min-height: 80vh;
+  min-height: 100vh;
   width: 100%;
+  padding: 1.5rem;
+  box-sizing: border-box;
   animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  z-index: 10;
 }
 
 .login-card {
   width: 100%;
-  max-width: 480px;
-  padding: 2.5rem 2.25rem;
+  max-width: 440px;
+  padding: 2.5rem 2rem;
   display: flex;
   flex-direction: column;
-  gap: 1.75rem;
+  gap: 1.5rem;
   box-shadow: 0 25px 60px -12px rgba(0, 0, 0, 0.9), var(--glow-cyan);
   border-radius: 24px;
+  margin: auto;
 }
 
 .login-header {
