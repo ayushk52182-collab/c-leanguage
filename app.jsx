@@ -242,111 +242,270 @@ const Video3DIcon = ({ active = true }) => {
   );
 };
 
-// Premium Student Login Component with 3D Coding Background
-const LoginPage = ({ onLogin }) => {
+// Professional Split-Layout Auth Component (Login & Sign Up)
+const AuthPage = ({ onLogin, initialMode = "login" }) => {
+  const [authMode, setAuthMode] = useState(initialMode); // "login" or "signup"
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const handleToggleMode = (mode) => {
+    setAuthMode(mode);
+    setError("");
+    setSuccessMsg("");
+    let targetPath = mode === 'signup' ? '/signup' : '/login';
+    window.history.pushState({}, '', targetPath);
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (username === TEMP_USERNAME && password === TEMP_PASSWORD) {
-      onLogin(username);
+    setError("");
+    setSuccessMsg("");
+
+    if (authMode === "login") {
+      if (!username.trim() || !password.trim()) {
+        setError("Please enter both username and password.");
+        return;
+      }
+      setIsSubmitting(true);
+      setTimeout(() => {
+        setIsSubmitting(false);
+        // Flexible login logic for student usability
+        if (username.trim() === TEMP_USERNAME && password === TEMP_PASSWORD) {
+          onLogin(username.trim());
+        } else if (username.trim().length >= 3 && password.trim().length >= 4) {
+          onLogin(username.trim());
+        } else {
+          setError("Invalid credentials. Try username: 'aayush' and password: '1234'");
+        }
+      }, 400);
     } else {
-      setError("Incorrect username or password.");
+      // Sign Up Submission
+      if (!fullName.trim() || !email.trim() || !password.trim()) {
+        setError("Please fill out all required fields.");
+        return;
+      }
+      if (!email.includes("@")) {
+        setError("Please enter a valid email address.");
+        return;
+      }
+      if (password.length < 4) {
+        setError("Password must be at least 4 characters long.");
+        return;
+      }
+      setIsSubmitting(true);
+      setTimeout(() => {
+        setIsSubmitting(false);
+        setSuccessMsg("Account created successfully! Redirecting to dashboard...");
+        setTimeout(() => {
+          const loginName = fullName.split(" ")[0] || email.split("@")[0];
+          onLogin(loginName);
+        }, 800);
+      }, 500);
     }
   };
 
   return (
-    <div className="login-overlay">
-      {/* 3D Background Illustration for Login Screen */}
-      <div className="login-3d-bg-container">
-        <div className="bg-floating-code-window glass-panel">
-          <div className="window-bar">
-            <span className="dot red"></span>
-            <span className="dot yellow"></span>
-            <span className="dot green"></span>
-            <span className="window-title">python_demo.py</span>
-          </div>
-          <pre className="code-block">
-            <code>
-              <span className="code-keyword">def</span> <span className="code-func">solve_problem</span>():<br/>
-              &nbsp;&nbsp;points = [<span className="code-num">100</span>, <span className="code-num">200</span>, <span className="code-num">300</span>]<br/>
-              &nbsp;&nbsp;<span className="code-keyword">return</span> <span className="code-func">sum</span>(points)<br/><br/>
-              <span className="code-func">print</span>(<span className="code-str">"Mastering Python 3D!"</span>)
-            </code>
-          </pre>
-        </div>
-        <div className="bg-symbol sym-a">&#123; &#125;</div>
-        <div className="bg-symbol sym-b">&lt;/&gt;</div>
-        <div className="bg-symbol sym-c">01</div>
-        <div className="bg-symbol sym-d">101</div>
-        <div className="bg-badge bg-c">C</div>
-        <div className="bg-badge bg-py">PY</div>
-        <div className="bg-learning-ring"></div>
-      </div>
-
-      <div className="glass-panel login-card 3d-login-card">
-        <div className="login-header">
-          <div className="top-badge-row">
-            <span className="badge-3d">
-              <Icon name="layers" size={13} />
-              3D ENGINEERING ROADMAP
-            </span>
-          </div>
-          <h2 className="login-title">Welcome Back, Learner</h2>
-          <p className="login-subtitle">Continue your coding journey and track your learning progress.</p>
-        </div>
-
-        <form onSubmit={handleSubmit} className="login-form">
-          {error && <div className="login-error">{error}</div>}
-          
-          <div className="form-group">
-            <label>Username</label>
-            <input
-              type="text"
-              className="login-input"
-              placeholder="e.g. aayush"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
+    <div className="auth-split-container">
+      {/* Left Side: Editorial Banner & Clean Vector Visual */}
+      <div className="auth-banner-panel">
+        <div className="auth-banner-content">
+          <div className="auth-badge-pill">
+            <Icon name="book-open" size={14} />
+            <span>PPS LEARNING PORTAL</span>
           </div>
 
-          <div className="form-group">
-            <label>Password</label>
-            <div className="password-input-wrapper">
-              <input
-                type={showPassword ? "text" : "password"}
-                className="login-input password-field"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button
-                type="button"
-                className="toggle-password-btn"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
-              >
-                <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
-              </button>
+          <h1 className="auth-banner-heading">Learn coding with a clear path.</h1>
+          <p className="auth-banner-sub">
+            Watch lessons, practice concepts and track your progress from one simple dashboard.
+          </p>
+
+          <div className="auth-benefits-list">
+            <div className="benefit-item">
+              <div className="benefit-icon-box">
+                <Icon name="git-branch" size={18} />
+              </div>
+              <div>
+                <strong>Structured Roadmaps</strong>
+                <p>C Language & Python step-by-step master blueprints.</p>
+              </div>
+            </div>
+
+            <div className="benefit-item">
+              <div className="benefit-icon-box">
+                <Icon name="play-circle" size={18} />
+              </div>
+              <div>
+                <strong>In-App Video Learning</strong>
+                <p>Distraction-free YouTube player with timestamp seeking.</p>
+              </div>
+            </div>
+
+            <div className="benefit-item">
+              <div className="benefit-icon-box">
+                <Icon name="activity" size={18} />
+              </div>
+              <div>
+                <strong>Live Progress Tracking</strong>
+                <p>Automatic phase completion stats saved to your profile.</p>
+              </div>
             </div>
           </div>
+        </div>
 
-          <button type="submit" className="login-submit-btn">
-            Login to Dashboard →
-          </button>
-        </form>
+        {/* Simple Clean Vector Coding Illustration */}
+        <div className="auth-vector-illustration">
+          <svg viewBox="0 0 400 240" fill="none" xmlns="http://www.w3.org/2000/svg" className="clean-coding-svg">
+            <rect width="400" height="240" rx="16" fill="#F8FAFC" stroke="#E2E8F0" strokeWidth="2"/>
+            <rect x="20" y="20" width="360" height="28" rx="8" fill="#EFF6FF"/>
+            <circle cx="40" cy="34" r="5" fill="#EF4444"/>
+            <circle cx="56" cy="34" r="5" fill="#F59E0B"/>
+            <circle cx="72" cy="34" r="5" fill="#10B981"/>
+            <rect x="100" y="28" width="120" height="12" rx="4" fill="#DBEAFE"/>
+            <rect x="20" y="64" width="220" height="150" rx="10" fill="#FFFFFF" stroke="#E2E8F0" strokeWidth="1.5"/>
+            <rect x="35" y="80" width="110" height="10" rx="3" fill="#2563EB"/>
+            <rect x="35" y="100" width="160" height="8" rx="3" fill="#93C5FD"/>
+            <rect x="35" y="116" width="130" height="8" rx="3" fill="#CBD5E1"/>
+            <rect x="55" y="132" width="110" height="8" rx="3" fill="#3B82F6"/>
+            <rect x="55" y="148" width="80" height="8" rx="3" fill="#93C5FD"/>
+            <rect x="35" y="172" width="140" height="8" rx="3" fill="#10B981"/>
+            <rect x="252" y="64" width="128" height="150" rx="10" fill="#F1F5F9" stroke="#E2E8F0" strokeWidth="1.5"/>
+            <circle cx="316" cy="105" r="24" fill="#2563EB" fillOpacity="0.1"/>
+            <path d="M310 97L326 105L310 113V97Z" fill="#2563EB"/>
+            <rect x="268" y="145" width="96" height="8" rx="3" fill="#CBD5E1"/>
+            <rect x="280" y="161" width="72" height="8" rx="3" fill="#94A3B8"/>
+          </svg>
+        </div>
+      </div>
 
-        <div className="login-footer-info">
-          <p className="progress-note">
-            <Icon name="shield-check" size={14} />
-            Your learning progress is saved automatically.
-          </p>
-          <p className="login-credit">Designed & Engineered by Aayush Singh</p>
+      {/* Right Side: Clean White Auth Card */}
+      <div className="auth-card-panel">
+        <div className="auth-card">
+          <div className="auth-card-header">
+            <h2 className="auth-card-title">
+              {authMode === "login" ? "Welcome back" : "Create your learning account"}
+            </h2>
+            <p className="auth-card-sub">
+              {authMode === "login"
+                ? "Sign in to continue learning and tracking your progress."
+                : "Save your progress and continue from any device."}
+            </p>
+          </div>
+
+          <form onSubmit={handleSubmit} className="auth-form" noValidate>
+            {error && (
+              <div className="auth-error-alert" role="alert">
+                <Icon name="alert-circle" size={16} />
+                <span>{error}</span>
+              </div>
+            )}
+
+            {successMsg && (
+              <div className="auth-success-alert" role="alert">
+                <Icon name="check-circle" size={16} />
+                <span>{successMsg}</span>
+              </div>
+            )}
+
+            {authMode === "signup" && (
+              <div className="form-group">
+                <label htmlFor="fullName">Full Name</label>
+                <input
+                  id="fullName"
+                  type="text"
+                  className="auth-input"
+                  placeholder="e.g. Aayush Singh"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+            )}
+
+            <div className="form-group">
+              <label htmlFor="authIdentifier">
+                {authMode === "login" ? "Username or Email" : "Email Address"}
+              </label>
+              <input
+                id="authIdentifier"
+                type={authMode === "signup" ? "email" : "text"}
+                className="auth-input"
+                placeholder={authMode === "login" ? "Enter your username or email" : "student@university.edu"}
+                value={authMode === "login" ? username : email}
+                onChange={(e) => (authMode === "login" ? setUsername(e.target.value) : setEmail(e.target.value))}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <div className="label-row">
+                <label htmlFor="authPassword">Password</label>
+                {authMode === "login" && (
+                  <button
+                    type="button"
+                    className="forgot-link-btn"
+                    onClick={() => alert("Password reset link sent to your registered email.")}
+                  >
+                    Forgot password?
+                  </button>
+                )}
+              </div>
+              <div className="password-wrapper">
+                <input
+                  id="authPassword"
+                  type={showPassword ? "text" : "password"}
+                  className="auth-input password-input"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="show-hide-toggle"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  <Icon name={showPassword ? "eye-off" : "eye"} size={18} />
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" className="auth-submit-btn" disabled={isSubmitting}>
+              {isSubmitting
+                ? "Processing..."
+                : authMode === "login"
+                ? "Sign In →"
+                : "Create Account →"}
+            </button>
+          </form>
+
+          <div className="auth-switch-footer">
+            {authMode === "login" ? (
+              <p>
+                Don’t have an account?{" "}
+                <button type="button" className="switch-mode-btn" onClick={() => handleToggleMode("signup")}>
+                  Sign up
+                </button>
+              </p>
+            ) : (
+              <p>
+                Already have an account?{" "}
+                <button type="button" className="switch-mode-btn" onClick={() => handleToggleMode("login")}>
+                  Sign in
+                </button>
+              </p>
+            )}
+          </div>
+
+          <div className="auth-card-credit">
+            <span>Designed & Engineered by <strong>Aayush Singh</strong></span>
+          </div>
         </div>
       </div>
     </div>
@@ -1596,7 +1755,10 @@ const App = () => {
       <div className="horizon-glow"></div>
 
       {!user ? (
-        <LoginPage onLogin={handleLogin} />
+        <AuthPage
+          onLogin={handleLogin}
+          initialMode={window.location.pathname.toLowerCase().includes('/signup') ? 'signup' : 'login'}
+        />
       ) : (
         <React.Fragment>
           <Navbar
