@@ -216,6 +216,13 @@ const PYTHON_ROADMAP_DATA = [
   }
 ];
 
+// Helper to get all topics array with index for Next Unit navigation
+const getAllTopicsList = () => {
+  const cTopics = C_ROADMAP_DATA.flatMap(p => p.topics.map(t => ({ ...t, lang: "C", phase: p.badge })));
+  const pyTopics = PYTHON_ROADMAP_DATA.flatMap(p => p.topics.map(t => ({ ...t, lang: "Python", phase: p.badge })));
+  return [...cTopics, ...pyTopics];
+};
+
 // Sample Achievements Data
 const SAMPLE_ACHIEVEMENTS = [
   { id: 1, title: "First Login", desc: "Welcome to Student Portal", unlocked: true, icon: "award" },
@@ -235,7 +242,7 @@ const Video3DIcon = ({ active = true }) => {
   );
 };
 
-// Premium Student Login Component
+// Premium Student Login Component with 3D Coding Background
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -253,6 +260,33 @@ const LoginPage = ({ onLogin }) => {
 
   return (
     <div className="login-overlay">
+      {/* 3D Background Illustration for Login Screen */}
+      <div className="login-3d-bg-container">
+        <div className="bg-floating-code-window glass-panel">
+          <div className="window-bar">
+            <span className="dot red"></span>
+            <span className="dot yellow"></span>
+            <span className="dot green"></span>
+            <span className="window-title">python_demo.py</span>
+          </div>
+          <pre className="code-block">
+            <code>
+              <span className="code-keyword">def</span> <span className="code-func">solve_problem</span>():<br/>
+              &nbsp;&nbsp;points = [<span className="code-num">100</span>, <span className="code-num">200</span>, <span className="code-num">300</span>]<br/>
+              &nbsp;&nbsp;<span className="code-keyword">return</span> <span className="code-func">sum</span>(points)<br/><br/>
+              <span className="code-func">print</span>(<span className="code-str">"Mastering Python 3D!"</span>)
+            </code>
+          </pre>
+        </div>
+        <div className="bg-symbol sym-a">&#123; &#125;</div>
+        <div className="bg-symbol sym-b">&lt;/&gt;</div>
+        <div className="bg-symbol sym-c">01</div>
+        <div className="bg-symbol sym-d">101</div>
+        <div className="bg-badge bg-c">C</div>
+        <div className="bg-badge bg-py">PY</div>
+        <div className="bg-learning-ring"></div>
+      </div>
+
       <div className="glass-panel login-card 3d-login-card">
         <div className="login-header">
           <div className="top-badge-row">
@@ -322,53 +356,104 @@ const LoginPage = ({ onLogin }) => {
   );
 };
 
-// In-App YouTube Video Modal Player Component
-const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate }) => {
+// In-App YouTube Video Modal Player Component with Distraction-Free ENDED State
+const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, userProgress }) => {
   const playerRef = useRef(null);
   const intervalRef = useRef(null);
+  const [embedError, setEmbedError] = useState(false);
+  const [videoEnded, setVideoEnded] = useState(false);
   const [playbackState, setPlaybackState] = useState({
     currentTime: 0,
     duration: 0,
     watchedPercent: 0,
-    statusText: "Buffering...",
+    statusText: "Not Started",
     isCompleted: false
   });
 
   const videoId = getYouTubeVideoId(videoInfo.url);
 
+  // Keyboard Escape listener
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (e.key === 'Escape') {
+        onClose();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [onClose]);
+
   useEffect(() => {
     let player;
+    setVideoEnded(false);
+    setEmbedError(false);
+
+    // Fetch initial saved playback position
+    const savedEntry = userProgress[videoId] || {};
+    const initialTime = savedEntry.currentTime || 0;
 
     const createPlayer = () => {
-      player = new window.YT.Player('youtube-player-element', {
-        videoId: videoId,
-        playerVars: {
-          autoplay: 1,
-          controls: 1,
-          rel: 0,
-          modestbranding: 1
-        },
-        events: {
-          onReady: (event) => {
-            playerRef.current = event.target;
-            const dur = event.target.getDuration() || 0;
-            setPlaybackState(prev => ({ ...prev, duration: dur, statusText: "Ready" }));
+      try {
+        player = new window.YT.Player('youtube-player-element', {
+          videoId: videoId,
+          playerVars: {
+            autoplay: 1,
+            controls: 1,
+            playsinline: 1,
+            rel: 0,
+            iv_load_policy: 3,
+            enablejsapi: 1,
+            origin: window.location.origin,
+            start: Math.floor(initialTime)
           },
-          onStateChange: (event) => {
-            let status = "Paused";
-            if (event.data === window.YT.PlayerState.PLAYING) {
-              status = "Watching";
-            } else if (event.data === window.YT.PlayerState.PAUSED) {
-              status = "Paused";
-            } else if (event.data === window.YT.PlayerState.BUFFERING) {
-              status = "Buffering...";
-            } else if (event.data === window.YT.PlayerState.ENDED) {
-              status = "Completed";
+          events: {
+            onReady: (event) => {
+              playerRef.current = event.target;
+              const dur = event.target.getDuration() || 0;
+              setPlaybackState(prev => ({
+                ...prev,
+                duration: dur,
+                currentTime: initialTime,
+                watchedPercent: savedEntry.percent || 0,
+                statusText: "Ready"
+              }));
+            },
+            onStateChange: (event) => {
+              let status = "Paused";
+              if (event.data === window.YT.PlayerState.PLAYING) {
+                status = "Watching";
+              } else if (event.data === window.YT.PlayerState.PAUSED) {
+                status = "Paused";
+              } else if (event.data === window.YT.PlayerState.BUFFERING) {
+                status = "Buffering...";
+              } else if (event.data === window.YT.PlayerState.ENDED) {
+                status = "Completed";
+                setVideoEnded(true);
+                // Immediately update progress & completion
+                onProgressUpdate({
+                  videoId,
+                  title: videoInfo.title,
+                  lang: videoInfo.lang || "C",
+                  phase: videoInfo.phase || "PHASE 01",
+                  currentTime: playerRef.current ? playerRef.current.getDuration() : initialTime,
+                  duration: playerRef.current ? playerRef.current.getDuration() : initialTime,
+                  percent: 100,
+                  isCompleted: true
+                });
+                if (playerRef.current && typeof playerRef.current.destroy === 'function') {
+                  playerRef.current.destroy();
+                }
+              }
+              setPlaybackState(prev => ({ ...prev, statusText: status }));
+            },
+            onError: () => {
+              setEmbedError(true);
             }
-            setPlaybackState(prev => ({ ...prev, statusText: status }));
           }
-        }
-      });
+        });
+      } catch (err) {
+        setEmbedError(true);
+      }
     };
 
     if (window.YT && window.YT.Player) {
@@ -408,7 +493,7 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate }) => {
     return () => {
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (playerRef.current && typeof playerRef.current.destroy === 'function') {
-        playerRef.current.destroy();
+        try { playerRef.current.destroy(); } catch (e) {}
       }
     };
   }, [videoId]);
@@ -433,28 +518,62 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate }) => {
           </button>
         </div>
 
-        <div className="iframe-container">
-          <div id="youtube-player-element"></div>
-        </div>
+        {/* Player / Completion Screen / Error Display */}
+        {embedError ? (
+          <div className="embed-error-box glass-panel">
+            <Icon name="alert-triangle" size={32} className="error-icon" />
+            <h4>This video cannot be played inside the website.</h4>
+            <p>The content provider restricts playback on embedded players.</p>
+            <button className="btn-primary" onClick={onClose}>Back to Roadmap</button>
+          </div>
+        ) : videoEnded ? (
+          <div className="completion-screen-box glass-panel">
+            <div className="completion-icon-wrapper">
+              <Icon name="check-circle-2" size={48} className="completion-check" />
+            </div>
+            <h2>Video Completed ✓</h2>
+            <p className="completion-msg">Great job! You completed this lesson.</p>
 
-        <div className="video-live-tracker-bar">
-          <div className="tracker-top">
-            <div className="status-indicator">
-              <span className={`status-dot ${playbackState.statusText.toLowerCase()}`}></span>
-              <span className="status-text">{playbackState.statusText}</span>
-              {playbackState.isCompleted && <span className="completion-badge">✓ Completed</span>}
+            <div className="completion-details">
+              <div className="c-detail-item">
+                <span className="lbl">Topic:</span> <strong>{videoInfo.title}</strong>
+              </div>
+              <div className="c-detail-item">
+                <span className="lbl">Phase:</span> <strong>{videoInfo.phase || "PHASE 01"} ({videoInfo.lang || "C"})</strong>
+              </div>
             </div>
-            <div className="time-display">
-              {formatTime(playbackState.currentTime)} / {formatTime(playbackState.duration)} ({playbackState.watchedPercent}%)
+
+            <div className="completion-actions">
+              <button className="btn-primary" onClick={onNextUnit}>Next Unit →</button>
+              <button className="btn-secondary" onClick={onClose}>Back to Roadmap</button>
             </div>
           </div>
-          <div className="live-progress-track">
-            <div
-              className="live-progress-fill"
-              style={{ width: `${playbackState.watchedPercent}%` }}
-            ></div>
+        ) : (
+          <div className="iframe-container">
+            <div id="youtube-player-element"></div>
           </div>
-        </div>
+        )}
+
+        {!videoEnded && !embedError && (
+          <div className="video-live-tracker-bar">
+            <div className="tracker-top">
+              <div className="status-indicator">
+                <span className={`status-dot ${playbackState.statusText.toLowerCase().replace(/[^a-z]/g, '')}`}></span>
+                <span className="status-text">{playbackState.statusText}</span>
+                {playbackState.isCompleted && <span className="completion-badge">✓ Completed</span>}
+              </div>
+              <div className="time-display">
+                {formatTime(playbackState.currentTime)} / {formatTime(playbackState.duration)} ({playbackState.watchedPercent}%)
+              </div>
+            </div>
+            <div className="live-progress-track">
+              <div
+                className="live-progress-fill"
+                style={{ width: `${playbackState.watchedPercent}%` }}
+              ></div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
@@ -580,8 +699,24 @@ const StatCard = ({ value, label }) => {
   );
 };
 
-// TopicRow Component
-const TopicRow = ({ topic, phaseBadge, lang, onTopicClick }) => {
+// TopicRow Component with Live Progress & Status Badge
+const TopicRow = ({ topic, phaseBadge, lang, userProgress, onTopicClick }) => {
+  const videoId = getYouTubeVideoId(topic.url);
+  const progEntry = videoId ? userProgress[videoId] : null;
+
+  let statusLabel = "Not Started";
+  let statusClass = "not-started";
+
+  if (progEntry) {
+    if (progEntry.isCompleted) {
+      statusLabel = "Completed ✓";
+      statusClass = "completed";
+    } else if (progEntry.percent > 0) {
+      statusLabel = `In Progress — ${progEntry.percent}%`;
+      statusClass = "in-progress";
+    }
+  }
+
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
@@ -602,12 +737,17 @@ const TopicRow = ({ topic, phaseBadge, lang, onTopicClick }) => {
         <Video3DIcon active={Boolean(topic.url)} />
         <span>{topic.title}</span>
       </div>
+      {topic.url && (
+        <div className="topic-row-status-box">
+          <span className={`topic-status-badge ${statusClass}`}>{statusLabel}</span>
+        </div>
+      )}
     </div>
   );
 };
 
 // PhaseCard Component with Interactive 3D Mouse Perspective Tilt
-const PhaseCard = ({ phase, lang, onTopicClick, animationDelay }) => {
+const PhaseCard = ({ phase, lang, userProgress, onTopicClick, animationDelay }) => {
   const cardRef = useRef(null);
   const [transformStyle, setTransformStyle] = useState("");
   const [reflectionStyle, setReflectionStyle] = useState({});
@@ -665,6 +805,7 @@ const PhaseCard = ({ phase, lang, onTopicClick, animationDelay }) => {
               topic={topic}
               phaseBadge={phase.badge}
               lang={lang}
+              userProgress={userProgress}
               onTopicClick={onTopicClick}
             />
           ))}
@@ -680,7 +821,7 @@ const PhaseCard = ({ phase, lang, onTopicClick, animationDelay }) => {
 };
 
 // Dashboard View
-const DashboardView = ({ onSelectTab, onTopicClick, userProgress }) => {
+const DashboardView = ({ onSelectTab, onTopicClick, userProgress, onResetTracking }) => {
   const totalVideos = 32;
   const completedCount = Object.values(userProgress).filter(v => v.isCompleted).length;
   const inProgressCount = Object.values(userProgress).filter(v => !v.isCompleted && v.percent > 0).length;
@@ -744,10 +885,17 @@ const DashboardView = ({ onSelectTab, onTopicClick, userProgress }) => {
 
       {/* 2. Live Video Watch Statistics Cards */}
       <section className="section-block">
-        <h2 className="section-title">
-          <Icon name="bar-chart-2" size={20} />
-          Learning Dashboard Statistics
-        </h2>
+        <div className="section-header-row">
+          <h2 className="section-title">
+            <Icon name="bar-chart-2" size={20} />
+            Learning Dashboard Statistics
+          </h2>
+          <button className="reset-tracking-btn" onClick={onResetTracking}>
+            <Icon name="rotate-ccw" size={13} />
+            Reset My Tracking
+          </button>
+        </div>
+        
         <div className="quick-cards-grid">
           <div className="stat-card-dashboard glass-panel">
             <span className="d-stat-val">{totalVideos}</span>
@@ -1012,7 +1160,7 @@ const Toast = ({ message, onClose }) => {
   );
 };
 
-// Main App Component with Route, In-App Video Player & Progress Storage
+// Main App Component with Route, Distraction-Free Player & Reset Progress
 const App = () => {
   const getInitialTab = () => {
     const path = window.location.pathname.toLowerCase();
@@ -1078,6 +1226,24 @@ const App = () => {
     }
   };
 
+  const handleNextUnit = () => {
+    if (!activeVideo) return;
+    const allTopics = getAllTopicsList();
+    const currIndex = allTopics.findIndex(t => t.title === activeVideo.title);
+    if (currIndex !== -1 && currIndex + 1 < allTopics.length) {
+      const nextItem = allTopics[currIndex + 1];
+      if (nextItem.url) {
+        setActiveVideo(nextItem);
+      } else {
+        setToastMessage(`Next topic "${nextItem.title}" video link coming soon.`);
+        setActiveVideo(null);
+      }
+    } else {
+      setToastMessage("You have reached the end of the roadmap units!");
+      setActiveVideo(null);
+    }
+  };
+
   const handleVideoProgressUpdate = (progressData) => {
     if (!user || !progressData.videoId) return;
 
@@ -1102,6 +1268,15 @@ const App = () => {
     });
   };
 
+  const handleResetTracking = () => {
+    if (!user) return;
+    if (window.confirm("Are you sure you want to reset all your learning progress?")) {
+      localStorage.removeItem(`pps-video-progress-${user}`);
+      setUserProgress({});
+      setToastMessage("Your learning progress has been reset.");
+    }
+  };
+
   return (
     <React.Fragment>
       <div className="perspective-grid-floor"></div>
@@ -1123,6 +1298,7 @@ const App = () => {
               onSelectTab={handleSelectTab}
               onTopicClick={handleTopicClick}
               userProgress={userProgress}
+              onResetTracking={handleResetTracking}
             />
           )}
 
@@ -1139,6 +1315,7 @@ const App = () => {
                     key={phase.id}
                     phase={phase}
                     lang={activeTab === 'python' ? 'Python' : 'C'}
+                    userProgress={userProgress}
                     onTopicClick={handleTopicClick}
                     animationDelay={100 * idx}
                   />
@@ -1184,7 +1361,9 @@ const App = () => {
       {activeVideo && (
         <VideoPlayerModal
           videoInfo={activeVideo}
+          userProgress={userProgress}
           onClose={() => setActiveVideo(null)}
+          onNextUnit={handleNextUnit}
           onProgressUpdate={handleVideoProgressUpdate}
         />
       )}
