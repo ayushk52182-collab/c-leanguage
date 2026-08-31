@@ -576,58 +576,60 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
   );
 };
 
-// One-Shot Tutorial Structured Data
+// One-Shot Masterclass Structured Data (C Language & Python)
 const ONE_SHOT_DATA = {
-  hindi: {
-    langLabel: "Hindi One-Shot (हिंदी)",
-    title: "Complete C Language in 1 Video (Hindi)",
-    subtitle: "Complete C programming marathon revision for university exams & technical interviews.",
-    youtubeUrl: "https://youtu.be/z2jDamkbBF0?si=k0dKMuofXYDSuY0B",
-    videoId: "z2jDamkbBF0",
-    cheatsheetPdfUrl: "#download-hindi-cheatsheet",
-    cheatsheetTitle: "C Language Complete Revision Notes (Hindi PDF)",
+  c: {
+    key: "c",
+    langLabel: "C Language One-Shot",
+    title: "Complete C Language Masterclass in 1 Video",
+    subtitle: "End-to-end C programming marathon tutorial covering variables, memory pointers, recursion & exam questions.",
+    embedUrl: "https://www.youtube.com/embed/aZb0iu4uGwA?autoplay=1&rel=0",
+    youtubeUrl: "https://youtu.be/aZb0iu4uGwA",
+    videoId: "aZb0iu4uGwA",
+    cheatsheetTitle: "C Language Complete Revision Notes & Cheatsheet (PDF)",
     timestamps: [
-      { time: "00:00", label: "Course Introduction & Setup", sec: 0 },
-      { time: "15:30", label: "Variables, Data Types & Specifiers", sec: 930 },
-      { time: "45:10", label: "Control Flow, If-Else & Switch Statements", sec: 2710 },
-      { time: "01:15:00", label: "Loops (For, While, Do-While) & Patterns", sec: 4500 },
-      { time: "01:50:20", label: "Functions, Prototyping & Recursion", sec: 6620 },
-      { time: "02:30:45", label: "Arrays & String Operations", sec: 9045 },
-      { time: "03:10:00", label: "Pointers & Memory Allocation (malloc)", sec: 11400 }
+      { time: "00:00", label: "C Fundamentals & Setup (GCC / VS Code)", sec: 0 },
+      { time: "22:15", label: "Variables, Formats & Specifiers", sec: 1335 },
+      { time: "54:40", label: "Conditional Logic (If-Else & Switch)", sec: 3280 },
+      { time: "01:25:10", label: "Loops, Star Pyramids & Logic Building", sec: 5110 },
+      { time: "02:05:30", label: "Functions, Parameters & Call Stack Recursion", sec: 7530 },
+      { time: "02:45:00", label: "1D & 2D Arrays with Matrix Operations", sec: 9900 },
+      { time: "03:30:20", label: "Pointers, Addressing & Dynamic Memory (malloc)", sec: 12620 }
     ]
   },
-  english: {
-    langLabel: "English One-Shot (Full English)",
-    title: "C Programming Master Revision (English)",
-    subtitle: "Comprehensive end-to-end C language tutorial covering logic building & core concepts.",
-    youtubeUrl: "https://youtu.be/bm1rFiuXGDc?si=lrRxUoo1v9yXctvj",
-    videoId: "bm1rFiuXGDc",
-    cheatsheetPdfUrl: "#download-english-cheatsheet",
-    cheatsheetTitle: "C Language Complete Revision Notes (English PDF)",
+  python: {
+    key: "python",
+    langLabel: "Python One-Shot",
+    title: "Complete Python Masterclass in 1 Video",
+    subtitle: "Complete Python programming tutorial covering fundamentals, OOPs, data structures & real-world projects.",
+    embedUrl: "https://www.youtube.com/embed/UrsmFxEIp5k?autoplay=1&rel=0",
+    youtubeUrl: "https://youtu.be/UrsmFxEIp5k",
+    videoId: "UrsmFxEIp5k",
+    cheatsheetTitle: "Python Programming Master Revision Notes (PDF)",
     timestamps: [
-      { time: "00:00", label: "Welcome & Compiler Setup", sec: 0 },
-      { time: "12:00", label: "Core Data Types & Memory Sizes", sec: 720 },
-      { time: "38:45", label: "Logic Operators & Conditional Branching", sec: 2325 },
-      { time: "01:10:15", label: "Iterative Loops & Star Patterns", sec: 4215 },
-      { time: "01:42:00", label: "Function Scopes & Call Stack Recursion", sec: 6120 },
-      { time: "02:18:30", label: "1D & 2D Arrays with Matrix Math", sec: 8310 },
-      { time: "02:55:00", label: "Pointer Arithmetic & Dynamic Memory", sec: 10500 }
+      { time: "00:00", label: "Python Installation & IDE Overview", sec: 0 },
+      { time: "18:30", label: "Variables, Dynamic Typing & I/O", sec: 1110 },
+      { time: "42:10", label: "Control Flow & Decision Logic", sec: 2530 },
+      { time: "01:15:00", label: "For/While Loops, Range & Comprehensions", sec: 4500 },
+      { time: "01:52:40", label: "Functions, Lambda & Modular Packages", sec: 6760 },
+      { time: "02:30:15", label: "Lists, Tuples, Dictionaries & Sets", sec: 9015 },
+      { time: "03:15:00", label: "Object-Oriented Python (Classes & Methods)", sec: 11700 }
     ]
   }
 };
 
-// One-Shot Tutorial View Component
+// One-Shot Tutorial View Component with Course Switcher & Embedded YouTube Player
 const OneShotView = ({ onTopicClick, setToastMessage }) => {
-  const [activeLang, setActiveLang] = useState(() => {
-    return localStorage.getItem("oneshot_preferred_lang") || "hindi";
+  const [activeCourse, setActiveCourse] = useState(() => {
+    return localStorage.getItem("oneshot_preferred_course") || "c";
   });
 
-  const handleSwitchLang = (lang) => {
-    setActiveLang(lang);
-    localStorage.setItem("oneshot_preferred_lang", lang);
+  const handleSwitchCourse = (courseKey) => {
+    setActiveCourse(courseKey);
+    localStorage.setItem("oneshot_preferred_course", courseKey);
   };
 
-  const currentData = ONE_SHOT_DATA[activeLang];
+  const currentData = ONE_SHOT_DATA[activeCourse];
 
   const handleDownloadPdf = () => {
     setToastMessage(`Downloading ${currentData.cheatsheetTitle}...`);
@@ -641,33 +643,33 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
           <div className="top-badge-row">
             <span className="badge-3d gold-badge">
               <Icon name="flame" size={13} />
-              COMPLETE 1-SHOT REVISION
+              MASTERCLASS 1-SHOT REVISION
             </span>
             <span className="badge-pro cyan-badge">
-              <Icon name="globe" size={12} />
-              BILINGUAL (HINDI / ENGLISH)
+              <Icon name="award" size={12} />
+              FULL COURSE TUTORIAL
             </span>
           </div>
 
           <h1 className="oneshot-main-title">{currentData.title}</h1>
           <p className="oneshot-subtitle">{currentData.subtitle}</p>
 
-          {/* Language Switcher Tabs */}
+          {/* Course Switcher Tabs */}
           <div className="oneshot-lang-switcher">
-            <span className="switcher-lbl">SELECT LANGUAGE:</span>
+            <span className="switcher-lbl">SELECT COURSE:</span>
             <button
-              className={`lang-tab-btn ${activeLang === 'hindi' ? 'active' : ''}`}
-              onClick={() => handleSwitchLang('hindi')}
+              className={`lang-tab-btn ${activeCourse === 'c' ? 'active' : ''}`}
+              onClick={() => handleSwitchCourse('c')}
             >
-              <Icon name="languages" size={15} />
-              Hindi One-Shot (हिंदी)
+              <Icon name="code-2" size={15} />
+              C Language One-Shot
             </button>
             <button
-              className={`lang-tab-btn ${activeLang === 'english' ? 'active' : ''}`}
-              onClick={() => handleSwitchLang('english')}
+              className={`lang-tab-btn ${activeCourse === 'python' ? 'active' : ''}`}
+              onClick={() => handleSwitchCourse('python')}
             >
-              <Icon name="globe" size={15} />
-              English One-Shot
+              <Icon name="terminal" size={15} />
+              Python One-Shot
             </button>
           </div>
         </div>
@@ -675,38 +677,27 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
         <div className="oneshot-header-right">
           <button className="download-pdf-btn" onClick={handleDownloadPdf}>
             <Icon name="file-text" size={18} />
-            <span>Download Cheatsheet PDF</span>
+            <span>Download Notes / Cheatsheet PDF</span>
           </button>
         </div>
       </section>
 
-      {/* Main Video & Timestamp Drawer Grid */}
+      {/* Main Embedded 16:9 Video & Timestamp Drawer Grid */}
       <div className="oneshot-content-grid">
-        {/* Left: Interactive Video Card */}
+        {/* Left: Responsive 16:9 Embedded Player */}
         <div className="glass-panel oneshot-player-card">
           <div className="player-top-bar">
-            <span className="phase-badge">ONE-SHOT MARATHON</span>
-            <span className="lang-tag">{activeLang.toUpperCase()}</span>
+            <span className="phase-badge">1-SHOT MASTERCLASS</span>
+            <span className="lang-tag">{activeCourse === 'c' ? 'C LANGUAGE' : 'PYTHON'}</span>
           </div>
 
-          <div
-            className="oneshot-video-preview"
-            onClick={() => onTopicClick({
-              title: currentData.title,
-              url: currentData.youtubeUrl,
-              lang: activeLang === 'hindi' ? 'Hindi' : 'English',
-              phase: 'ONE-SHOT'
-            })}
-          >
-            <img
-              src={`https://img.youtube.com/vi/${currentData.videoId}/hqdefault.jpg`}
-              alt={currentData.title}
-              className="preview-img"
-            />
-            <div className="play-overlay-btn">
-              <span className="play-triangle">▶</span>
-            </div>
-            <div className="preview-duration-badge">Full Course</div>
+          <div className="iframe-container oneshot-iframe-box">
+            <iframe
+              src={currentData.embedUrl}
+              title={currentData.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
           </div>
 
           <div className="player-footer-info">
@@ -716,12 +707,12 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
               onClick={() => onTopicClick({
                 title: currentData.title,
                 url: currentData.youtubeUrl,
-                lang: activeLang === 'hindi' ? 'Hindi' : 'English',
+                lang: activeCourse === 'c' ? 'C' : 'Python',
                 phase: 'ONE-SHOT'
               })}
             >
-              <Icon name="play" size={16} />
-              Watch Full One-Shot Video In-App
+              <Icon name="maximize-2" size={16} />
+              Open In Distraction-Free Player Mode
             </button>
           </div>
         </div>
@@ -741,7 +732,7 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
                 onClick={() => onTopicClick({
                   title: `${ts.label} (${ts.time})`,
                   url: `${currentData.youtubeUrl}&t=${ts.sec}`,
-                  lang: activeLang === 'hindi' ? 'Hindi' : 'English',
+                  lang: activeCourse === 'c' ? 'C' : 'Python',
                   phase: 'ONE-SHOT'
                 })}
               >
