@@ -589,7 +589,7 @@ const parseTimestampToSeconds = (timeStr) => {
   return 0;
 };
 
-// One-Shot Masterclass Structured Data (C Language & Python)
+// One-Shot Masterclass Structured Data (C Language & Python 3.12+)
 const ONE_SHOT_DATA = {
   c: {
     key: "c",
@@ -599,7 +599,11 @@ const ONE_SHOT_DATA = {
     embedUrl: "https://www.youtube.com/embed/aZb0iu4uGwA?autoplay=0&rel=0&enablejsapi=1",
     youtubeUrl: "https://youtu.be/aZb0iu4uGwA",
     videoId: "aZb0iu4uGwA",
+    pdfUrl: "/notes/c_handbook.pdf",
+    downloadFileName: "C_Language_Complete_Handbook.pdf",
     cheatsheetTitle: "C Language Complete Revision Notes & Cheatsheet (PDF)",
+    badgeText: "Complete C Exam Roadmap",
+    chapters: [],
     timestamps: [
       { time: "00:00", label: "C Fundamentals & Setup (GCC / VS Code)", sec: 0 },
       { time: "22:15", label: "Variables, Formats & Specifiers", sec: 1335 },
@@ -613,20 +617,46 @@ const ONE_SHOT_DATA = {
   python: {
     key: "python",
     langLabel: "Python One-Shot",
-    title: "Complete Python Masterclass in 1 Video",
-    subtitle: "Complete Python programming tutorial covering fundamentals, OOPs, data structures & real-world projects.",
+    title: "Complete Python 3.12+ Masterclass & Handbook",
+    subtitle: "Complete Python programming tutorial covering 13 core chapters, OOPs, 4 real-world projects & AI bots.",
     embedUrl: "https://www.youtube.com/embed/UrsmFxEIp5k?autoplay=0&rel=0&enablejsapi=1",
     youtubeUrl: "https://youtu.be/UrsmFxEIp5k",
     videoId: "UrsmFxEIp5k",
-    cheatsheetTitle: "Python Programming Master Revision Notes (PDF)",
+    pdfUrl: "/notes/python_handbook.pdf",
+    downloadFileName: "Python_Complete_Handbook_CodeWithHarry.pdf",
+    cheatsheetTitle: "Python 3.12+ Master Handbook & Notes (PDF)",
+    badgeText: "Includes 13 Chapters + 4 Projects + AI Bots",
+    chapters: [
+      { num: "Ch 01", title: "Modules, Comments & Pip Setup", desc: "Built-in & external modules, pyttsx3, REPL & VS Code" },
+      { num: "Ch 02", title: "Variables & Data Types", desc: "Typecasting, operators, input() & dynamic variable types" },
+      { num: "Ch 03", title: "Strings & String Methods", desc: "Slicing [start:end:step], f-strings, escape sequences & string functions" },
+      { num: "Ch 04", title: "Lists & Tuples", desc: "List methods (.append, .sort), tuple immutability & indexing" },
+      { num: "Ch 05", title: "Dictionary & Sets", desc: "Key-value pairs, .get() methods, set union/intersection & operations" },
+      { num: "Ch 06", title: "Conditional Expressions", desc: "if-elif-else ladders, relational/logical operators & spam detection" },
+      { num: "Ch 07", title: "Loops in Python", desc: "while & for loops, range(), break, continue & pass statements" },
+      { num: "Ch 08", title: "Functions & Recursion", desc: "Def statements, return values, default parameters & recursive call stack" },
+      { num: "Project 01", title: "Snake, Water, Gun Game", desc: "Interactive game building using random module and conditional logic" },
+      { num: "Ch 09", title: "File I/O (Persistence & RAM)", desc: "fopen modes ('r', 'w', 'a'), with statement & file manipulation" },
+      { num: "Ch 10", title: "OOPs (Classes & Objects)", desc: "Class attributes vs instance attributes, self parameter & __init__ constructor" },
+      { num: "Ch 11", title: "Inheritance & Advanced OOP", desc: "Single/multiple inheritance, super() method, dunder methods & @classmethod" },
+      { num: "Project 02", title: "The Perfect Guess Game", desc: "Number guessing game with score tracking & high score file update" },
+      { num: "Ch 12", title: "Advanced Python 1", desc: "Walrus operator (:=), Match-Case, Exception handling (try-except-finally), Type hints & Dict merge" },
+      { num: "Ch 13", title: "Advanced Python 2", desc: "Virtualenv, Lambda expressions, Map, Filter, Reduce & .join() methods" },
+      { num: "Mega Projects", title: "Jarvis AI Voice Assistant & WhatsApp AI Bot", desc: "Speech recognition, pyttsx3 voice synthesis, OpenAI API & automated messaging" }
+    ],
     timestamps: [
-      { time: "00:00", label: "Python Installation & IDE Overview", sec: 0 },
-      { time: "18:30", label: "Variables, Dynamic Typing & I/O", sec: 1110 },
-      { time: "42:10", label: "Control Flow & Decision Logic", sec: 2530 },
-      { time: "01:15:00", label: "For/While Loops, Range & Comprehensions", sec: 4500 },
-      { time: "01:52:40", label: "Functions, Lambda & Modular Packages", sec: 6760 },
-      { time: "02:30:15", label: "Lists, Tuples, Dictionaries & Sets", sec: 9015 },
-      { time: "03:15:00", label: "Object-Oriented Python (Classes & Methods)", sec: 11700 }
+      { time: "00:00", label: "Ch 01: Python Setup, Pip & Modules", sec: 0 },
+      { time: "18:30", label: "Ch 02: Variables, Data Types & Typecasting", sec: 1110 },
+      { time: "42:10", label: "Ch 03: Strings, Slicing & Methods", sec: 2530 },
+      { time: "01:05:00", label: "Ch 04 & 05: Lists, Tuples, Dictionaries & Sets", sec: 3900 },
+      { time: "01:38:15", label: "Ch 06 & 07: Conditionals & Loops", sec: 5895 },
+      { time: "02:10:00", label: "Ch 08: Functions & Recursion", sec: 7800 },
+      { time: "02:35:40", label: "Project 01: Snake, Water, Gun Game", sec: 9340 },
+      { time: "03:00:15", label: "Ch 09: File I/O Operations", sec: 10815 },
+      { time: "03:32:00", label: "Ch 10 & 11: OOPs, Inheritance & Dunder Methods", sec: 12720 },
+      { time: "04:15:20", label: "Project 02: The Perfect Guess Game", sec: 15320 },
+      { time: "04:45:00", label: "Ch 12 & 13: Advanced Python (Walrus, Lambda, Map/Filter)", sec: 17100 },
+      { time: "05:30:00", label: "Mega Projects: Jarvis AI & WhatsApp Automation", sec: 19800 }
     ]
   }
 };
@@ -719,12 +749,33 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
         </div>
 
         <div className="oneshot-header-right">
-          <button className="download-pdf-btn" onClick={handleDownloadPdf}>
+          <a
+            href={currentData.pdfUrl}
+            download={currentData.downloadFileName}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="download-pdf-btn"
+            style={{ textDecoration: 'none' }}
+          >
             <Icon name="file-text" size={18} />
             <span>Download Notes / Cheatsheet PDF</span>
-          </button>
+          </a>
         </div>
       </section>
+
+      {/* Handbook Badge Row */}
+      {currentData.badgeText && (
+        <div className="glass-panel handbook-badge-card">
+          <div className="h-badge-left">
+            <Icon name="book-open" size={20} className="h-badge-icon" />
+            <span className="h-badge-title">OFFICIAL SYLLABUS & HANDBOOK</span>
+          </div>
+          <div className="h-badge-pill">
+            <Icon name="sparkles" size={14} />
+            <span>{currentData.badgeText}</span>
+          </div>
+        </div>
+      )}
 
       {/* Main Embedded 16:9 Video & Timestamp Drawer Grid */}
       <div className="oneshot-content-grid">
@@ -785,13 +836,45 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
           </div>
 
           <div className="resource-download-footer">
-            <button className="btn-secondary full-width-btn" onClick={handleDownloadPdf}>
+            <a
+              href={currentData.pdfUrl}
+              download={currentData.downloadFileName}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary full-width-btn"
+              style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+            >
               <Icon name="download" size={16} />
               {currentData.cheatsheetTitle}
-            </button>
+            </a>
           </div>
         </div>
       </div>
+
+      {/* Handbook Chapters & Projects Preview Drawer for Python */}
+      {currentData.chapters && currentData.chapters.length > 0 && (
+        <section className="glass-panel handbook-drawer-card">
+          <div className="drawer-header">
+            <Icon name="layers" size={22} className="header-icon cyan" />
+            <div>
+              <h3>Python 3.12+ Complete Handbook Breakdown</h3>
+              <p className="drawer-sub">13 Complete Chapters + 4 Interactive Game Projects & AI Bots</p>
+            </div>
+          </div>
+
+          <div className="handbook-chapters-grid">
+            {currentData.chapters.map((ch, idx) => (
+              <div key={idx} className="glass-panel chapter-preview-chip">
+                <div className="ch-top">
+                  <span className="ch-num">{ch.num}</span>
+                  <h4 className="ch-title">{ch.title}</h4>
+                </div>
+                <p className="ch-desc">{ch.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
