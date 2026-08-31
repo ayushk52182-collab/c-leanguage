@@ -11,8 +11,8 @@ const Icon = ({ name, size = 18, className = "" }) => {
   return <i data-lucide={name} style={{ width: size, height: size, display: 'inline-flex', alignItems: 'center', justifyContent: 'center' }} className={className}></i>;
 };
 
-// Phase Structured Data
-const ROADMAP_DATA = [
+// C Language Structured Data
+const C_ROADMAP_DATA = [
   {
     id: "01",
     badge: "PHASE 01",
@@ -126,8 +126,89 @@ const ROADMAP_DATA = [
   }
 ];
 
-// Header Component
-const Header = () => {
+// Python Structured Data
+const PYTHON_ROADMAP_DATA = [
+  {
+    id: "01",
+    badge: "PHASE 01",
+    title: "Python Foundations & I/O",
+    icon: "terminal",
+    bottomLabel: "WEEK 1 TARGET",
+    bottomIcon: "zap",
+    isActive: false,
+    topics: [
+      { title: "Python setup, interpreter & VS Code", url: null },
+      { title: "Variables, data types & type conversion", url: null },
+      { title: "input(), print() & formatted output", url: null },
+      { title: "Operators and expressions", url: null }
+    ]
+  },
+  {
+    id: "02",
+    badge: "PHASE 02",
+    title: "Control Flow & Loops",
+    icon: "git-fork",
+    bottomLabel: "LOGIC BUILDING",
+    bottomIcon: "code-2",
+    isActive: false,
+    topics: [
+      { title: "if, elif, else conditions", url: null },
+      { title: "for and while loops", url: null },
+      { title: "break, continue and pass", url: null },
+      { title: "Pattern and number problems", url: null }
+    ]
+  },
+  {
+    id: "03",
+    badge: "PHASE 03",
+    title: "Functions & Data Structures",
+    icon: "boxes",
+    bottomLabel: "CORE MODULARITY",
+    bottomIcon: "git-branch",
+    isActive: false,
+    topics: [
+      { title: "Functions, parameters and return values", url: null },
+      { title: "Recursion and call stack", url: null },
+      { title: "Lists, tuples and dictionaries", url: null },
+      { title: "Strings and common operations", url: null }
+    ]
+  },
+  {
+    id: "04",
+    badge: "PHASE 04",
+    title: "Object-Oriented Python",
+    icon: "cpu",
+    bottomLabel: "HEART OF PYTHON",
+    bottomIcon: "flame",
+    isActive: false,
+    topics: [
+      { title: "Classes and objects", url: null },
+      { title: "Constructors and methods", url: null },
+      { title: "Inheritance and polymorphism", url: null },
+      { title: "Encapsulation and abstraction", url: null }
+    ]
+  },
+  {
+    id: "05",
+    badge: "PHASE 05",
+    title: "Files, Modules & Projects",
+    icon: "rocket",
+    bottomLabel: "EXAM MASTERY",
+    bottomIcon: "trophy",
+    isActive: false,
+    topics: [
+      { title: "File handling and exception handling", url: null },
+      { title: "Modules and packages", url: null },
+      { title: "Sorting and searching", url: null },
+      { title: "Python mini-project", url: null }
+    ]
+  }
+];
+
+// Header Component with Language Selector
+const Header = ({ currentLang, onSelectLang }) => {
+  const isPython = currentLang === 'python';
+
   return (
     <header className="glass-panel header-card 3d-header">
       <div className="header-left layer-depth-high">
@@ -140,9 +221,31 @@ const Header = () => {
             <Icon name="code" size={12} />
             BY AAYUSH SINGH
           </span>
+          
+          {/* Language Selector Pill */}
+          <div className="language-selector-pill">
+            <span className="lang-label">LANGUAGE:</span>
+            <button
+              className={`lang-btn ${!isPython ? 'active' : ''}`}
+              onClick={() => onSelectLang('c')}
+              aria-label="Switch to C Language Roadmap"
+            >
+              C
+            </button>
+            <button
+              className={`lang-btn ${isPython ? 'active' : ''}`}
+              onClick={() => onSelectLang('python')}
+              aria-label="Switch to Python Roadmap"
+            >
+              PYTHON
+            </button>
+          </div>
         </div>
+
         <div className="main-title-row">
-          <h1 className="main-title">C Language & PPS Master Blueprint</h1>
+          <h1 className="main-title">
+            {isPython ? "Python & PPS Master Blueprint" : "C Language & PPS Master Blueprint"}
+          </h1>
           <span className="badge-pro">PRO 3D</span>
         </div>
         <p className="subtitle">
@@ -264,7 +367,9 @@ const PhaseCard = ({ phase, onTopicClick, animationDelay }) => {
 };
 
 // SuccessProtocol Component
-const SuccessProtocol = () => {
+const SuccessProtocol = ({ currentLang }) => {
+  const isPython = currentLang === 'python';
+
   const protocols = [
     {
       icon: "wrench",
@@ -279,7 +384,7 @@ const SuccessProtocol = () => {
     {
       icon: "cpu",
       boldText: "Memory:",
-      normalText: "Always free dynamic heap blocks"
+      normalText: isPython ? "Manage resources carefully" : "Always free dynamic heap blocks"
     }
   ];
 
@@ -337,15 +442,38 @@ const Toast = ({ message, onClose }) => {
   );
 };
 
-// Main App Component
+// Main App Component with Route/State Synchronization
 const App = () => {
+  const getInitialLang = () => {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('/python') || window.location.hash === '#python') {
+      return 'python';
+    }
+    return 'c';
+  };
+
+  const [currentLang, setCurrentLang] = useState(getInitialLang);
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
     if (window.lucide) {
       window.lucide.createIcons();
     }
+  }, [currentLang]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setCurrentLang(getInitialLang());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
   }, []);
+
+  const handleSelectLang = (lang) => {
+    setCurrentLang(lang);
+    const targetPath = lang === 'python' ? '/python' : '/c';
+    window.history.pushState({}, '', targetPath);
+  };
 
   const handleTopicClick = (topic) => {
     if (topic.url) {
@@ -355,16 +483,18 @@ const App = () => {
     }
   };
 
+  const currentRoadmap = currentLang === 'python' ? PYTHON_ROADMAP_DATA : C_ROADMAP_DATA;
+
   return (
     <React.Fragment>
       {/* Background 3D Perspective Plane & Moving Horizon Particles */}
       <div className="perspective-grid-floor"></div>
       <div className="horizon-glow"></div>
 
-      <Header />
+      <Header currentLang={currentLang} onSelectLang={handleSelectLang} />
       
       <main className="roadmap-grid">
-        {ROADMAP_DATA.map((phase, idx) => (
+        {currentRoadmap.map((phase, idx) => (
           <PhaseCard 
             key={phase.id} 
             phase={phase} 
@@ -374,7 +504,7 @@ const App = () => {
         ))}
       </main>
 
-      <SuccessProtocol />
+      <SuccessProtocol currentLang={currentLang} />
 
       <Footer />
 
