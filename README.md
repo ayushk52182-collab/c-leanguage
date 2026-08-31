@@ -1,6 +1,6 @@
-# C Language & PPS Master Blueprint — 3D Engineering Roadmap
+# PPS LAB — Clean White Coding Learning Platform
 
-An interactive, modern, responsive 3D educational roadmap website engineered for university exams, technical interviews, and algorithmic problem-solving in C programming.
+A clean, human-designed React coding education platform featuring C Language and Python master roadmaps, in-app YouTube progress tracking, handwritten notes integration, and clean white editorial aesthetics.
 
 Designed & Engineered by **Aayush Singh**.
 
@@ -8,53 +8,52 @@ Designed & Engineered by **Aayush Singh**.
 
 ## 🌟 Key Features
 
-- **5 Master Phases**:
-  - **Phase 01**: Foundations & I/O
-  - **Phase 02**: Control & Loops
-  - **Phase 03**: Functions & Arrays
-  - **Phase 04**: Pointers & Memory
-  - **Phase 05**: Files & PPS Pro
-- **Interactive 3D Visual Style**:
-  - Glassmorphism dark navy cards with subtle glowing borders (`#00f0ff`, `#0088ff`).
-  - Subtle mouse-tracking perspective tilt (2.5° max) and light reflections.
-  - Perspective floor grid and ambient horizon light beams.
-- **Direct YouTube Video Integration**:
-  - Clickable topic rows map directly to curated YouTube lectures in new tabs.
-  - Interactive toast notifications for upcoming modules.
-- **PPS Success Protocol**:
-  - Built-in guidance for dry running code, handling edge cases, and dynamic memory management.
-- **Responsive Layout**:
-  - Auto-adjusting 5-column desktop grid, 3-column laptop grid, 2-column tablet layout, and 1-column mobile layout.
+- **Clean White Interface System**: Designed with a crisp light palette (`#F7F8FA` bg, `#FFFFFF` cards, `#2563EB` primary blue, `#172033` primary text).
+- **Responsive Layout**: Top navigation bar with desktop left sidebar, collapsing drawer for mobile/tablet devices.
+- **C Language & Python Roadmaps**: 5-phase vertical timeline with topic progress tracking.
+- **Distraction-Free Video Player**: YouTube IFrame API integration with live playback position saving and completion detection.
+- **One-Shot Masterclass**: 1-video marathon courses with `postMessage` timestamp seeking and FlipBook handwritten notes.
+- **Progress Tracking & Reset System**: Real-time progress stats, streak counters, and reset confirmation modal.
+- **No External / Chain Icons**: Clean video 3D play indicators only.
 
 ---
 
-## 🚀 Quick Start / Local Development
-
-Since this project uses modern web technology with Babel UMD and React, you can run it via any local HTTP server:
+## 🚀 Quick Start & Installation
 
 ```bash
-# Clone the repository
-git clone https://github.com/YOUR_USERNAME/c-language-pps-master-blueprint.git
-cd c-language-pps-master-blueprint
+# 1. Clone the repository
+git clone https://github.com/ayushk52182-collab/c-leanguage.git
+cd c-leanguage
 
-# Start a simple python web server
+# 2. Start local static development server
 python3 -m http.server 8000
 ```
 
-Open `http://localhost:8000` in your browser.
+Open `http://localhost:8000` in your web browser.
 
 ---
 
-## 🛠️ Technology Stack
+## 📁 Project Structure
 
-- **Frontend Core**: HTML5, Vanilla CSS3, JavaScript (ES6+)
-- **UI Framework**: React 18 & ReactDOM (UMD)
-- **Icons**: Lucide Icons
-- **Typography**: Google Fonts (`Outfit`, `Inter`, `Fira Code`)
+```
+├── index.html              # HTML5 template with CDN fallbacks (React 18, Babel, Lucide)
+├── style.css               # Clean White design system & responsive layout styles
+├── app.jsx                 # Main React Application & State Router
+├── vercel.json             # Vercel deployment static route config
+├── src/
+│   ├── components/         # Reusable React UI Components (Navbar, Sidebar, VideoModal)
+│   ├── pages/              # View pages (Dashboard, RoadmapView, OneShotView, Login)
+│   └── data/               # Structured C & Python roadmap JSON data
+└── notes/                  # PDF handbooks & cheatsheets
+```
 
 ---
 
-## 👤 Author & Credit
+## 🔐 Credentials
+- **Username**: `aayush`
+- **Password**: `1234`
 
-**Aayush Singh**  
-*Designed & Engineered by Aayush Singh*
+---
+
+## 📄 License
+Designed & Engineered by **Aayush Singh**. Released under the MIT License.
