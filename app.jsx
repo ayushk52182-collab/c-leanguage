@@ -600,7 +600,9 @@ const ONE_SHOT_DATA = {
     youtubeUrl: "https://youtu.be/aZb0iu4uGwA",
     videoId: "aZb0iu4uGwA",
     pdfUrl: "/notes/c_handbook.pdf",
+    notesLink: "/notes/c_handbook.pdf",
     downloadFileName: "C_Language_Complete_Handbook.pdf",
+    buttonLabel: "📄 Download Notes / Cheatsheet PDF",
     cheatsheetTitle: "C Language Complete Revision Notes & Cheatsheet (PDF)",
     badgeText: "Complete C Exam Roadmap",
     chapters: [],
@@ -622,9 +624,11 @@ const ONE_SHOT_DATA = {
     embedUrl: "https://www.youtube.com/embed/UrsmFxEIp5k?autoplay=0&rel=0&enablejsapi=1",
     youtubeUrl: "https://youtu.be/UrsmFxEIp5k",
     videoId: "UrsmFxEIp5k",
-    pdfUrl: "/notes/python_handbook.pdf",
-    downloadFileName: "Python_Complete_Handbook_CodeWithHarry.pdf",
-    cheatsheetTitle: "Python 3.12+ Master Handbook & Notes (PDF)",
+    pdfUrl: "https://go.fliplink.me/view/CBB2185A-D58B-4510-A1A3-FA032E7977EE",
+    notesLink: "https://go.fliplink.me/view/CBB2185A-D58B-4510-A1A3-FA032E7977EE",
+    downloadFileName: null,
+    buttonLabel: "📖 View Python Handwritten Notes",
+    cheatsheetTitle: "📖 View Python Handwritten Notes",
     badgeText: "Includes 13 Chapters + 4 Projects + AI Bots",
     chapters: [
       { num: "Ch 01", title: "Modules, Comments & Pip Setup", desc: "Built-in & external modules, pyttsx3, REPL & VS Code" },
@@ -750,15 +754,15 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
 
         <div className="oneshot-header-right">
           <a
-            href={currentData.pdfUrl}
-            download={currentData.downloadFileName}
+            href={currentData.notesLink || currentData.pdfUrl}
+            download={currentData.downloadFileName || undefined}
             target="_blank"
             rel="noopener noreferrer"
             className="download-pdf-btn"
             style={{ textDecoration: 'none' }}
           >
-            <Icon name="file-text" size={18} />
-            <span>Download Notes / Cheatsheet PDF</span>
+            <Icon name="book-open" size={18} />
+            <span>{currentData.buttonLabel || "Download Notes / Cheatsheet PDF"}</span>
           </a>
         </div>
       </section>
@@ -837,15 +841,15 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
 
           <div className="resource-download-footer">
             <a
-              href={currentData.pdfUrl}
-              download={currentData.downloadFileName}
+              href={currentData.notesLink || currentData.pdfUrl}
+              download={currentData.downloadFileName || undefined}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary full-width-btn"
               style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
             >
-              <Icon name="download" size={16} />
-              {currentData.cheatsheetTitle}
+              <Icon name="book-open" size={16} />
+              {currentData.buttonLabel || currentData.cheatsheetTitle}
             </a>
           </div>
         </div>
