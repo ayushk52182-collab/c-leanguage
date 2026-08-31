@@ -208,6 +208,53 @@ const PYTHON_ROADMAP_DATA = [
   }
 ];
 
+// Sample Achievements Data
+const SAMPLE_ACHIEVEMENTS = [
+  { id: 1, title: "First Login", desc: "Welcome to Student Portal", unlocked: true, icon: "award" },
+  { id: 2, title: "3-Day Streak", desc: "Maintained daily study momentum", unlocked: true, icon: "flame" },
+  { id: 3, title: "C Basics Started", desc: "Explored Phase 01 Foundations", unlocked: true, icon: "code" },
+  { id: 4, title: "First Video Watched", desc: "Completed GCC/VS Code Setup", unlocked: true, icon: "play-circle" },
+  { id: 5, title: "Pointers Mastery", desc: "Unlock Phase 04 Memory concepts", unlocked: false, icon: "cpu" },
+  { id: 6, title: "Python Explorer", desc: "Start Python & Data Structures", unlocked: false, icon: "terminal" }
+];
+
+// Sample Recent Journey Data
+const RECENT_JOURNEY_TOPICS = [
+  {
+    id: "j1",
+    title: "Setup: GCC, MinGW & VS Code",
+    lang: "C",
+    phase: "PHASE 01",
+    progress: 100,
+    url: "https://youtu.be/z2jDamkbBF0?si=k0dKMuofXYDSuY0B"
+  },
+  {
+    id: "j2",
+    title: "Decisions: if-else & switch",
+    lang: "C",
+    phase: "PHASE 02",
+    progress: 75,
+    url: "https://youtu.be/7PSfRdeY5qE?si=QPvhiVD1X-VxcTaC"
+  },
+  {
+    id: "j3",
+    title: "Modularity: Prototyping & Scope",
+    lang: "C",
+    phase: "PHASE 03",
+    progress: 40,
+    url: "https://youtu.be/RFLFX1boGwo?si=rBfb98DMquG0fqUD"
+  }
+];
+
+// Video 3D Icon helper
+const Video3DIcon = ({ active = true }) => {
+  return (
+    <span className={`video-3d-symbol ${active ? "video-active" : "video-muted"}`} title={active ? "Video Available" : "Upcoming Video"}>
+      <span className="video-depth">▶</span>
+    </span>
+  );
+};
+
 // Login Component
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState("");
@@ -231,8 +278,8 @@ const LoginPage = ({ onLogin }) => {
             <Icon name="shield-check" size={13} />
             STUDENT PORTAL
           </span>
-          <h2 className="login-title">Master Blueprint Portal</h2>
-          <p className="login-subtitle">Enter credentials to unlock 3D Roadmaps</p>
+          <h2 className="login-title">Student Learning Portal</h2>
+          <p className="login-subtitle">Enter credentials to access your dashboard</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -263,7 +310,7 @@ const LoginPage = ({ onLogin }) => {
           </div>
 
           <button type="submit" className="login-submit-btn">
-            Unlock Roadmap Access
+            Unlock Portal Access
           </button>
         </form>
 
@@ -275,8 +322,64 @@ const LoginPage = ({ onLogin }) => {
   );
 };
 
-// Header Component with Language Selector & Logout
-const Header = ({ currentLang, onSelectLang, user, onLogout }) => {
+// Navigation Bar
+const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => {
+  return (
+    <nav className="glass-panel nav-bar">
+      <div className="nav-logo" onClick={() => onSelectTab('dashboard')}>
+        <Icon name="graduation-cap" size={22} className="logo-icon" />
+        <span className="logo-text">EduPortal 3D</span>
+      </div>
+
+      <div className="nav-links">
+        <button
+          className={`nav-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => onSelectTab('dashboard')}
+        >
+          <Icon name="layout-dashboard" size={15} />
+          <span>Dashboard</span>
+        </button>
+        <button
+          className={`nav-btn ${activeTab === 'c' ? 'active' : ''}`}
+          onClick={() => onSelectTab('c')}
+        >
+          <Icon name="code-2" size={15} />
+          <span>C Roadmap</span>
+        </button>
+        <button
+          className={`nav-btn ${activeTab === 'python' ? 'active' : ''}`}
+          onClick={() => onSelectTab('python')}
+        >
+          <Icon name="terminal" size={15} />
+          <span>Python Roadmap</span>
+        </button>
+        <button
+          className={`nav-btn ${activeTab === 'practice' ? 'active' : ''}`}
+          onClick={() => onSelectTab('practice')}
+        >
+          <Icon name="brain-circuit" size={15} />
+          <span>Practice</span>
+        </button>
+      </div>
+
+      <div className="nav-user-area">
+        <div className="nav-profile-chip">
+          <div className="avatar-circle">AS</div>
+          <div className="user-details">
+            <span className="user-profile-name">Aayush Singh</span>
+            <span className="user-role">Coding Learner</span>
+          </div>
+        </div>
+        <button className="nav-logout-btn" onClick={onLogout} aria-label="Logout">
+          <Icon name="log-out" size={15} />
+        </button>
+      </div>
+    </nav>
+  );
+};
+
+// Header Component for Roadmaps
+const RoadmapHeader = ({ currentLang, onSelectLang, user, onLogout }) => {
   const isPython = currentLang === 'python';
 
   return (
@@ -294,29 +397,18 @@ const Header = ({ currentLang, onSelectLang, user, onLogout }) => {
           
           {/* Language Selector Pill */}
           <div className="language-selector-pill">
-            <span className="lang-label">LANGUAGE:</span>
+            <span className="lang-label">PATH:</span>
             <button
               className={`lang-btn ${!isPython ? 'active' : ''}`}
               onClick={() => onSelectLang('c')}
-              aria-label="Switch to C Language Roadmap"
             >
               C
             </button>
             <button
               className={`lang-btn ${isPython ? 'active' : ''}`}
               onClick={() => onSelectLang('python')}
-              aria-label="Switch to Python Roadmap"
             >
               PYTHON
-            </button>
-          </div>
-
-          {/* User Status / Logout */}
-          <div className="user-badge-pill">
-            <Icon name="user-check" size={13} />
-            <span className="user-name">{user}</span>
-            <button className="logout-btn" onClick={onLogout} title="Lock Access">
-              <Icon name="log-out" size={12} />
             </button>
           </div>
         </div>
@@ -370,7 +462,7 @@ const TopicRow = ({ topic, onTopicClick }) => {
       onKeyDown={handleKeyDown}
     >
       <div className="topic-left">
-        <span className="topic-bullet">▸</span>
+        <Video3DIcon active={Boolean(topic.url)} />
         <span>{topic.title}</span>
       </div>
     </div>
@@ -440,6 +532,262 @@ const PhaseCard = ({ phase, onTopicClick, animationDelay }) => {
         <Icon name={phase.bottomIcon || 'sparkles'} size={14} />
         <span>{phase.bottomLabel}</span>
       </div>
+    </div>
+  );
+};
+
+// Dashboard View
+const DashboardView = ({ onSelectTab, onTopicClick }) => {
+  return (
+    <div className="dashboard-container">
+      {/* 1. Student Portal Landing Hero Section */}
+      <section className="glass-panel hero-section">
+        <div className="hero-content">
+          <div className="top-badge-row">
+            <span className="badge-3d">
+              <Icon name="sparkles" size={13} />
+              WELCOME TO YOUR LEARNING SPACE
+            </span>
+            <span className="badge-creator">
+              <Icon name="code" size={12} />
+              Designed & Engineered by Aayush Singh
+            </span>
+          </div>
+
+          <h1 className="hero-title">Build Your Coding Future</h1>
+          <p className="hero-subtitle">
+            Learn step by step, practice daily and become confident in programming.
+          </p>
+
+          <div className="hero-cta-group">
+            <button className="btn-primary" onClick={() => onSelectTab('c')}>
+              Start Learning →
+            </button>
+            <button className="btn-secondary" onClick={() => onSelectTab('python')}>
+              View Roadmap
+            </button>
+          </div>
+        </div>
+
+        {/* 3D Coding Illustration Area */}
+        <div className="hero-illustration">
+          <div className="illustration-window glass-panel">
+            <div className="window-bar">
+              <span className="dot red"></span>
+              <span className="dot yellow"></span>
+              <span className="dot green"></span>
+              <span className="window-title">main.c — Studio</span>
+            </div>
+            <pre className="code-block">
+              <code>
+                <span className="code-keyword">#include</span> &lt;stdio.h&gt;<br/><br/>
+                <span className="code-keyword">int</span> <span className="code-func">main</span>() &#123;<br/>
+                &nbsp;&nbsp;<span className="code-func">printf</span>(<span className="code-str">"Hello, Coding Master!\\n"</span>);<br/>
+                &nbsp;&nbsp;<span className="code-keyword">return</span> <span className="code-num">0</span>;<br/>
+                &#125;
+              </code>
+            </pre>
+          </div>
+          <div className="floating-symbol sym-1">&#123; &#125;</div>
+          <div className="floating-symbol sym-2">&lt;/&gt;</div>
+          <div className="floating-badge badge-c">C</div>
+          <div className="floating-badge badge-py">PY</div>
+        </div>
+      </section>
+
+      {/* 2. Quick Learning Cards Grid */}
+      <section className="section-block">
+        <h2 className="section-title">
+          <Icon name="compass" size={20} />
+          Quick Actions
+        </h2>
+        <div className="quick-cards-grid">
+          <div className="glass-panel quick-card" onClick={() => onSelectTab('c')}>
+            <div className="quick-icon-box">
+              <Icon name="play-circle" size={22} />
+            </div>
+            <h3>Continue Learning</h3>
+            <p>Pick up where you left off</p>
+            <div className="quick-card-bottom">
+              <div className="mini-progress-bar"><div className="fill" style={{ width: '45%' }}></div></div>
+              <button className="quick-btn">Continue</button>
+            </div>
+          </div>
+
+          <div className="glass-panel quick-card" onClick={() => onSelectTab('c')}>
+            <div className="quick-icon-box blue">
+              <Icon name="code-2" size={22} />
+            </div>
+            <h3>C Language</h3>
+            <p>Master C programming fundamentals</p>
+            <div className="quick-card-bottom">
+              <button className="quick-btn">Open C Roadmap</button>
+            </div>
+          </div>
+
+          <div className="glass-panel quick-card" onClick={() => onSelectTab('python')}>
+            <div className="quick-icon-box purple">
+              <Icon name="terminal" size={22} />
+            </div>
+            <h3>Python</h3>
+            <p>Learn Python from basics to projects</p>
+            <div className="quick-card-bottom">
+              <button className="quick-btn">Open Python Roadmap</button>
+            </div>
+          </div>
+
+          <div className="glass-panel quick-card" onClick={() => onSelectTab('practice')}>
+            <div className="quick-icon-box cyan">
+              <Icon name="brain-circuit" size={22} />
+            </div>
+            <h3>Practice Zone</h3>
+            <p>Improve logic with coding problems</p>
+            <div className="quick-card-bottom">
+              <button className="quick-btn">Start Practice</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Language Path Selector Section */}
+      <section className="section-block">
+        <h2 className="section-title">
+          <Icon name="route" size={20} />
+          Choose Your Learning Path
+        </h2>
+        <div className="path-selection-grid">
+          <div className="glass-panel path-card active" onClick={() => onSelectTab('c')}>
+            <div className="path-header">
+              <Icon name="cpu" size={28} className="path-icon" />
+              <span className="badge-pro">RECOMMENDED</span>
+            </div>
+            <h3>C Language & Algorithmic PPS</h3>
+            <p>Master memory pointers, recursion, data structures and core low-level logic.</p>
+            <div className="path-meta">5 Phases • 20 Topics • Exam Ready</div>
+          </div>
+
+          <div className="glass-panel path-card" onClick={() => onSelectTab('python')}>
+            <div className="path-header">
+              <Icon name="terminal" size={28} className="path-icon purple" />
+              <span className="badge-pro purple">POPULAR</span>
+            </div>
+            <h3>Python & Modern Scripting</h3>
+            <p>Learn Python data structures, OOP modularity, file I/O and rapid application logic.</p>
+            <div className="path-meta">5 Phases • 20 Topics • Project Ready</div>
+          </div>
+        </div>
+      </section>
+
+      {/* 4. Progress & Daily Mission Section */}
+      <div className="dashboard-dual-grid">
+        <section className="glass-panel progress-card">
+          <div className="card-header">
+            <Icon name="trending-up" size={20} className="card-header-icon" />
+            <h2>Your Progress</h2>
+          </div>
+
+          <div className="progress-overview">
+            <div className="progress-percentage-box">
+              <span className="percentage-number">25%</span>
+              <span className="percentage-label">OVERALL COMPLETION</span>
+            </div>
+            <div className="progress-bar-large">
+              <div className="progress-fill-large" style={{ width: '25%' }}></div>
+            </div>
+          </div>
+
+          <div className="progress-stats-grid">
+            <div className="p-stat-item">
+              <span className="p-val">8 / 32</span>
+              <span className="p-lbl">Completed Topics</span>
+            </div>
+            <div className="p-stat-item">
+              <span className="p-val">3 Days 🔥</span>
+              <span className="p-lbl">Learning Streak</span>
+            </div>
+            <div className="p-stat-item">
+              <span className="p-val">Foundations & I/O</span>
+              <span className="p-lbl">Current Phase</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Daily Mission Card */}
+        <section className="glass-panel mission-card">
+          <div className="card-header">
+            <Icon name="target" size={20} className="card-header-icon cyan" />
+            <h2>Today’s Coding Mission</h2>
+          </div>
+          <p className="mission-text">
+            “Complete one topic and solve three logic problems.”
+          </p>
+          <div className="mission-quote">
+            <Icon name="quote" size={14} />
+            <span>Small progress every day creates strong programming skills.</span>
+          </div>
+          <button className="btn-primary mission-btn" onClick={() => onSelectTab('c')}>
+            Start Mission
+          </button>
+        </section>
+      </div>
+
+      {/* 5. Achievements Section */}
+      <section className="section-block">
+        <h2 className="section-title">
+          <Icon name="trophy" size={20} />
+          Your Achievements
+        </h2>
+        <div className="achievements-grid">
+          {SAMPLE_ACHIEVEMENTS.map((ach) => (
+            <div
+              key={ach.id}
+              className={`glass-panel achievement-chip ${ach.unlocked ? 'unlocked' : 'locked'}`}
+              title={ach.desc}
+            >
+              <div className="ach-icon-box">
+                <Icon name={ach.icon} size={18} />
+              </div>
+              <div className="ach-info">
+                <h4>{ach.title}</h4>
+                <p>{ach.desc}</p>
+              </div>
+              <span className="ach-status">{ach.unlocked ? 'Unlocked' : 'Locked'}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* 6. Continue Your Journey Recent Topics */}
+      <section className="section-block">
+        <h2 className="section-title">
+          <Icon name="history" size={20} />
+          Continue Your Journey
+        </h2>
+        <div className="recent-journey-grid">
+          {RECENT_JOURNEY_TOPICS.map((item) => (
+            <div
+              key={item.id}
+              className="glass-panel journey-card"
+              onClick={() => onTopicClick(item)}
+            >
+              <div className="journey-top">
+                <span className="phase-badge">{item.phase}</span>
+                <span className="lang-tag">{item.lang}</span>
+              </div>
+              <div className="journey-title-row">
+                <Video3DIcon active={Boolean(item.url)} />
+                <h4 className="journey-title">{item.title}</h4>
+              </div>
+              <div className="journey-bottom">
+                <div className="mini-progress-bar">
+                  <div className="fill" style={{ width: `${item.progress}%` }}></div>
+                </div>
+                <button className="journey-btn">Continue →</button>
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </div>
   );
 };
@@ -520,29 +868,29 @@ const Toast = ({ message, onClose }) => {
   );
 };
 
-// Main App Component with Authentication Guard
+// Main App Component with Portal Navigation & Authentication Guard
 const App = () => {
-  const getInitialLang = () => {
+  const getInitialTab = () => {
     const path = window.location.pathname.toLowerCase();
-    if (path.includes('/python') || window.location.hash === '#python') {
-      return 'python';
-    }
-    return 'c';
+    if (path.includes('/python')) return 'python';
+    if (path.includes('/c')) return 'c';
+    if (path.includes('/practice')) return 'practice';
+    return 'dashboard';
   };
 
   const [user, setUser] = useState(() => localStorage.getItem("roadmap_user"));
-  const [currentLang, setCurrentLang] = useState(getInitialLang);
+  const [activeTab, setActiveTab] = useState(getInitialTab);
   const [toastMessage, setToastMessage] = useState(null);
 
   useEffect(() => {
     if (window.lucide) {
       window.lucide.createIcons();
     }
-  }, [currentLang, user]);
+  }, [activeTab, user]);
 
   useEffect(() => {
     const handlePopState = () => {
-      setCurrentLang(getInitialLang());
+      setActiveTab(getInitialTab());
     };
     window.addEventListener('popstate', handlePopState);
     return () => window.removeEventListener('popstate', handlePopState);
@@ -559,9 +907,12 @@ const App = () => {
     localStorage.removeItem("roadmap_user");
   };
 
-  const handleSelectLang = (lang) => {
-    setCurrentLang(lang);
-    const targetPath = lang === 'python' ? '/python' : '/c';
+  const handleSelectTab = (tab) => {
+    setActiveTab(tab);
+    let targetPath = '/dashboard';
+    if (tab === 'c') targetPath = '/c';
+    if (tab === 'python') targetPath = '/python';
+    if (tab === 'practice') targetPath = '/practice';
     window.history.pushState({}, '', targetPath);
   };
 
@@ -573,8 +924,6 @@ const App = () => {
     }
   };
 
-  const currentRoadmap = currentLang === 'python' ? PYTHON_ROADMAP_DATA : C_ROADMAP_DATA;
-
   return (
     <React.Fragment>
       {/* Background 3D Perspective Plane & Moving Horizon Particles */}
@@ -585,25 +934,70 @@ const App = () => {
         <LoginPage onLogin={handleLogin} />
       ) : (
         <React.Fragment>
-          <Header
-            currentLang={currentLang}
-            onSelectLang={handleSelectLang}
+          <Navbar
+            activeTab={activeTab}
+            onSelectTab={handleSelectTab}
             user={user}
             onLogout={handleLogout}
           />
-          
-          <main className="roadmap-grid">
-            {currentRoadmap.map((phase, idx) => (
-              <PhaseCard 
-                key={phase.id} 
-                phase={phase} 
-                onTopicClick={handleTopicClick}
-                animationDelay={100 * idx}
-              />
-            ))}
-          </main>
 
-          <SuccessProtocol currentLang={currentLang} />
+          {activeTab === 'dashboard' && (
+            <DashboardView
+              onSelectTab={handleSelectTab}
+              onTopicClick={handleTopicClick}
+            />
+          )}
+
+          {(activeTab === 'c' || activeTab === 'python') && (
+            <React.Fragment>
+              <RoadmapHeader
+                currentLang={activeTab}
+                onSelectLang={handleSelectTab}
+                user={user}
+                onLogout={handleLogout}
+              />
+
+              <main className="roadmap-grid">
+                {(activeTab === 'python' ? PYTHON_ROADMAP_DATA : C_ROADMAP_DATA).map((phase, idx) => (
+                  <PhaseCard
+                    key={phase.id}
+                    phase={phase}
+                    onTopicClick={handleTopicClick}
+                    animationDelay={100 * idx}
+                  />
+                ))}
+              </main>
+
+              <SuccessProtocol currentLang={activeTab} />
+            </React.Fragment>
+          )}
+
+          {activeTab === 'practice' && (
+            <div className="glass-panel practice-zone-view">
+              <div className="practice-header">
+                <Icon name="brain-circuit" size={32} className="practice-icon" />
+                <h2>Algorithmic Practice Zone</h2>
+                <p>Sharpen your C and Python logic with university-level problem sets.</p>
+              </div>
+              <div className="practice-grid">
+                <div className="glass-panel p-card">
+                  <h4>Star & Pyramid Patterns</h4>
+                  <span className="p-tag easy">EASY</span>
+                  <button className="quick-btn" onClick={() => setToastMessage("Opening problem editor...")}>Solve Problem</button>
+                </div>
+                <div className="glass-panel p-card">
+                  <h4>Prime & Armstrong Numbers</h4>
+                  <span className="p-tag medium">MEDIUM</span>
+                  <button className="quick-btn" onClick={() => setToastMessage("Opening problem editor...")}>Solve Problem</button>
+                </div>
+                <div className="glass-panel p-card">
+                  <h4>Matrix Multiplication (2D Array)</h4>
+                  <span className="p-tag hard">HARD</span>
+                  <button className="quick-btn" onClick={() => setToastMessage("Opening problem editor...")}>Solve Problem</button>
+                </div>
+              </div>
+            </div>
+          )}
 
           <Footer />
         </React.Fragment>
