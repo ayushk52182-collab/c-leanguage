@@ -755,7 +755,7 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
         <div className="oneshot-header-right">
           <a
             href={currentData.notesLink || currentData.pdfUrl}
-            download={currentData.downloadFileName || undefined}
+            {...(currentData.downloadFileName ? { download: currentData.downloadFileName } : {})}
             target="_blank"
             rel="noopener noreferrer"
             className="download-pdf-btn"
@@ -842,7 +842,7 @@ const OneShotView = ({ onTopicClick, setToastMessage }) => {
           <div className="resource-download-footer">
             <a
               href={currentData.notesLink || currentData.pdfUrl}
-              download={currentData.downloadFileName || undefined}
+              {...(currentData.downloadFileName ? { download: currentData.downloadFileName } : {})}
               target="_blank"
               rel="noopener noreferrer"
               className="btn-secondary full-width-btn"
