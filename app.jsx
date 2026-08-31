@@ -346,9 +346,6 @@ const LoginPage = ({ onLogin }) => {
             <Icon name="shield-check" size={14} />
             Your learning progress is saved automatically.
           </p>
-          <div className="login-hint">
-            <span>Demo Credentials:</span> <strong>aayush</strong> / <strong>1234</strong>
-          </div>
           <p className="login-credit">Designed & Engineered by Aayush Singh</p>
         </div>
       </div>
