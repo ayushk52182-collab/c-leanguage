@@ -576,6 +576,194 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
   );
 };
 
+// One-Shot Tutorial Structured Data
+const ONE_SHOT_DATA = {
+  hindi: {
+    langLabel: "Hindi One-Shot (हिंदी)",
+    title: "Complete C Language in 1 Video (Hindi)",
+    subtitle: "Complete C programming marathon revision for university exams & technical interviews.",
+    youtubeUrl: "https://youtu.be/z2jDamkbBF0?si=k0dKMuofXYDSuY0B",
+    videoId: "z2jDamkbBF0",
+    cheatsheetPdfUrl: "#download-hindi-cheatsheet",
+    cheatsheetTitle: "C Language Complete Revision Notes (Hindi PDF)",
+    timestamps: [
+      { time: "00:00", label: "Course Introduction & Setup", sec: 0 },
+      { time: "15:30", label: "Variables, Data Types & Specifiers", sec: 930 },
+      { time: "45:10", label: "Control Flow, If-Else & Switch Statements", sec: 2710 },
+      { time: "01:15:00", label: "Loops (For, While, Do-While) & Patterns", sec: 4500 },
+      { time: "01:50:20", label: "Functions, Prototyping & Recursion", sec: 6620 },
+      { time: "02:30:45", label: "Arrays & String Operations", sec: 9045 },
+      { time: "03:10:00", label: "Pointers & Memory Allocation (malloc)", sec: 11400 }
+    ]
+  },
+  english: {
+    langLabel: "English One-Shot (Full English)",
+    title: "C Programming Master Revision (English)",
+    subtitle: "Comprehensive end-to-end C language tutorial covering logic building & core concepts.",
+    youtubeUrl: "https://youtu.be/bm1rFiuXGDc?si=lrRxUoo1v9yXctvj",
+    videoId: "bm1rFiuXGDc",
+    cheatsheetPdfUrl: "#download-english-cheatsheet",
+    cheatsheetTitle: "C Language Complete Revision Notes (English PDF)",
+    timestamps: [
+      { time: "00:00", label: "Welcome & Compiler Setup", sec: 0 },
+      { time: "12:00", label: "Core Data Types & Memory Sizes", sec: 720 },
+      { time: "38:45", label: "Logic Operators & Conditional Branching", sec: 2325 },
+      { time: "01:10:15", label: "Iterative Loops & Star Patterns", sec: 4215 },
+      { time: "01:42:00", label: "Function Scopes & Call Stack Recursion", sec: 6120 },
+      { time: "02:18:30", label: "1D & 2D Arrays with Matrix Math", sec: 8310 },
+      { time: "02:55:00", label: "Pointer Arithmetic & Dynamic Memory", sec: 10500 }
+    ]
+  }
+};
+
+// One-Shot Tutorial View Component
+const OneShotView = ({ onTopicClick, setToastMessage }) => {
+  const [activeLang, setActiveLang] = useState(() => {
+    return localStorage.getItem("oneshot_preferred_lang") || "hindi";
+  });
+
+  const handleSwitchLang = (lang) => {
+    setActiveLang(lang);
+    localStorage.setItem("oneshot_preferred_lang", lang);
+  };
+
+  const currentData = ONE_SHOT_DATA[activeLang];
+
+  const handleDownloadPdf = () => {
+    setToastMessage(`Downloading ${currentData.cheatsheetTitle}...`);
+  };
+
+  return (
+    <div className="oneshot-container">
+      {/* Header Banner */}
+      <section className="glass-panel oneshot-header-card">
+        <div className="oneshot-header-left">
+          <div className="top-badge-row">
+            <span className="badge-3d gold-badge">
+              <Icon name="flame" size={13} />
+              COMPLETE 1-SHOT REVISION
+            </span>
+            <span className="badge-pro cyan-badge">
+              <Icon name="globe" size={12} />
+              BILINGUAL (HINDI / ENGLISH)
+            </span>
+          </div>
+
+          <h1 className="oneshot-main-title">{currentData.title}</h1>
+          <p className="oneshot-subtitle">{currentData.subtitle}</p>
+
+          {/* Language Switcher Tabs */}
+          <div className="oneshot-lang-switcher">
+            <span className="switcher-lbl">SELECT LANGUAGE:</span>
+            <button
+              className={`lang-tab-btn ${activeLang === 'hindi' ? 'active' : ''}`}
+              onClick={() => handleSwitchLang('hindi')}
+            >
+              <Icon name="languages" size={15} />
+              Hindi One-Shot (हिंदी)
+            </button>
+            <button
+              className={`lang-tab-btn ${activeLang === 'english' ? 'active' : ''}`}
+              onClick={() => handleSwitchLang('english')}
+            >
+              <Icon name="globe" size={15} />
+              English One-Shot
+            </button>
+          </div>
+        </div>
+
+        <div className="oneshot-header-right">
+          <button className="download-pdf-btn" onClick={handleDownloadPdf}>
+            <Icon name="file-text" size={18} />
+            <span>Download Cheatsheet PDF</span>
+          </button>
+        </div>
+      </section>
+
+      {/* Main Video & Timestamp Drawer Grid */}
+      <div className="oneshot-content-grid">
+        {/* Left: Interactive Video Card */}
+        <div className="glass-panel oneshot-player-card">
+          <div className="player-top-bar">
+            <span className="phase-badge">ONE-SHOT MARATHON</span>
+            <span className="lang-tag">{activeLang.toUpperCase()}</span>
+          </div>
+
+          <div
+            className="oneshot-video-preview"
+            onClick={() => onTopicClick({
+              title: currentData.title,
+              url: currentData.youtubeUrl,
+              lang: activeLang === 'hindi' ? 'Hindi' : 'English',
+              phase: 'ONE-SHOT'
+            })}
+          >
+            <img
+              src={`https://img.youtube.com/vi/${currentData.videoId}/hqdefault.jpg`}
+              alt={currentData.title}
+              className="preview-img"
+            />
+            <div className="play-overlay-btn">
+              <span className="play-triangle">▶</span>
+            </div>
+            <div className="preview-duration-badge">Full Course</div>
+          </div>
+
+          <div className="player-footer-info">
+            <h3>{currentData.title}</h3>
+            <button
+              className="btn-primary start-watch-btn"
+              onClick={() => onTopicClick({
+                title: currentData.title,
+                url: currentData.youtubeUrl,
+                lang: activeLang === 'hindi' ? 'Hindi' : 'English',
+                phase: 'ONE-SHOT'
+              })}
+            >
+              <Icon name="play" size={16} />
+              Watch Full One-Shot Video In-App
+            </button>
+          </div>
+        </div>
+
+        {/* Right: Timestamp Drawer & Resource List */}
+        <div className="glass-panel oneshot-timestamps-card">
+          <div className="drawer-header">
+            <Icon name="clock" size={20} className="header-icon" />
+            <h3>Chapter Timestamps</h3>
+          </div>
+
+          <div className="timestamps-list">
+            {currentData.timestamps.map((ts, idx) => (
+              <div
+                key={idx}
+                className="timestamp-item"
+                onClick={() => onTopicClick({
+                  title: `${ts.label} (${ts.time})`,
+                  url: `${currentData.youtubeUrl}&t=${ts.sec}`,
+                  lang: activeLang === 'hindi' ? 'Hindi' : 'English',
+                  phase: 'ONE-SHOT'
+                })}
+              >
+                <span className="ts-time">{ts.time}</span>
+                <span className="ts-label">{ts.label}</span>
+                <Icon name="play-circle" size={15} className="ts-play-icon" />
+              </div>
+            ))}
+          </div>
+
+          <div className="resource-download-footer">
+            <button className="btn-secondary full-width-btn" onClick={handleDownloadPdf}>
+              <Icon name="download" size={16} />
+              {currentData.cheatsheetTitle}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
 // Navigation Bar Component
 const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => {
   return (
@@ -592,6 +780,13 @@ const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => {
         >
           <Icon name="layout-dashboard" size={15} />
           <span>Dashboard</span>
+        </button>
+        <button
+          className={`nav-btn ${activeTab === 'oneshot' ? 'active' : ''}`}
+          onClick={() => onSelectTab('oneshot')}
+        >
+          <Icon name="flame" size={15} />
+          <span>One-Shot 1-Video</span>
         </button>
         <button
           className={`nav-btn ${activeTab === 'c' ? 'active' : ''}`}
@@ -1161,6 +1356,7 @@ const Toast = ({ message, onClose }) => {
 const App = () => {
   const getInitialTab = () => {
     const path = window.location.pathname.toLowerCase();
+    if (path.includes('/oneshot')) return 'oneshot';
     if (path.includes('/python')) return 'python';
     if (path.includes('/c')) return 'c';
     if (path.includes('/practice')) return 'practice';
@@ -1209,6 +1405,7 @@ const App = () => {
   const handleSelectTab = (tab) => {
     setActiveTab(tab);
     let targetPath = '/dashboard';
+    if (tab === 'oneshot') targetPath = '/oneshot';
     if (tab === 'c') targetPath = '/c';
     if (tab === 'python') targetPath = '/python';
     if (tab === 'practice') targetPath = '/practice';
@@ -1296,6 +1493,13 @@ const App = () => {
               onTopicClick={handleTopicClick}
               userProgress={userProgress}
               onResetTracking={handleResetTracking}
+            />
+          )}
+
+          {activeTab === 'oneshot' && (
+            <OneShotView
+              onTopicClick={handleTopicClick}
+              setToastMessage={setToastMessage}
             />
           )}
 
