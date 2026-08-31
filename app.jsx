@@ -11,7 +11,7 @@ const getYouTubeVideoId = (url) => {
   return match && match[2].length === 11 ? match[2] : null;
 };
 
-// Lucide Icon Helper using SVG rendering fallback
+// Lucide Icon Helper using SVG rendering fallback for smooth standalone UMD compatibility
 const Icon = ({ name, size = 18, className = "" }) => {
   useEffect(() => {
     if (window.lucide) {
@@ -29,12 +29,26 @@ const C_ROADMAP_DATA = [
     badge: "PHASE 01",
     title: "Foundations & I/O",
     icon: "terminal",
-    desc: "Master GCC compiler setup, primitive data types, input/output tricks, and bitwise operators.",
+    bottomLabel: "WEEK 1 TARGET",
+    bottomIcon: "zap",
+    isActive: false,
     topics: [
-      { title: "Setup: GCC, MinGW & VS Code", url: "https://youtu.be/z2jDamkbBF0?si=k0dKMuofXYDSuY0B" },
-      { title: "Types: int, float, char, specifiers", url: "https://youtu.be/neLud9ah2hQ?si=0y3rJjYUIdhHTVua" },
-      { title: "I/O: printf / scanf tricks", url: "https://youtu.be/bm1rFiuXGDc?si=lrRxUoo1v9yXctvj" },
-      { title: "Operators: Bitwise & Ternary", url: "https://youtu.be/_yU4vi6JhPk?si=aoOB5XtJVrnERHsw" }
+      {
+        title: "Setup: GCC, MinGW & VS Code",
+        url: "https://youtu.be/z2jDamkbBF0?si=k0dKMuofXYDSuY0B"
+      },
+      {
+        title: "Types: int, float, char, specifiers",
+        url: "https://youtu.be/neLud9ah2hQ?si=0y3rJjYUIdhHTVua"
+      },
+      {
+        title: "I/O: printf / scanf tricks",
+        url: "https://youtu.be/bm1rFiuXGDc?si=lrRxUoo1v9yXctvj"
+      },
+      {
+        title: "Operators: Bitwise & Ternary",
+        url: "https://youtu.be/_yU4vi6JhPk?si=aoOB5XtJVrnERHsw"
+      }
     ]
   },
   {
@@ -42,12 +56,26 @@ const C_ROADMAP_DATA = [
     badge: "PHASE 02",
     title: "Control & Loops",
     icon: "git-fork",
-    desc: "Build decision trees with if-else/switch, nested for/while loops, and star pyramid patterns.",
+    bottomLabel: "LOGIC BUILDING",
+    bottomIcon: "code-2",
+    isActive: false,
     topics: [
-      { title: "Decisions: if-else & switch", url: "https://youtu.be/7PSfRdeY5qE?si=QPvhiVD1X-VxcTaC" },
-      { title: "Loops: for, while, do-while", url: "https://youtu.be/wYvrBXUfFfw?si=aDhmtBPpH7xmWnO4" },
-      { title: "Patterns: Star, Pyramid & Number", url: "https://youtu.be/WxXZk5t2BAA?si=cD_BkEMdBe0dqoH_" },
-      { title: "Math: Prime, Armstrong, Fib", url: "https://youtu.be/VVt6uHpTTcs?si=z26XybfD7s0pirFB" }
+      {
+        title: "Decisions: if-else & switch",
+        url: "https://youtu.be/7PSfRdeY5qE?si=QPvhiVD1X-VxcTaC"
+      },
+      {
+        title: "Loops: for, while, do-while",
+        url: "https://youtu.be/wYvrBXUfFfw?si=aDhmtBPpH7xmWnO4"
+      },
+      {
+        title: "Patterns: Star, Pyramid & Number",
+        url: "https://youtu.be/WxXZk5t2BAA?si=cD_BkEMdBe0dqoH_"
+      },
+      {
+        title: "Math: Prime, Armstrong, Fib",
+        url: "https://youtu.be/VVt6uHpTTcs?si=z26XybfD7s0pirFB"
+      }
     ]
   },
   {
@@ -55,12 +83,26 @@ const C_ROADMAP_DATA = [
     badge: "PHASE 03",
     title: "Functions & Arrays",
     icon: "boxes",
-    desc: "Explore functional prototyping, call stack recursion, 1D/2D arrays, and matrix multiplication.",
+    bottomLabel: "CORE MODULARITY",
+    bottomIcon: "git-branch",
+    isActive: false,
     topics: [
-      { title: "Modularity: Prototyping & Scope", url: "https://youtu.be/RFLFX1boGwo?si=rBfb98DMquG0fqUD" },
-      { title: "Recursion: Call Stack & Base", url: "https://youtu.be/r2yHEW8HmBE?si=faBvqp9F3PX0-Z3t" },
-      { title: "Arrays: 1D, 2D & Matrix Ops", url: "https://youtu.be/h7tQ4u56njY?si=hJK78_QVYJuaXvYh" },
-      { title: "Strings: char[] manipulation", url: "https://youtu.be/8qKp63Ox3vQ?si=k_UIbmXGJ5g0B-Jg" }
+      {
+        title: "Modularity: Prototyping & Scope",
+        url: "https://youtu.be/RFLFX1boGwo?si=rBfb98DMquG0fqUD"
+      },
+      {
+        title: "Recursion: Call Stack & Base",
+        url: "https://youtu.be/r2yHEW8HmBE?si=faBvqp9F3PX0-Z3t"
+      },
+      {
+        title: "Arrays: 1D, 2D & Matrix Ops",
+        url: "https://youtu.be/h7tQ4u56njY?si=hJK78_QVYJuaXvYh"
+      },
+      {
+        title: "Strings: char[] manipulation",
+        url: "https://youtu.be/8qKp63Ox3vQ?si=k_UIbmXGJ5g0B-Jg"
+      }
     ]
   },
   {
@@ -68,7 +110,9 @@ const C_ROADMAP_DATA = [
     badge: "PHASE 04",
     title: "Pointers & Memory",
     icon: "cpu",
-    desc: "Understand memory addresses, pointer dereferencing, pass-by-reference, and dynamic allocation (malloc/free).",
+    bottomLabel: "HEART OF C",
+    bottomIcon: "flame",
+    isActive: false,
     topics: [
       { title: "Pointers: Address & & deref *", url: null },
       { title: "Passing: Value vs Reference", url: null },
@@ -81,7 +125,9 @@ const C_ROADMAP_DATA = [
     badge: "PHASE 05",
     title: "Files & PPS Pro",
     icon: "rocket",
-    desc: "Implement file persistence with fopen/fprintf, sorting algorithms, and full mini-project applications.",
+    bottomLabel: "EXAM MASTERY",
+    bottomIcon: "trophy",
+    isActive: false,
     topics: [
       { title: "Files: fopen, fprintf, fread", url: null },
       { title: "Sorting: Bubble, Selection", url: null },
@@ -96,9 +142,11 @@ const PYTHON_ROADMAP_DATA = [
   {
     id: "01",
     badge: "PHASE 01",
-    title: "Foundations & I/O",
+    title: "Python Foundations & I/O",
     icon: "terminal",
-    desc: "Setup Python 3.12 interpreter, dynamic typing, input/print formatting, and expressions.",
+    bottomLabel: "WEEK 1 TARGET",
+    bottomIcon: "zap",
+    isActive: false,
     topics: [
       { title: "Python setup, interpreter & VS Code", url: null },
       { title: "Variables, data types & type conversion", url: null },
@@ -111,7 +159,9 @@ const PYTHON_ROADMAP_DATA = [
     badge: "PHASE 02",
     title: "Control Flow & Loops",
     icon: "git-fork",
-    desc: "Master if-elif-else ladders, for/while loops, range generators, and iteration control statements.",
+    bottomLabel: "LOGIC BUILDING",
+    bottomIcon: "code-2",
+    isActive: false,
     topics: [
       { title: "if, elif, else conditions", url: null },
       { title: "for and while loops", url: null },
@@ -124,7 +174,9 @@ const PYTHON_ROADMAP_DATA = [
     badge: "PHASE 03",
     title: "Functions & Data Structures",
     icon: "boxes",
-    desc: "Build modular functions, list/tuple manipulation, dictionaries, sets, and string slicing.",
+    bottomLabel: "CORE MODULARITY",
+    bottomIcon: "git-branch",
+    isActive: false,
     topics: [
       { title: "Functions, parameters and return values", url: null },
       { title: "Recursion and call stack", url: null },
@@ -137,7 +189,9 @@ const PYTHON_ROADMAP_DATA = [
     badge: "PHASE 04",
     title: "Object-Oriented Python",
     icon: "cpu",
-    desc: "Understand classes, objects, __init__ constructors, inheritance, dunder methods, and encapsulation.",
+    bottomLabel: "HEART OF PYTHON",
+    bottomIcon: "flame",
+    isActive: false,
     topics: [
       { title: "Classes and objects", url: null },
       { title: "Constructors and methods", url: null },
@@ -150,7 +204,9 @@ const PYTHON_ROADMAP_DATA = [
     badge: "PHASE 05",
     title: "Files, Modules & Projects",
     icon: "rocket",
-    desc: "File I/O persistence, virtual environments, custom modules, and real-world game/AI project building.",
+    bottomLabel: "EXAM MASTERY",
+    bottomIcon: "trophy",
+    isActive: false,
     topics: [
       { title: "File handling and exception handling", url: null },
       { title: "Modules and packages", url: null },
@@ -167,174 +223,137 @@ const getAllTopicsList = () => {
   return [...cTopics, ...pyTopics];
 };
 
-// Video 3D Icon helper (Only 3D Play symbol - No external or chain icons)
+// Sample Achievements Data
+const SAMPLE_ACHIEVEMENTS = [
+  { id: 1, title: "First Login", desc: "Welcome to Student Portal", unlocked: true, icon: "award" },
+  { id: 2, title: "3-Day Streak", desc: "Maintained daily study momentum", unlocked: true, icon: "flame" },
+  { id: 3, title: "C Basics Started", desc: "Explored Phase 01 Foundations", unlocked: true, icon: "code" },
+  { id: 4, title: "First Video Watched", desc: "Completed GCC/VS Code Setup", unlocked: true, icon: "play-circle" },
+  { id: 5, title: "Pointers Mastery", desc: "Unlock Phase 04 Memory concepts", unlocked: false, icon: "cpu" },
+  { id: 6, title: "Python Explorer", desc: "Start Python & Data Structures", unlocked: false, icon: "terminal" }
+];
+
+// Video 3D Icon helper
 const Video3DIcon = ({ active = true }) => {
   return (
-    <span className={`video-3d-symbol ${active ? "video-active" : "video-muted"}`} title={active ? "Video Lesson Available" : "Upcoming Lesson"}>
+    <span className={`video-3d-symbol ${active ? "video-active" : "video-muted"}`} title={active ? "Video Available" : "Upcoming Video"}>
       <span className="video-depth">▶</span>
     </span>
   );
 };
 
-// Login & Sign-Up Combined Auth View
-const AuthView = ({ onLogin }) => {
-  const [isSignUp, setIsSignUp] = useState(false);
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+// Premium Student Login Component with 3D Coding Background
+const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    if (isSignUp) {
-      if (password !== confirmPassword) {
-        setError("Passwords do not match.");
-        return;
-      }
-      if (!username || !email) {
-        setError("Please fill out all fields.");
-        return;
-      }
-      onLogin(username, fullName || username);
+    if (username === TEMP_USERNAME && password === TEMP_PASSWORD) {
+      onLogin(username);
     } else {
-      if (username === TEMP_USERNAME && password === TEMP_PASSWORD) {
-        onLogin(username, "Aayush Singh");
-      } else if (username && password) {
-        onLogin(username, username);
-      } else {
-        setError("Please enter valid username and password.");
-      }
+      setError("Incorrect username or password.");
     }
   };
 
   return (
-    <div className="auth-overlay">
-      <div className="auth-card-container">
-        {/* Left Side Panel */}
-        <div className="auth-side-panel">
-          <div className="auth-brand">
-            <div className="brand-logo-icon">
-              <Icon name="code-2" size={24} />
-            </div>
-            <span className="brand-title">PPS LAB</span>
+    <div className="login-overlay">
+      {/* 3D Background Illustration for Login Screen */}
+      <div className="login-3d-bg-container">
+        <div className="bg-floating-code-window glass-panel">
+          <div className="window-bar">
+            <span className="dot red"></span>
+            <span className="dot yellow"></span>
+            <span className="dot green"></span>
+            <span className="window-title">python_demo.py</span>
           </div>
+          <pre className="code-block">
+            <code>
+              <span className="code-keyword">def</span> <span className="code-func">solve_problem</span>():<br/>
+              &nbsp;&nbsp;points = [<span className="code-num">100</span>, <span className="code-num">200</span>, <span className="code-num">300</span>]<br/>
+              &nbsp;&nbsp;<span className="code-keyword">return</span> <span className="code-func">sum</span>(points)<br/><br/>
+              <span className="code-func">print</span>(<span className="code-str">"Mastering Python 3D!"</span>)
+            </code>
+          </pre>
+        </div>
+        <div className="bg-symbol sym-a">&#123; &#125;</div>
+        <div className="bg-symbol sym-b">&lt;/&gt;</div>
+        <div className="bg-symbol sym-c">01</div>
+        <div className="bg-symbol sym-d">101</div>
+        <div className="bg-badge bg-c">C</div>
+        <div className="bg-badge bg-py">PY</div>
+        <div className="bg-learning-ring"></div>
+      </div>
 
-          <div className="side-panel-content">
-            <h2>Master C Language & Python step by step.</h2>
-            <p>Track your video progress, solve university-level roadmap phases, and access complete handbooks.</p>
+      <div className="glass-panel login-card 3d-login-card">
+        <div className="login-header">
+          <div className="top-badge-row">
+            <span className="badge-3d">
+              <Icon name="layers" size={13} />
+              3D ENGINEERING ROADMAP
+            </span>
           </div>
-
-          <div className="side-panel-footer">
-            <span>Designed & Engineered by <strong>Aayush Singh</strong></span>
-          </div>
+          <h2 className="login-title">Welcome Back, Learner</h2>
+          <p className="login-subtitle">Continue your coding journey and track your learning progress.</p>
         </div>
 
-        {/* Right Form Card */}
-        <div className="auth-form-card">
-          <div className="auth-header">
-            <h2>{isSignUp ? "Create Account" : "Welcome Back"}</h2>
-            <p>{isSignUp ? "Sign up to track your coding progress." : "Log in to continue your learning journey."}</p>
+        <form onSubmit={handleSubmit} className="login-form">
+          {error && <div className="login-error">{error}</div>}
+          
+          <div className="form-group">
+            <label>Username</label>
+            <input
+              type="text"
+              className="login-input"
+              placeholder="e.g. aayush"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </div>
 
-          <form onSubmit={handleSubmit} className="auth-form">
-            {error && <div className="auth-error-alert">{error}</div>}
-
-            {isSignUp && (
-              <React.Fragment>
-                <div className="form-group">
-                  <label>Full Name</label>
-                  <input
-                    type="text"
-                    className="form-input"
-                    placeholder="e.g. Aayush Singh"
-                    value={fullName}
-                    onChange={(e) => setFullName(e.target.value)}
-                    required
-                  />
-                </div>
-                <div className="form-group">
-                  <label>Email Address</label>
-                  <input
-                    type="email"
-                    className="form-input"
-                    placeholder="e.g. student@college.edu"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    required
-                  />
-                </div>
-              </React.Fragment>
-            )}
-
-            <div className="form-group">
-              <label>Username</label>
+          <div className="form-group">
+            <label>Password</label>
+            <div className="password-input-wrapper">
               <input
-                type="text"
-                className="form-input"
-                placeholder="e.g. aayush"
-                value={username}
-                onChange={(e) => setUsername(e.target.value)}
+                type={showPassword ? "text" : "password"}
+                className="login-input password-field"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 required
               />
+              <button
+                type="button"
+                className="toggle-password-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
+              </button>
             </div>
-
-            <div className="form-group">
-              <label>Password</label>
-              <div className="password-wrapper">
-                <input
-                  type={showPassword ? "text" : "password"}
-                  className="form-input"
-                  placeholder="••••••••"
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  className="pwd-toggle-btn"
-                  onClick={() => setShowPassword(!showPassword)}
-                >
-                  <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
-                </button>
-              </div>
-            </div>
-
-            {isSignUp && (
-              <div className="form-group">
-                <label>Confirm Password</label>
-                <input
-                  type="password"
-                  className="form-input"
-                  placeholder="••••••••"
-                  value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
-                  required
-                />
-              </div>
-            )}
-
-            <button type="submit" className="btn-primary auth-submit-btn">
-              {isSignUp ? "Create Account →" : "Log In →"}
-            </button>
-          </form>
-
-          <div className="auth-switch-footer">
-            {isSignUp ? (
-              <span>Already have an account? <button onClick={() => { setIsSignUp(false); setError(""); }}>Log In</button></span>
-            ) : (
-              <span>Don't have an account? <button onClick={() => { setIsSignUp(true); setError(""); }}>Sign Up</button></span>
-            )}
           </div>
+
+          <button type="submit" className="login-submit-btn">
+            Login to Dashboard →
+          </button>
+        </form>
+
+        <div className="login-footer-info">
+          <p className="progress-note">
+            <Icon name="shield-check" size={14} />
+            Your learning progress is saved automatically.
+          </p>
+          <p className="login-credit">Designed & Engineered by Aayush Singh</p>
         </div>
       </div>
     </div>
   );
 };
 
-// In-App YouTube Video Player Modal Component
+// In-App YouTube Video Modal Player Component with Distraction-Free ENDED State
 const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, userProgress }) => {
   const playerRef = useRef(null);
   const intervalRef = useRef(null);
@@ -350,9 +369,12 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
 
   const videoId = getYouTubeVideoId(videoInfo.url);
 
+  // Keyboard Escape listener
   useEffect(() => {
     const handleKeyDown = (e) => {
-      if (e.key === 'Escape') onClose();
+      if (e.key === 'Escape') {
+        onClose();
+      }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
@@ -363,6 +385,7 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
     setVideoEnded(false);
     setEmbedError(false);
 
+    // Fetch initial saved playback position
     const savedEntry = userProgress[videoId] || {};
     const initialTime = savedEntry.currentTime || 0;
 
@@ -403,6 +426,7 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
               } else if (event.data === window.YT.PlayerState.ENDED) {
                 status = "Completed";
                 setVideoEnded(true);
+                // Immediately update progress & completion
                 onProgressUpdate({
                   videoId,
                   title: videoInfo.title,
@@ -419,7 +443,9 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
               }
               setPlaybackState(prev => ({ ...prev, statusText: status }));
             },
-            onError: () => setEmbedError(true)
+            onError: () => {
+              setEmbedError(true);
+            }
           }
         });
       } catch (err) {
@@ -476,31 +502,44 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
   };
 
   return (
-    <div className="modal-backdrop">
-      <div className="white-modal-card">
-        <div className="modal-top-bar">
+    <div className="video-modal-overlay">
+      <div className="glass-panel video-modal-card">
+        <div className="modal-header">
           <div className="modal-title-group">
-            <span className="badge-pill blue-pill">{videoInfo.phase || "PHASE 01"}</span>
-            <span className="badge-pill gray-pill">{videoInfo.lang || "C"}</span>
-            <h3>{videoInfo.title}</h3>
+            <span className="phase-badge">{videoInfo.phase || "PHASE 01"}</span>
+            <span className="lang-tag">{videoInfo.lang || "C"}</span>
+            <h3 className="modal-video-title">{videoInfo.title}</h3>
           </div>
-          <button className="icon-close-btn" onClick={onClose}>
-            <Icon name="x" size={18} />
+          <button className="modal-close-btn" onClick={onClose} aria-label="Close Video Player">
+            <Icon name="x" size={20} />
           </button>
         </div>
 
+        {/* Player / Completion Screen / Error Display */}
         {embedError ? (
-          <div className="modal-error-box">
-            <Icon name="alert-circle" size={32} className="text-red" />
-            <h4>Embedded Playback Restricted</h4>
-            <p>The content provider restricts playback inside embedded players.</p>
-            <button className="btn-secondary" onClick={onClose}>Back to Roadmap</button>
+          <div className="embed-error-box glass-panel">
+            <Icon name="alert-triangle" size={32} className="error-icon" />
+            <h4>This video cannot be played inside the website.</h4>
+            <p>The content provider restricts playback on embedded players.</p>
+            <button className="btn-primary" onClick={onClose}>Back to Roadmap</button>
           </div>
         ) : videoEnded ? (
-          <div className="modal-completed-box">
-            <Icon name="check-circle" size={48} className="text-green" />
-            <h2>Lesson Completed ✓</h2>
-            <p>Great job! You have finished watching this lesson.</p>
+          <div className="completion-screen-box glass-panel">
+            <div className="completion-icon-wrapper">
+              <Icon name="check-circle-2" size={48} className="completion-check" />
+            </div>
+            <h2>Video Completed ✓</h2>
+            <p className="completion-msg">Great job! You completed this lesson.</p>
+
+            <div className="completion-details">
+              <div className="c-detail-item">
+                <span className="lbl">Topic:</span> <strong>{videoInfo.title}</strong>
+              </div>
+              <div className="c-detail-item">
+                <span className="lbl">Phase:</span> <strong>{videoInfo.phase || "PHASE 01"} ({videoInfo.lang || "C"})</strong>
+              </div>
+            </div>
+
             <div className="completion-actions">
               <button className="btn-primary" onClick={onNextUnit}>Next Unit →</button>
               <button className="btn-secondary" onClick={onClose}>Back to Roadmap</button>
@@ -513,18 +552,22 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
         )}
 
         {!videoEnded && !embedError && (
-          <div className="modal-live-tracker">
-            <div className="tracker-row">
+          <div className="video-live-tracker-bar">
+            <div className="tracker-top">
               <div className="status-indicator">
-                <span className="status-dot"></span>
-                <span>{playbackState.statusText}</span>
+                <span className={`status-dot ${playbackState.statusText.toLowerCase().replace(/[^a-z]/g, '')}`}></span>
+                <span className="status-text">{playbackState.statusText}</span>
+                {playbackState.isCompleted && <span className="completion-badge">✓ Completed</span>}
               </div>
               <div className="time-display">
                 {formatTime(playbackState.currentTime)} / {formatTime(playbackState.duration)} ({playbackState.watchedPercent}%)
               </div>
             </div>
-            <div className="progress-bar-bg">
-              <div className="progress-bar-fill" style={{ width: `${playbackState.watchedPercent}%` }}></div>
+            <div className="live-progress-track">
+              <div
+                className="live-progress-fill"
+                style={{ width: `${playbackState.watchedPercent}%` }}
+              ></div>
             </div>
           </div>
         )}
@@ -533,415 +576,1029 @@ const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate, onNextUnit, us
   );
 };
 
-// Reset Confirmation Modal Component
-const ResetConfirmModal = ({ isOpen, onClose, onConfirm }) => {
-  if (!isOpen) return null;
+// Helper to parse HH:MM:SS or MM:SS timestamp string into total seconds
+const parseTimestampToSeconds = (timeStr) => {
+  if (typeof timeStr === 'number') return timeStr;
+  if (!timeStr) return 0;
+  const parts = timeStr.split(':').map(Number);
+  if (parts.length === 3) {
+    return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  } else if (parts.length === 2) {
+    return parts[0] * 60 + parts[1];
+  }
+  return 0;
+};
+
+// One-Shot Masterclass Structured Data (C Language & Python 3.12+)
+const ONE_SHOT_DATA = {
+  c: {
+    key: "c",
+    langLabel: "C Language One-Shot",
+    title: "Complete C Language Masterclass in 1 Video",
+    subtitle: "End-to-end C programming marathon tutorial covering variables, memory pointers, recursion & exam questions.",
+    embedUrl: "https://www.youtube.com/embed/aZb0iu4uGwA?autoplay=0&rel=0&enablejsapi=1",
+    youtubeUrl: "https://youtu.be/aZb0iu4uGwA",
+    videoId: "aZb0iu4uGwA",
+    pdfUrl: "/notes/c_handbook.pdf",
+    notesLink: "/notes/c_handbook.pdf",
+    downloadFileName: "C_Language_Complete_Handbook.pdf",
+    buttonLabel: "📄 Download Notes / Cheatsheet PDF",
+    cheatsheetTitle: "C Language Complete Revision Notes & Cheatsheet (PDF)",
+    badgeText: "Complete C Exam Roadmap",
+    chapters: [],
+    timestamps: [
+      { time: "00:00", label: "C Fundamentals & Setup (GCC / VS Code)", sec: 0 },
+      { time: "22:15", label: "Variables, Formats & Specifiers", sec: 1335 },
+      { time: "54:40", label: "Conditional Logic (If-Else & Switch)", sec: 3280 },
+      { time: "01:25:10", label: "Loops, Star Pyramids & Logic Building", sec: 5110 },
+      { time: "02:05:30", label: "Functions, Parameters & Call Stack Recursion", sec: 7530 },
+      { time: "02:45:00", label: "1D & 2D Arrays with Matrix Operations", sec: 9900 },
+      { time: "03:30:20", label: "Pointers, Addressing & Dynamic Memory (malloc)", sec: 12620 }
+    ]
+  },
+  python: {
+    key: "python",
+    langLabel: "Python One-Shot",
+    title: "Complete Python 3.12+ Masterclass & Handbook",
+    subtitle: "Complete Python programming tutorial covering 13 core chapters, OOPs, 4 real-world projects & AI bots.",
+    embedUrl: "https://www.youtube.com/embed/UrsmFxEIp5k?autoplay=0&rel=0&enablejsapi=1",
+    youtubeUrl: "https://youtu.be/UrsmFxEIp5k",
+    videoId: "UrsmFxEIp5k",
+    pdfUrl: "https://go.fliplink.me/view/CBB2185A-D58B-4510-A1A3-FA032E7977EE",
+    notesLink: "https://go.fliplink.me/view/CBB2185A-D58B-4510-A1A3-FA032E7977EE",
+    downloadFileName: null,
+    buttonLabel: "📖 View Python Handwritten Notes",
+    cheatsheetTitle: "📖 View Python Handwritten Notes",
+    badgeText: "Includes 13 Chapters + 4 Projects + AI Bots",
+    chapters: [
+      { num: "Ch 01", title: "Modules, Comments & Pip Setup", desc: "Built-in & external modules, pyttsx3, REPL & VS Code" },
+      { num: "Ch 02", title: "Variables & Data Types", desc: "Typecasting, operators, input() & dynamic variable types" },
+      { num: "Ch 03", title: "Strings & String Methods", desc: "Slicing [start:end:step], f-strings, escape sequences & string functions" },
+      { num: "Ch 04", title: "Lists & Tuples", desc: "List methods (.append, .sort), tuple immutability & indexing" },
+      { num: "Ch 05", title: "Dictionary & Sets", desc: "Key-value pairs, .get() methods, set union/intersection & operations" },
+      { num: "Ch 06", title: "Conditional Expressions", desc: "if-elif-else ladders, relational/logical operators & spam detection" },
+      { num: "Ch 07", title: "Loops in Python", desc: "while & for loops, range(), break, continue & pass statements" },
+      { num: "Ch 08", title: "Functions & Recursion", desc: "Def statements, return values, default parameters & recursive call stack" },
+      { num: "Project 01", title: "Snake, Water, Gun Game", desc: "Interactive game building using random module and conditional logic" },
+      { num: "Ch 09", title: "File I/O (Persistence & RAM)", desc: "fopen modes ('r', 'w', 'a'), with statement & file manipulation" },
+      { num: "Ch 10", title: "OOPs (Classes & Objects)", desc: "Class attributes vs instance attributes, self parameter & __init__ constructor" },
+      { num: "Ch 11", title: "Inheritance & Advanced OOP", desc: "Single/multiple inheritance, super() method, dunder methods & @classmethod" },
+      { num: "Project 02", title: "The Perfect Guess Game", desc: "Number guessing game with score tracking & high score file update" },
+      { num: "Ch 12", title: "Advanced Python 1", desc: "Walrus operator (:=), Match-Case, Exception handling (try-except-finally), Type hints & Dict merge" },
+      { num: "Ch 13", title: "Advanced Python 2", desc: "Virtualenv, Lambda expressions, Map, Filter, Reduce & .join() methods" },
+      { num: "Mega Projects", title: "Jarvis AI Voice Assistant & WhatsApp AI Bot", desc: "Speech recognition, pyttsx3 voice synthesis, OpenAI API & automated messaging" }
+    ],
+    timestamps: [
+      { time: "00:00", label: "Ch 01: Python Setup, Pip & Modules", sec: 0 },
+      { time: "18:30", label: "Ch 02: Variables, Data Types & Typecasting", sec: 1110 },
+      { time: "42:10", label: "Ch 03: Strings, Slicing & Methods", sec: 2530 },
+      { time: "01:05:00", label: "Ch 04 & 05: Lists, Tuples, Dictionaries & Sets", sec: 3900 },
+      { time: "01:38:15", label: "Ch 06 & 07: Conditionals & Loops", sec: 5895 },
+      { time: "02:10:00", label: "Ch 08: Functions & Recursion", sec: 7800 },
+      { time: "02:35:40", label: "Project 01: Snake, Water, Gun Game", sec: 9340 },
+      { time: "03:00:15", label: "Ch 09: File I/O Operations", sec: 10815 },
+      { time: "03:32:00", label: "Ch 10 & 11: OOPs, Inheritance & Dunder Methods", sec: 12720 },
+      { time: "04:15:20", label: "Project 02: The Perfect Guess Game", sec: 15320 },
+      { time: "04:45:00", label: "Ch 12 & 13: Advanced Python (Walrus, Lambda, Map/Filter)", sec: 17100 },
+      { time: "05:30:00", label: "Mega Projects: Jarvis AI & WhatsApp Automation", sec: 19800 }
+    ]
+  }
+};
+
+// One-Shot Tutorial View Component with Course Switcher & Embedded YouTube Player
+const OneShotView = ({ onTopicClick, setToastMessage }) => {
+  const iframeRef = useRef(null);
+  const [activeCourse, setActiveCourse] = useState(() => {
+    return localStorage.getItem("oneshot_preferred_course") || "c";
+  });
+
+  const handleSwitchCourse = (courseKey) => {
+    setActiveCourse(courseKey);
+    localStorage.setItem("oneshot_preferred_course", courseKey);
+  };
+
+  const currentData = ONE_SHOT_DATA[activeCourse];
+
+  const handleTimestampClick = (ts) => {
+    const seconds = parseTimestampToSeconds(ts.sec !== undefined ? ts.sec : ts.time);
+    
+    // PostMessage seekTo command via YouTube iframe API
+    if (iframeRef.current && iframeRef.current.contentWindow) {
+      try {
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({
+            event: 'command',
+            func: 'seekTo',
+            args: [seconds, true]
+          }),
+          '*'
+        );
+        iframeRef.current.contentWindow.postMessage(
+          JSON.stringify({
+            event: 'command',
+            func: 'playVideo',
+            args: []
+          }),
+          '*'
+        );
+      } catch (err) {
+        console.error("PostMessage seek error:", err);
+      }
+    }
+    
+    setToastMessage(`Jumped to ${ts.time} — ${ts.label}`);
+  };
+
+  const handleDownloadPdf = () => {
+    setToastMessage(`Downloading ${currentData.cheatsheetTitle}...`);
+  };
 
   return (
-    <div className="modal-backdrop">
-      <div className="white-modal-card reset-modal-card">
-        <div className="reset-modal-header">
-          <div className="reset-icon-wrapper">
-            <Icon name="alert-triangle" size={24} />
+    <div className="oneshot-container">
+      {/* Header Banner */}
+      <section className="glass-panel oneshot-header-card">
+        <div className="oneshot-header-left">
+          <div className="top-badge-row">
+            <span className="badge-3d gold-badge">
+              <Icon name="flame" size={13} />
+              MASTERCLASS 1-SHOT REVISION
+            </span>
+            <span className="badge-pro cyan-badge">
+              <Icon name="award" size={12} />
+              FULL COURSE TUTORIAL
+            </span>
           </div>
-          <h3>Reset All Learning Progress?</h3>
+
+          <h1 className="oneshot-main-title">{currentData.title}</h1>
+          <p className="oneshot-subtitle">{currentData.subtitle}</p>
+
+          {/* Course Switcher Tabs */}
+          <div className="oneshot-lang-switcher">
+            <span className="switcher-lbl">SELECT COURSE:</span>
+            <button
+              className={`lang-tab-btn ${activeCourse === 'c' ? 'active' : ''}`}
+              onClick={() => handleSwitchCourse('c')}
+            >
+              <Icon name="code-2" size={15} />
+              C Language One-Shot
+            </button>
+            <button
+              className={`lang-tab-btn ${activeCourse === 'python' ? 'active' : ''}`}
+              onClick={() => handleSwitchCourse('python')}
+            >
+              <Icon name="terminal" size={15} />
+              Python One-Shot
+            </button>
+          </div>
         </div>
-        <div className="reset-modal-body">
-          <p>This action will reset your saved video progress, watch percentages, playback positions, and completed statuses across all roadmaps.</p>
-          <ul className="reset-checklist">
-            <li>✓ Your user account remains active</li>
-            <li>✓ Roadmap content & YouTube links remain unchanged</li>
-            <li>⚠️ Progress tracking statistics will return to 0%</li>
-          </ul>
+
+        <div className="oneshot-header-right">
+          <a
+            href={currentData.notesLink || currentData.pdfUrl}
+            {...(currentData.downloadFileName ? { download: currentData.downloadFileName } : {})}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="download-pdf-btn"
+            style={{ textDecoration: 'none' }}
+          >
+            <Icon name="book-open" size={18} />
+            <span>{currentData.buttonLabel || "Download Notes / Cheatsheet PDF"}</span>
+          </a>
         </div>
-        <div className="reset-modal-footer">
-          <button className="btn-secondary" onClick={onClose}>Cancel</button>
-          <button className="btn-danger" onClick={onConfirm}>Confirm Reset</button>
+      </section>
+
+      {/* Handbook Badge Row */}
+      {currentData.badgeText && (
+        <div className="glass-panel handbook-badge-card">
+          <div className="h-badge-left">
+            <Icon name="book-open" size={20} className="h-badge-icon" />
+            <span className="h-badge-title">OFFICIAL SYLLABUS & HANDBOOK</span>
+          </div>
+          <div className="h-badge-pill">
+            <Icon name="sparkles" size={14} />
+            <span>{currentData.badgeText}</span>
+          </div>
+        </div>
+      )}
+
+      {/* Main Embedded 16:9 Video & Timestamp Drawer Grid */}
+      <div className="oneshot-content-grid">
+        {/* Left: Responsive 16:9 Embedded Player */}
+        <div className="glass-panel oneshot-player-card">
+          <div className="player-top-bar">
+            <span className="phase-badge">1-SHOT MASTERCLASS</span>
+            <span className="lang-tag">{activeCourse === 'c' ? 'C LANGUAGE' : 'PYTHON'}</span>
+          </div>
+
+          <div className="iframe-container oneshot-iframe-box">
+            <iframe
+              ref={iframeRef}
+              id={`oneshot-iframe-${activeCourse}`}
+              src={currentData.embedUrl}
+              title={currentData.title}
+              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+              allowFullScreen
+            ></iframe>
+          </div>
+
+          <div className="player-footer-info">
+            <h3>{currentData.title}</h3>
+            <button
+              className="btn-primary start-watch-btn"
+              onClick={() => onTopicClick({
+                title: currentData.title,
+                url: currentData.youtubeUrl,
+                lang: activeCourse === 'c' ? 'C' : 'Python',
+                phase: 'ONE-SHOT'
+              })}
+            >
+              <Icon name="maximize-2" size={16} />
+              Open In Distraction-Free Player Mode
+            </button>
+          </div>
+        </div>
+
+        {/* Right: Timestamp Drawer & Resource List */}
+        <div className="glass-panel oneshot-timestamps-card">
+          <div className="drawer-header">
+            <Icon name="clock" size={20} className="header-icon" />
+            <h3>Chapter Timestamps</h3>
+          </div>
+
+          <div className="timestamps-list">
+            {currentData.timestamps.map((ts, idx) => (
+              <div
+                key={idx}
+                className="timestamp-item"
+                onClick={() => handleTimestampClick(ts)}
+              >
+                <span className="ts-time">{ts.time}</span>
+                <span className="ts-label">{ts.label}</span>
+                <Icon name="play-circle" size={15} className="ts-play-icon" />
+              </div>
+            ))}
+          </div>
+
+          <div className="resource-download-footer">
+            <a
+              href={currentData.notesLink || currentData.pdfUrl}
+              {...(currentData.downloadFileName ? { download: currentData.downloadFileName } : {})}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="btn-secondary full-width-btn"
+              style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem' }}
+            >
+              <Icon name="book-open" size={16} />
+              {currentData.buttonLabel || currentData.cheatsheetTitle}
+            </a>
+          </div>
         </div>
       </div>
+
+      {/* Handbook Chapters & Projects Preview Drawer for Python */}
+      {currentData.chapters && currentData.chapters.length > 0 && (
+        <section className="glass-panel handbook-drawer-card">
+          <div className="drawer-header">
+            <Icon name="layers" size={22} className="header-icon cyan" />
+            <div>
+              <h3>Python 3.12+ Complete Handbook Breakdown</h3>
+              <p className="drawer-sub">13 Complete Chapters + 4 Interactive Game Projects & AI Bots</p>
+            </div>
+          </div>
+
+          <div className="handbook-chapters-grid">
+            {currentData.chapters.map((ch, idx) => (
+              <div key={idx} className="glass-panel chapter-preview-chip">
+                <div className="ch-top">
+                  <span className="ch-num">{ch.num}</span>
+                  <h4 className="ch-title">{ch.title}</h4>
+                </div>
+                <p className="ch-desc">{ch.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   );
 };
 
-// Top Navigation Bar Component
-const TopNav = ({ activeTab, onSelectTab, activeLang, onSelectLang, user, onLogout }) => {
+// Clean Top Navigation Bar Component for PPS LAB
+const Navbar = ({ activeTab, onSelectTab, currentLang, onSelectLang, user, onLogout }) => {
   return (
-    <nav className="top-nav-bar">
-      <div className="nav-container">
-        <div className="nav-left">
-          <div className="nav-brand" onClick={() => onSelectTab('dashboard')}>
-            <Icon name="code-2" size={20} className="brand-icon" />
-            <span className="brand-name">PPS LAB</span>
-          </div>
+    <nav className="top-navbar">
+      <div className="nav-brand" onClick={() => onSelectTab('dashboard')}>
+        <Icon name="code" size={22} style={{ color: '#2563EB' }} />
+        <span>PPS LAB</span>
+        <span className="brand-badge">PORTAL</span>
+      </div>
 
-          <div className="nav-tabs-desktop">
-            <button className={`nav-link ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => onSelectTab('dashboard')}>
-              Dashboard
-            </button>
-            <button className={`nav-link ${activeTab === 'c' ? 'active' : ''}`} onClick={() => onSelectTab('c')}>
-              C Roadmap
-            </button>
-            <button className={`nav-link ${activeTab === 'python' ? 'active' : ''}`} onClick={() => onSelectTab('python')}>
-              Python Roadmap
-            </button>
-            <button className={`nav-link ${activeTab === 'progress' ? 'active' : ''}`} onClick={() => onSelectTab('progress')}>
-              Progress
-            </button>
-          </div>
+      <div className="nav-menu-links">
+        <button
+          className={`nav-link-btn ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => onSelectTab('dashboard')}
+        >
+          <Icon name="layout-dashboard" size={16} />
+          <span>Dashboard</span>
+        </button>
+        <button
+          className={`nav-link-btn ${activeTab === 'oneshot' ? 'active' : ''}`}
+          onClick={() => onSelectTab('oneshot')}
+        >
+          <Icon name="zap" size={16} />
+          <span>One-Shot</span>
+        </button>
+        <button
+          className={`nav-link-btn ${activeTab === 'c' ? 'active' : ''}`}
+          onClick={() => onSelectTab('c')}
+        >
+          <Icon name="code-2" size={16} />
+          <span>C Roadmap</span>
+        </button>
+        <button
+          className={`nav-link-btn ${activeTab === 'python' ? 'active' : ''}`}
+          onClick={() => onSelectTab('python')}
+        >
+          <Icon name="terminal" size={16} />
+          <span>Python Roadmap</span>
+        </button>
+        <button
+          className={`nav-link-btn ${activeTab === 'progress' ? 'active' : ''}`}
+          onClick={() => onSelectTab('progress')}
+        >
+          <Icon name="bar-chart-2" size={16} />
+          <span>Progress</span>
+        </button>
+
+        {/* Language Selector Pill */}
+        <div className="lang-toggle-box">
+          <button
+            className={`lang-btn ${currentLang === 'c' ? 'active' : ''}`}
+            onClick={() => onSelectLang('c')}
+          >
+            C
+          </button>
+          <button
+            className={`lang-btn ${currentLang === 'python' ? 'active' : ''}`}
+            onClick={() => onSelectLang('python')}
+          >
+            PYTHON
+          </button>
         </div>
+      </div>
 
-        <div className="nav-right">
-          {/* Language Selector */}
-          <div className="lang-switcher">
-            <button className={`lang-pill ${activeLang === 'c' ? 'active' : ''}`} onClick={() => onSelectLang('c')}>C</button>
-            <button className={`lang-pill ${activeLang === 'python' ? 'active' : ''}`} onClick={() => onSelectLang('python')}>Python</button>
-          </div>
-
-          <div className="user-profile-menu">
-            <div className="user-avatar">{user ? user.substring(0, 2).toUpperCase() : "AS"}</div>
-            <span className="user-name-text">{user || "Aayush Singh"}</span>
-            <button className="btn-logout" onClick={onLogout} title="Logout">
-              <Icon name="log-out" size={16} />
-            </button>
-          </div>
+      <div className="nav-user-area">
+        <div className="user-profile-badge">
+          <div className="user-avatar">AS</div>
+          <span className="user-name-text">Aayush Singh</span>
         </div>
+        <button className="logout-icon-btn" onClick={onLogout} aria-label="Logout">
+          <Icon name="log-out" size={16} />
+        </button>
       </div>
     </nav>
   );
 };
 
-// Desktop Left Sidebar Component
-const LeftSidebar = ({ activeTab, onSelectTab, user, onLogout }) => {
+// Compact Left Sidebar Component
+const Sidebar = ({ activeTab, onSelectTab, onLogout }) => {
   return (
-    <aside className="left-sidebar">
-      <div className="sidebar-top">
-        <div className="sidebar-brand">
-          <Icon name="code-2" size={22} className="brand-icon" />
-          <div>
-            <h1 className="sidebar-title">PPS LAB</h1>
-            <p className="sidebar-sub">Coding Learning Portal</p>
-          </div>
-        </div>
-
-        <div className="sidebar-nav-menu">
-          <button className={`sidebar-item ${activeTab === 'dashboard' ? 'active' : ''}`} onClick={() => onSelectTab('dashboard')}>
-            <Icon name="layout" size={18} />
-            <span>Overview</span>
-          </button>
-          <button className={`sidebar-item ${activeTab === 'c' || activeTab === 'python' ? 'active' : ''}`} onClick={() => onSelectTab('c')}>
-            <Icon name="map-pin" size={18} />
-            <span>Learning Paths</span>
-          </button>
-          <button className={`sidebar-item ${activeTab === 'progress' ? 'active' : ''}`} onClick={() => onSelectTab('progress')}>
-            <Icon name="bar-chart-2" size={18} />
-            <span>My Progress</span>
-          </button>
-        </div>
+    <aside className="sidebar">
+      <div className="sidebar-menu">
+        <div className="sidebar-title">NAVIGATE</div>
+        <button
+          className={`sidebar-item ${activeTab === 'dashboard' ? 'active' : ''}`}
+          onClick={() => onSelectTab('dashboard')}
+        >
+          <Icon name="grid" size={17} />
+          <span>Overview</span>
+        </button>
+        <button
+          className={`sidebar-item ${activeTab === 'c' || activeTab === 'python' ? 'active' : ''}`}
+          onClick={() => onSelectTab('c')}
+        >
+          <Icon name="book-open" size={17} />
+          <span>Learning Paths</span>
+        </button>
+        <button
+          className={`sidebar-item ${activeTab === 'progress' ? 'active' : ''}`}
+          onClick={() => onSelectTab('progress')}
+        >
+          <Icon name="trending-up" size={17} />
+          <span>My Progress</span>
+        </button>
+        <button
+          className={`sidebar-item ${activeTab === 'oneshot' ? 'active' : ''}`}
+          onClick={() => onSelectTab('oneshot')}
+        >
+          <Icon name="award" size={17} />
+          <span>Masterclass</span>
+        </button>
       </div>
 
-      <div className="sidebar-bottom">
-        <div className="user-card-bottom">
-          <div className="user-avatar-lg">AS</div>
-          <div className="user-info-text">
-            <span className="name">{user || "Aayush Singh"}</span>
-            <span className="role">Coding Learner</span>
-          </div>
-        </div>
-        <button className="sidebar-logout-btn" onClick={onLogout}>
-          <Icon name="log-out" size={16} />
-          <span>Logout</span>
+      <div className="sidebar-footer">
+        <button
+          className="sidebar-item"
+          onClick={() => onSelectTab('settings')}
+        >
+          <Icon name="settings" size={17} />
+          <span>Settings & Reset</span>
         </button>
       </div>
     </aside>
   );
 };
 
-// Dashboard Home View Component
-const DashboardHome = ({ onSelectTab, userProgress }) => {
+// Header Component for Roadmaps
+const RoadmapHeader = ({ currentLang, onSelectLang }) => {
+  const isPython = currentLang === 'python';
+
+  return (
+    <header className="glass-panel header-card 3d-header">
+      <div className="header-left layer-depth-high">
+        <div className="top-badge-row">
+          <span className="badge-3d">
+            <Icon name="layers" size={13} />
+            3D ENGINEERING ROADMAP
+          </span>
+          <span className="badge-creator">
+            <Icon name="code" size={12} />
+            BY AAYUSH SINGH
+          </span>
+          
+          <div className="language-selector-pill">
+            <span className="lang-label">PATH:</span>
+            <button
+              className={`lang-btn ${!isPython ? 'active' : ''}`}
+              onClick={() => onSelectLang('c')}
+            >
+              C
+            </button>
+            <button
+              className={`lang-btn ${isPython ? 'active' : ''}`}
+              onClick={() => onSelectLang('python')}
+            >
+              PYTHON
+            </button>
+          </div>
+        </div>
+
+        <div className="main-title-row">
+          <h1 className="main-title">
+            {isPython ? "Python Master Blueprint" : "C Language Master Blueprint"}
+          </h1>
+          <span className="badge-pro">PRO 3D</span>
+        </div>
+        <p className="subtitle">
+          Engineered for university exams, technical interviews & algorithmic problem solving.
+        </p>
+      </div>
+
+      <div className="header-stats layer-depth-mid">
+        <StatCard value="5" label="PHASES" />
+        <StatCard value="30" label="DAYS TARGET" />
+        <StatCard value="100%" label="LOGIC BUILD" />
+      </div>
+    </header>
+  );
+};
+
+// StatCard Component
+const StatCard = ({ value, label }) => {
+  return (
+    <div className="stat-card">
+      <div className="stat-value">{value}</div>
+      <div className="stat-label">{label}</div>
+    </div>
+  );
+};
+
+// TopicRow Component with Live Progress & Status Badge
+const TopicRow = ({ topic, phaseBadge, lang, userProgress, onTopicClick }) => {
+  const videoId = getYouTubeVideoId(topic.url);
+  const progEntry = videoId ? userProgress[videoId] : null;
+
+  let statusLabel = "Not Started";
+  let statusClass = "not-started";
+
+  if (progEntry) {
+    if (progEntry.isCompleted) {
+      statusLabel = "Completed ✓";
+      statusClass = "completed";
+    } else if (progEntry.percent > 0) {
+      statusLabel = `In Progress — ${progEntry.percent}%`;
+      statusClass = "in-progress";
+    }
+  }
+
+  const handleKeyDown = (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      onTopicClick({ ...topic, phase: phaseBadge, lang });
+    }
+  };
+
+  return (
+    <div
+      className="topic-row layer-depth-low"
+      tabIndex={0}
+      role="button"
+      aria-label={`Open topic video: ${topic.title}`}
+      onClick={() => onTopicClick({ ...topic, phase: phaseBadge, lang })}
+      onKeyDown={handleKeyDown}
+    >
+      <div className="topic-left">
+        <Video3DIcon active={Boolean(topic.url)} />
+        <span>{topic.title}</span>
+      </div>
+      {topic.url && (
+        <div className="topic-row-status-box">
+          <span className={`topic-status-badge ${statusClass}`}>{statusLabel}</span>
+        </div>
+      )}
+    </div>
+  );
+};
+
+// PhaseCard Component with Interactive 3D Mouse Perspective Tilt
+const PhaseCard = ({ phase, lang, userProgress, onTopicClick, animationDelay }) => {
+  const cardRef = useRef(null);
+  const [transformStyle, setTransformStyle] = useState("");
+  const [reflectionStyle, setReflectionStyle] = useState({});
+
+  const handleMouseMove = (e) => {
+    if (window.matchMedia("(max-width: 900px)").matches || window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      return;
+    }
+    const card = cardRef.current;
+    if (!card) return;
+    const rect = card.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    
+    const centerX = rect.width / 2;
+    const centerY = rect.height / 2;
+    
+    const rotateX = ((centerY - y) / centerY) * 2.5;
+    const rotateY = ((x - centerX) / centerX) * 2.5;
+    
+    setTransformStyle(`perspective(1200px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateZ(4px)`);
+    setReflectionStyle({
+      background: `radial-gradient(circle at ${x}px ${y}px, rgba(0, 240, 255, 0.12) 0%, rgba(255, 255, 255, 0) 70%)`
+    });
+  };
+
+  const handleMouseLeave = () => {
+    setTransformStyle("perspective(1200px) rotateX(0deg) rotateY(0deg) translateZ(0px)");
+    setReflectionStyle({});
+  };
+
+  return (
+    <div 
+      ref={cardRef}
+      className="glass-panel phase-card 3d-card"
+      style={{ animationDelay: `${animationDelay}ms`, transform: transformStyle }}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+    >
+      <div className="card-light-reflection" style={reflectionStyle}></div>
+      <div className="card-inner-depth">
+        <div className="phase-top-bar layer-depth-high">
+          <span className="phase-badge">{phase.badge}</span>
+          <div className="phase-icon-wrapper">
+            <Icon name={phase.icon} size={18} />
+          </div>
+        </div>
+
+        <h2 className="phase-title layer-depth-mid">{phase.title}</h2>
+
+        <div className="topics-list">
+          {phase.topics.map((topic, index) => (
+            <TopicRow
+              key={index}
+              topic={topic}
+              phaseBadge={phase.badge}
+              lang={lang}
+              userProgress={userProgress}
+              onTopicClick={onTopicClick}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div className="phase-bottom-label layer-depth-low">
+        <Icon name={phase.bottomIcon || 'sparkles'} size={14} />
+        <span>{phase.bottomLabel}</span>
+      </div>
+    </div>
+  );
+};
+
+// Dashboard View
+const DashboardView = ({ onSelectTab, onTopicClick, userProgress, onResetTracking }) => {
   const totalVideos = 32;
   const completedCount = Object.values(userProgress).filter(v => v.isCompleted).length;
   const inProgressCount = Object.values(userProgress).filter(v => !v.isCompleted && v.percent > 0).length;
   const overallPercent = Math.min(100, Math.round((completedCount / totalVideos) * 100));
 
   return (
-    <div className="page-content-wrapper">
-      {/* Hero Welcome Banner */}
-      <section className="white-card hero-dashboard-card">
-        <div className="hero-text-area">
-          <span className="welcome-tag">STUDENT DASHBOARD</span>
-          <h1 className="hero-greeting">Good morning, Aayush</h1>
-          <p className="hero-subtext">Continue learning and build your coding skills step by step.</p>
-          <div className="hero-actions">
-            <button className="btn-primary" onClick={() => onSelectTab('c')}>Continue Learning →</button>
-            <button className="btn-secondary" onClick={() => onSelectTab('python')}>Explore Roadmap</button>
+    <div className="dashboard-container">
+      {/* 1. Student Portal Landing Hero Section */}
+      <section className="glass-panel hero-section">
+        <div className="hero-content">
+          <div className="top-badge-row">
+            <span className="badge-3d">
+              <Icon name="sparkles" size={13} />
+              WELCOME TO YOUR LEARNING SPACE
+            </span>
+            <span className="badge-creator">
+              <Icon name="code" size={12} />
+              Designed & Engineered by Aayush Singh
+            </span>
+          </div>
+
+          <h1 className="hero-title">Build Your Coding Future</h1>
+          <p className="hero-subtitle">
+            Watch lessons, learn consistently and complete your roadmap.
+          </p>
+
+          <div className="hero-cta-group">
+            <button className="btn-primary" onClick={() => onSelectTab('c')}>
+              Start Learning →
+            </button>
+            <button className="btn-secondary" onClick={() => onSelectTab('python')}>
+              View Roadmap
+            </button>
           </div>
         </div>
-        <div className="hero-illustration-clean">
-          <div className="code-window-frame">
-            <div className="frame-bar"><span className="f-dot"></span><span className="f-dot"></span><span className="f-dot"></span></div>
-            <div className="frame-code">
-              <code><span className="c-blue">int</span> main() &#123;<br/>&nbsp;&nbsp;printf(<span className="c-green">"Hello PPS LAB"</span>);<br/>&#125;</code>
+
+        <div className="hero-illustration">
+          <div className="illustration-window glass-panel">
+            <div className="window-bar">
+              <span className="dot red"></span>
+              <span className="dot yellow"></span>
+              <span className="dot green"></span>
+              <span className="window-title">main.c — Studio</span>
+            </div>
+            <pre className="code-block">
+              <code>
+                <span className="code-keyword">#include</span> &lt;stdio.h&gt;<br/><br/>
+                <span className="code-keyword">int</span> <span className="code-func">main</span>() &#123;<br/>
+                &nbsp;&nbsp;<span className="code-func">printf</span>(<span className="code-str">"Hello, Coding Master!\\n"</span>);<br/>
+                &nbsp;&nbsp;<span className="code-keyword">return</span> <span className="code-num">0</span>;<br/>
+                &#125;
+              </code>
+            </pre>
+          </div>
+          <div className="floating-symbol sym-1">&#123; &#125;</div>
+          <div className="floating-symbol sym-2">&lt;/&gt;</div>
+          <div className="floating-badge badge-c">C</div>
+          <div className="floating-badge badge-py">PY</div>
+        </div>
+      </section>
+
+      {/* 2. Live Video Watch Statistics Cards */}
+      <section className="section-block">
+        <div className="section-header-row">
+          <h2 className="section-title">
+            <Icon name="bar-chart-2" size={20} />
+            Learning Dashboard Statistics
+          </h2>
+          <button className="reset-tracking-btn" onClick={onResetTracking}>
+            <Icon name="rotate-ccw" size={13} />
+            Reset My Tracking
+          </button>
+        </div>
+        
+        <div className="quick-cards-grid">
+          <div className="stat-card-dashboard glass-panel">
+            <span className="d-stat-val">{totalVideos}</span>
+            <span className="d-stat-lbl">TOTAL LESSON VIDEOS</span>
+          </div>
+
+          <div className="stat-card-dashboard glass-panel green">
+            <span className="d-stat-val">{completedCount}</span>
+            <span className="d-stat-lbl">COMPLETED VIDEOS</span>
+          </div>
+
+          <div className="stat-card-dashboard glass-panel yellow">
+            <span className="d-stat-val">{inProgressCount}</span>
+            <span className="d-stat-lbl">VIDEOS IN PROGRESS</span>
+          </div>
+
+          <div className="stat-card-dashboard glass-panel cyan">
+            <span className="d-stat-val">{overallPercent}%</span>
+            <span className="d-stat-lbl">OVERALL PROGRESS</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Quick Action Cards */}
+      <section className="section-block">
+        <h2 className="section-title">
+          <Icon name="compass" size={20} />
+          Quick Actions
+        </h2>
+        <div className="quick-cards-grid">
+          <div className="glass-panel quick-card" onClick={() => onSelectTab('c')}>
+            <div className="quick-icon-box">
+              <Icon name="play-circle" size={22} />
+            </div>
+            <h3>Continue Learning</h3>
+            <p>Pick up where you left off</p>
+            <div className="quick-card-bottom">
+              <div className="mini-progress-bar"><div className="fill" style={{ width: `${overallPercent}%` }}></div></div>
+              <button className="quick-btn">Continue</button>
+            </div>
+          </div>
+
+          <div className="glass-panel quick-card" onClick={() => onSelectTab('c')}>
+            <div className="quick-icon-box blue">
+              <Icon name="code-2" size={22} />
+            </div>
+            <h3>C Language</h3>
+            <p>Master C programming fundamentals</p>
+            <div className="quick-card-bottom">
+              <button className="quick-btn">Open C Roadmap</button>
+            </div>
+          </div>
+
+          <div className="glass-panel quick-card" onClick={() => onSelectTab('python')}>
+            <div className="quick-icon-box purple">
+              <Icon name="terminal" size={22} />
+            </div>
+            <h3>Python</h3>
+            <p>Learn Python from basics to projects</p>
+            <div className="quick-card-bottom">
+              <button className="quick-btn">Open Python Roadmap</button>
+            </div>
+          </div>
+
+          <div className="glass-panel quick-card" onClick={() => onSelectTab('practice')}>
+            <div className="quick-icon-box cyan">
+              <Icon name="brain-circuit" size={22} />
+            </div>
+            <h3>Practice Zone</h3>
+            <p>Improve logic with coding problems</p>
+            <div className="quick-card-bottom">
+              <button className="quick-btn">Start Practice</button>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 4 Compact Statistics Cards */}
-      <section className="stats-four-grid">
-        <div className="white-card stat-chip">
-          <div className="stat-icon blue-bg"><Icon name="trending-up" size={18} /></div>
-          <div>
-            <div className="stat-number">{overallPercent}%</div>
-            <div className="stat-label">Overall Progress</div>
+      {/* 4. Language Path Selector Section */}
+      <section className="section-block">
+        <h2 className="section-title">
+          <Icon name="route" size={20} />
+          Choose Your Learning Path
+        </h2>
+        <div className="path-selection-grid">
+          <div className="glass-panel path-card active" onClick={() => onSelectTab('c')}>
+            <div className="path-header">
+              <Icon name="cpu" size={28} className="path-icon" />
+              <span className="badge-pro">RECOMMENDED</span>
+            </div>
+            <h3>C Language & Algorithmic Blueprint</h3>
+            <p>Master memory pointers, recursion, data structures and core low-level logic.</p>
+            <div className="path-meta">5 Phases • 20 Topics • Exam Ready</div>
           </div>
-        </div>
-        <div className="white-card stat-chip">
-          <div className="stat-icon green-bg"><Icon name="check-circle" size={18} /></div>
-          <div>
-            <div className="stat-number">{completedCount}</div>
-            <div className="stat-label">Completed Videos</div>
-          </div>
-        </div>
-        <div className="white-card stat-chip">
-          <div className="stat-icon amber-bg"><Icon name="clock" size={18} /></div>
-          <div>
-            <div className="stat-number">{inProgressCount}</div>
-            <div className="stat-label">In Progress</div>
-          </div>
-        </div>
-        <div className="white-card stat-chip">
-          <div className="stat-icon purple-bg"><Icon name="flame" size={18} /></div>
-          <div>
-            <div className="stat-number">3 Days</div>
-            <div className="stat-label">Learning Streak</div>
+
+          <div className="glass-panel path-card" onClick={() => onSelectTab('python')}>
+            <div className="path-header">
+              <Icon name="terminal" size={28} className="path-icon purple" />
+              <span className="badge-pro purple">POPULAR</span>
+            </div>
+            <h3>Python & Modern Scripting</h3>
+            <p>Learn Python data structures, OOP modularity, file I/O and rapid application logic.</p>
+            <div className="path-meta">5 Phases • 20 Topics • Project Ready</div>
           </div>
         </div>
       </section>
 
-      {/* Learning Paths Section */}
-      <section className="learning-paths-section">
-        <div className="section-header">
-          <h2>Choose Your Learning Path</h2>
-          <p>Structured 5-phase engineering roadmaps for university exams and interviews.</p>
-        </div>
-
-        <div className="paths-two-grid">
-          {/* C Language Card */}
-          <div className="white-card path-card c-accent-border">
-            <div className="path-top">
-              <span className="badge-pill blue-pill">C LANGUAGE</span>
-              <span className="path-phases-count">5 Phases</span>
-            </div>
-            <h3>C Language Master Roadmap</h3>
-            <p>Build strong programming fundamentals, memory pointer logic, and I/O mastery.</p>
-            <div className="path-progress-group">
-              <div className="path-progress-bar"><div className="bar-fill blue-fill" style={{ width: `${overallPercent}%` }}></div></div>
-              <span className="progress-text">{completedCount} of 16 lessons completed</span>
-            </div>
-            <button className="btn-primary full-btn" onClick={() => onSelectTab('c')}>Continue C Roadmap →</button>
+      {/* 5. Live Progress & Daily Mission Section */}
+      <div className="dashboard-dual-grid">
+        <section className="glass-panel progress-card">
+          <div className="card-header">
+            <Icon name="trending-up" size={20} className="card-header-icon" />
+            <h2>Your Progress Tracker</h2>
           </div>
 
-          {/* Python Card */}
-          <div className="white-card path-card python-accent-border">
-            <div className="path-top">
-              <span className="badge-pill cyan-pill">PYTHON 3.12+</span>
-              <span className="path-phases-count">5 Phases</span>
+          <div className="progress-overview">
+            <div className="progress-percentage-box">
+              <span className="percentage-number">{overallPercent}%</span>
+              <span className="percentage-label">OVERALL COMPLETION</span>
             </div>
-            <h3>Python Master Roadmap</h3>
-            <p>Learn modern programming concepts, OOPs, dynamic data structures, and game projects.</p>
-            <div className="path-progress-group">
-              <div className="path-progress-bar"><div className="bar-fill cyan-fill" style={{ width: '25%' }}></div></div>
-              <span className="progress-text">4 of 16 lessons completed</span>
+            <div className="progress-bar-large">
+              <div className="progress-fill-large" style={{ width: `${overallPercent}%` }}></div>
             </div>
-            <button className="btn-secondary full-btn" onClick={() => onSelectTab('python')}>Explore Python Roadmap →</button>
           </div>
+
+          <div className="progress-stats-grid">
+            <div className="p-stat-item">
+              <span className="p-val">{completedCount} of {totalVideos}</span>
+              <span className="p-lbl">Completed Videos</span>
+            </div>
+            <div className="p-stat-item">
+              <span className="p-val">3 Days 🔥</span>
+              <span className="p-lbl">Learning Streak</span>
+            </div>
+            <div className="p-stat-item">
+              <span className="p-val">Foundations & I/O</span>
+              <span className="p-lbl">Current Phase</span>
+            </div>
+          </div>
+        </section>
+
+        {/* Daily Mission Card */}
+        <section className="glass-panel mission-card">
+          <div className="card-header">
+            <Icon name="target" size={20} className="card-header-icon cyan" />
+            <h2>Today’s Coding Mission</h2>
+          </div>
+          <p className="mission-text">
+            “Complete one video lesson and solve three logic problems.”
+          </p>
+          <div className="mission-quote">
+            <Icon name="quote" size={14} />
+            <span>Small progress every day creates strong programming skills.</span>
+          </div>
+          <button className="btn-primary mission-btn" onClick={() => onSelectTab('c')}>
+            Start Mission
+          </button>
+        </section>
+      </div>
+
+      {/* 6. Achievements Section */}
+      <section className="section-block">
+        <h2 className="section-title">
+          <Icon name="trophy" size={20} />
+          Your Achievements
+        </h2>
+        <div className="achievements-grid">
+          {SAMPLE_ACHIEVEMENTS.map((ach) => (
+            <div
+              key={ach.id}
+              className={`glass-panel achievement-chip ${ach.unlocked ? 'unlocked' : 'locked'}`}
+              title={ach.desc}
+            >
+              <div className="ach-icon-box">
+                <Icon name={ach.icon} size={18} />
+              </div>
+              <div className="ach-info">
+                <h4>{ach.title}</h4>
+                <p>{ach.desc}</p>
+              </div>
+              <span className="ach-status">{ach.unlocked ? 'Unlocked' : 'Locked'}</span>
+            </div>
+          ))}
         </div>
       </section>
     </div>
   );
 };
 
-// Vertical Learning Timeline Roadmap View Component
-const TimelineRoadmapView = ({ currentLang, userProgress, onTopicClick }) => {
-  const data = currentLang === 'python' ? PYTHON_ROADMAP_DATA : C_ROADMAP_DATA;
+// SuccessProtocol Component
+const SuccessProtocol = ({ currentLang }) => {
+  const isPython = currentLang === 'python';
+
+  const protocols = [
+    {
+      icon: "wrench",
+      boldText: "Dry Run:",
+      normalText: "Trace variables on paper first"
+    },
+    {
+      icon: "shield",
+      boldText: "Edge Cases:",
+      normalText: "Test 0, negative & empty bounds"
+    },
+    {
+      icon: "cpu",
+      boldText: "Memory:",
+      normalText: isPython ? "Manage resources carefully" : "Always free dynamic heap blocks"
+    }
+  ];
 
   return (
-    <div className="page-content-wrapper">
-      <div className="roadmap-page-header">
-        <div className="header-left">
-          <span className="badge-pill blue-pill">{currentLang.toUpperCase()} ROADMAP</span>
-          <h1>{currentLang === 'python' ? 'Python Master Blueprint' : 'C Language Master Blueprint'}</h1>
-          <p>Engineered for university exams, technical interviews, and algorithmic problem solving.</p>
-        </div>
+    <div className="glass-panel protocol-panel 3d-protocol">
+      <div className="protocol-title layer-depth-mid">
+        <Icon name="lightbulb" size={18} />
+        <span>SUCCESS PROTOCOL:</span>
       </div>
-
-      {/* Vertical Timeline Container */}
-      <div className="timeline-container">
-        <div className="timeline-vertical-line"></div>
-
-        {data.map((phase, pIdx) => {
-          const totalInPhase = phase.topics.length;
-          const completedInPhase = phase.topics.filter(t => {
-            const vid = getYouTubeVideoId(t.url);
-            return vid && userProgress[vid] && userProgress[vid].isCompleted;
-          }).length;
-          const phasePercent = Math.round((completedInPhase / totalInPhase) * 100);
-
-          return (
-            <div key={phase.id} className="timeline-phase-card white-card">
-              <div className="phase-node-indicator">{phase.id}</div>
-              
-              <div className="phase-card-header">
-                <div>
-                  <span className="phase-badge">{phase.badge}</span>
-                  <h2>{phase.title}</h2>
-                  <p className="phase-desc">{phase.desc}</p>
-                </div>
-                <div className="phase-stats-box">
-                  <span className="p-count">{completedInPhase} / {totalInPhase} Completed</span>
-                  <div className="mini-progress-bar">
-                    <div className="bar-fill blue-fill" style={{ width: `${phasePercent}%` }}></div>
-                  </div>
-                </div>
-              </div>
-
-              {/* Topic Rows */}
-              <div className="timeline-topics-list">
-                {phase.topics.map((topic, tIdx) => {
-                  const vid = getYouTubeVideoId(topic.url);
-                  const prog = vid ? userProgress[vid] : null;
-
-                  let statusText = "Not Started";
-                  let statusClass = "not-started";
-
-                  if (prog) {
-                    if (prog.isCompleted) {
-                      statusText = "Completed ✓";
-                      statusClass = "completed";
-                    } else if (prog.percent > 0) {
-                      statusText = `In Progress (${prog.percent}%)`;
-                      statusClass = "in-progress";
-                    }
-                  }
-
-                  return (
-                    <div
-                      key={tIdx}
-                      className="timeline-topic-row"
-                      onClick={() => onTopicClick({ ...topic, phase: phase.badge, lang: currentLang === 'python' ? 'Python' : 'C' })}
-                    >
-                      <div className="topic-title-area">
-                        <Video3DIcon active={Boolean(topic.url)} />
-                        <span>{topic.title}</span>
-                      </div>
-                      {topic.url && (
-                        <span className={`status-pill ${statusClass}`}>{statusText}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
+      <div className="protocol-items layer-depth-high">
+        {protocols.map((item, idx) => (
+          <div key={idx} className="protocol-chip">
+            <span className="chip-icon-box">
+              <Icon name={item.icon} size={15} />
+            </span>
+            <span>
+              <strong className="chip-bold">{item.boldText}</strong> {item.normalText}
+            </span>
+          </div>
+        ))}
       </div>
     </div>
   );
 };
 
-// Dedicated Learning Progress Page Component
-const ProgressPage = ({ userProgress, onOpenResetModal }) => {
-  const totalVideos = 32;
-  const completedCount = Object.values(userProgress).filter(v => v.isCompleted).length;
-  const inProgressCount = Object.values(userProgress).filter(v => !v.isCompleted && v.percent > 0).length;
-  const remainingCount = Math.max(0, totalVideos - completedCount);
-  const overallPercent = Math.min(100, Math.round((completedCount / totalVideos) * 100));
+// Footer Component
+const Footer = () => {
+  return (
+    <footer className="footer-credit">
+      <div className="footer-line"></div>
+      <p className="footer-text">
+        <Icon name="sparkles" size={14} className="footer-sparkle" />
+        Designed & Engineered by <strong className="author-name">Aayush Singh</strong>
+      </p>
+    </footer>
+  );
+};
+
+// Toast Component
+const Toast = ({ message, onClose }) => {
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      onClose();
+    }, 3000);
+    return () => clearTimeout(timer);
+  }, [onClose]);
 
   return (
-    <div className="page-content-wrapper">
-      <div className="progress-page-header">
-        <h1>My Learning Progress</h1>
-        <p>Track video completions, phase percentages, and learning metrics in real time.</p>
+    <div className="toast-container">
+      <div className="toast">
+        <Icon name="info" size={18} style={{ color: 'var(--neon-cyan)' }} />
+        <span>{message}</span>
       </div>
-
-      <div className="progress-metrics-grid">
-        <div className="white-card metric-card">
-          <h3>Overall Completion</h3>
-          <div className="metric-large-number">{overallPercent}%</div>
-          <div className="progress-bar-bg"><div className="bar-fill blue-fill" style={{ width: `${overallPercent}%` }}></div></div>
-        </div>
-
-        <div className="white-card metric-card">
-          <h3>Completed Lessons</h3>
-          <div className="metric-large-number text-green">{completedCount}</div>
-          <span className="metric-sub">Out of {totalVideos} total roadmap lessons</span>
-        </div>
-
-        <div className="white-card metric-card">
-          <h3>In Progress Lessons</h3>
-          <div className="metric-large-number text-amber">{inProgressCount}</div>
-          <span className="metric-sub">Currently saved playback positions</span>
-        </div>
-
-        <div className="white-card metric-card">
-          <h3>Remaining Lessons</h3>
-          <div className="metric-large-number text-muted">{remainingCount}</div>
-          <span className="metric-sub">Lessons left to complete roadmap</span>
-        </div>
-      </div>
-
-      {/* Reset Progress Control Card */}
-      <section className="white-card reset-control-card">
-        <div>
-          <h3>Reset Learning Progress</h3>
-          <p>Clears saved video progress positions, completed statuses, and watch percentages.</p>
-        </div>
-        <button className="btn-danger" onClick={onOpenResetModal}>Reset My Tracking</button>
-      </section>
     </div>
   );
 };
 
-// Main App Router & Component Integration
+// Main App Component with Route, Distraction-Free Player & Reset Progress
 const App = () => {
-  const [user, setUser] = useState(() => sessionStorage.getItem("pps_user") || "aayush");
-  const [activeTab, setActiveTab] = useState("dashboard");
-  const [activeLang, setActiveLang] = useState("c");
-  const [activeVideo, setActiveVideo] = useState(null);
-  const [isResetModalOpen, setIsResetModalOpen] = useState(false);
-  const [toastMessage, setToastMessage] = useState(null);
+  const getInitialTab = () => {
+    const path = window.location.pathname.toLowerCase();
+    if (path.includes('/oneshot')) return 'oneshot';
+    if (path.includes('/python')) return 'python';
+    if (path.includes('/c')) return 'c';
+    if (path.includes('/practice')) return 'practice';
+    return 'dashboard';
+  };
 
+  const [user, setUser] = useState(() => sessionStorage.getItem("roadmap_user"));
+  const [activeTab, setActiveTab] = useState(getInitialTab);
+  const [toastMessage, setToastMessage] = useState(null);
+  const [activeVideo, setActiveVideo] = useState(null);
+
+  // User-specific progress state stored in localStorage (key: pps-video-progress-${username})
   const [userProgress, setUserProgress] = useState(() => {
     if (!user) return {};
     const saved = localStorage.getItem(`pps-video-progress-${user}`);
     return saved ? JSON.parse(saved) : {};
   });
 
-  const handleLogin = (username, fullName) => {
+  useEffect(() => {
+    if (window.lucide) {
+      window.lucide.createIcons();
+    }
+  }, [activeTab, user, activeVideo]);
+
+  useEffect(() => {
+    const handlePopState = () => {
+      setActiveTab(getInitialTab());
+    };
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const handleLogin = (username) => {
     setUser(username);
-    sessionStorage.setItem("pps_user", username);
+    sessionStorage.setItem("roadmap_user", username);
     const saved = localStorage.getItem(`pps-video-progress-${username}`);
     setUserProgress(saved ? JSON.parse(saved) : {});
-    setToastMessage(`Welcome, ${fullName || username}!`);
+    setToastMessage(`Welcome back, ${username}!`);
   };
 
   const handleLogout = () => {
     setUser(null);
-    sessionStorage.removeItem("pps_user");
+    sessionStorage.removeItem("roadmap_user");
   };
 
   const handleSelectTab = (tab) => {
     setActiveTab(tab);
-    if (tab === 'c' || tab === 'python') {
-      setActiveLang(tab);
-    }
+    let targetPath = '/dashboard';
+    if (tab === 'oneshot') targetPath = '/oneshot';
+    if (tab === 'c') targetPath = '/c';
+    if (tab === 'python') targetPath = '/python';
+    if (tab === 'practice') targetPath = '/practice';
+    window.history.pushState({}, '', targetPath);
   };
 
   const handleTopicClick = (topic) => {
     if (topic.url) {
       setActiveVideo(topic);
     } else {
-      setToastMessage("Video lesson link coming soon.");
+      setToastMessage("Video link coming soon.");
     }
   };
 
@@ -954,11 +1611,11 @@ const App = () => {
       if (nextItem.url) {
         setActiveVideo(nextItem);
       } else {
-        setToastMessage(`Next unit "${nextItem.title}" video coming soon.`);
+        setToastMessage(`Next topic "${nextItem.title}" video link coming soon.`);
         setActiveVideo(null);
       }
     } else {
-      setToastMessage("You have completed all available units!");
+      setToastMessage("You have reached the end of the roadmap units!");
       setActiveVideo(null);
     }
   };
@@ -987,65 +1644,108 @@ const App = () => {
     });
   };
 
-  const handleConfirmReset = () => {
+  const handleResetTracking = () => {
     if (!user) return;
-    localStorage.removeItem(`pps-video-progress-${user}`);
-    setUserProgress({});
-    setIsResetModalOpen(false);
-    setToastMessage("Your learning progress has been reset.");
+    if (window.confirm("Are you sure you want to reset all your learning progress?")) {
+      localStorage.removeItem(`pps-video-progress-${user}`);
+      setUserProgress({});
+      setToastMessage("Your learning progress has been reset.");
+    }
   };
 
   return (
-    <React.Fragment>
+    <div className="app-container">
       {!user ? (
-        <AuthView onLogin={handleLogin} />
+        <LoginPage onLogin={handleLogin} />
       ) : (
-        <div className="app-shell">
-          <TopNav
+        <React.Fragment>
+          <Navbar
             activeTab={activeTab}
             onSelectTab={handleSelectTab}
-            activeLang={activeLang}
-            onSelectLang={(lang) => { setActiveLang(lang); setActiveTab(lang); }}
+            currentLang={activeTab === 'python' ? 'python' : 'c'}
+            onSelectLang={handleSelectTab}
             user={user}
             onLogout={handleLogout}
           />
 
-          <div className="shell-body">
-            <LeftSidebar
+          <div className="main-wrapper">
+            <Sidebar
               activeTab={activeTab}
               onSelectTab={handleSelectTab}
-              user={user}
               onLogout={handleLogout}
             />
 
-            <main className="main-content-area">
+            <main className="content-area">
               {activeTab === 'dashboard' && (
-                <DashboardHome
+                <DashboardView
                   onSelectTab={handleSelectTab}
+                  onTopicClick={handleTopicClick}
                   userProgress={userProgress}
+                  onResetTracking={handleResetTracking}
+                />
+              )}
+
+              {activeTab === 'oneshot' && (
+                <OneShotView
+                  onTopicClick={handleTopicClick}
+                  setToastMessage={setToastMessage}
                 />
               )}
 
               {(activeTab === 'c' || activeTab === 'python') && (
-                <TimelineRoadmapView
-                  currentLang={activeLang}
-                  userProgress={userProgress}
-                  onTopicClick={handleTopicClick}
-                />
+                <React.Fragment>
+                  <RoadmapHeader
+                    currentLang={activeTab}
+                    onSelectLang={handleSelectTab}
+                  />
+
+                  <main className="roadmap-grid">
+                    {(activeTab === 'python' ? PYTHON_ROADMAP_DATA : C_ROADMAP_DATA).map((phase, idx) => (
+                      <PhaseCard
+                        key={phase.id}
+                        phase={phase}
+                        lang={activeTab === 'python' ? 'Python' : 'C'}
+                        userProgress={userProgress}
+                        onTopicClick={handleTopicClick}
+                        animationDelay={100 * idx}
+                      />
+                    ))}
+                  </main>
+                </React.Fragment>
               )}
 
               {activeTab === 'progress' && (
-                <ProgressPage
-                  userProgress={userProgress}
-                  onOpenResetModal={() => setIsResetModalOpen(true)}
-                />
+                <div className="white-card">
+                  <h2>My Learning Progress</h2>
+                  <p style={{ color: 'var(--text-secondary)', marginTop: '0.5rem' }}>Track completed phases, video playback history, and overall progress.</p>
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '1rem', marginTop: '1.5rem' }}>
+                    <div className="white-card">
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: '700' }}>COMPLETED LESSONS</span>
+                      <h3 style={{ fontSize: '2.2rem', color: 'var(--success-green)', marginTop: '0.4rem' }}>
+                        {Object.values(userProgress).filter(v => v.isCompleted).length}
+                      </h3>
+                    </div>
+                    <div className="white-card">
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: '700' }}>IN PROGRESS</span>
+                      <h3 style={{ fontSize: '2.2rem', color: 'var(--primary-blue)', marginTop: '0.4rem' }}>
+                        {Object.values(userProgress).filter(v => !v.isCompleted && v.percent > 0).length}
+                      </h3>
+                    </div>
+                    <div className="white-card">
+                      <span style={{ fontSize: '0.78rem', color: 'var(--text-muted)', fontWeight: '700' }}>TOTAL ROADMAP UNITS</span>
+                      <h3 style={{ fontSize: '2.2rem', color: 'var(--text-primary)', marginTop: '0.4rem' }}>32</h3>
+                    </div>
+                  </div>
+                </div>
               )}
+
+              <Footer />
             </main>
           </div>
-        </div>
+        </React.Fragment>
       )}
 
-      {/* Video Modal */}
+      {/* In-App YouTube Player Modal */}
       {activeVideo && (
         <VideoPlayerModal
           videoInfo={activeVideo}
@@ -1056,16 +1756,14 @@ const App = () => {
         />
       )}
 
-      {/* Reset Confirmation Modal */}
-      <ResetConfirmModal
-        isOpen={isResetModalOpen}
-        onClose={() => setIsResetModalOpen(false)}
-        onConfirm={handleConfirmReset}
-      />
-    </React.Fragment>
+      {toastMessage && (
+        <Toast message={toastMessage} onClose={() => setToastMessage(null)} />
+      )}
+    </div>
   );
 };
 
+// Render React App
 const rootElement = document.getElementById('root');
 const root = ReactDOM.createRoot(rootElement);
 root.render(<App />);
