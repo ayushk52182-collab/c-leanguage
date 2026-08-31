@@ -1,9 +1,12 @@
-/* Custom CSS Tokens & Futuristic Student Portal Palette */
+/* Custom CSS Tokens & Futuristic Agency Educational Studio Palette */
 :root {
-  --bg-dark: #050711;
-  --bg-grid-line: rgba(30, 90, 180, 0.12);
-  --card-bg: rgba(10, 20, 44, 0.75);
-  --card-border: rgba(45, 100, 190, 0.28);
+  --bg-dark: #030611;
+  --bg-dark-alt: #070c1e;
+  --bg-grid-line: rgba(30, 90, 180, 0.08);
+  --card-bg: rgba(9, 17, 36, 0.75);
+  --card-bg-elevated: rgba(13, 24, 52, 0.85);
+  --card-border: rgba(56, 120, 220, 0.22);
+  --card-border-glow: rgba(0, 240, 255, 0.45);
   
   --neon-cyan: #00f0ff;
   --neon-blue: #0088ff;
@@ -13,13 +16,14 @@
   --text-muted: #94a3b8;
   --text-dim: #64748b;
   
-  --glow-cyan: 0 0 25px rgba(0, 240, 255, 0.35);
-  --glow-blue: 0 0 20px rgba(0, 136, 255, 0.3);
-  --glow-card: 0 15px 35px -10px rgba(0, 0, 0, 0.8), 0 0 20px rgba(0, 136, 255, 0.12);
-  --glow-card-hover: 0 20px 40px -10px rgba(0, 210, 255, 0.25), 0 0 25px rgba(0, 240, 255, 0.2);
+  --glow-cyan: 0 0 30px rgba(0, 240, 255, 0.35);
+  --glow-blue: 0 0 25px rgba(0, 136, 255, 0.28);
+  --glow-card: 0 20px 45px -10px rgba(0, 0, 0, 0.85), 0 0 25px rgba(0, 136, 255, 0.12);
+  --glow-card-hover: 0 25px 50px -10px rgba(0, 210, 255, 0.3), 0 0 35px rgba(0, 240, 255, 0.25);
   
-  --font-heading: 'Outfit', -apple-system, sans-serif;
-  --font-body: 'Inter', -apple-system, sans-serif;
+  --font-display: 'Syne', 'Outfit', sans-serif;
+  --font-heading: 'Plus Jakarta Sans', 'Outfit', -apple-system, sans-serif;
+  --font-body: 'Plus Jakarta Sans', 'Inter', -apple-system, sans-serif;
   --font-code: 'Fira Code', monospace;
 }
 
@@ -258,13 +262,13 @@ body {
 }
 
 .hero-title {
-  font-family: var(--font-heading);
-  font-size: clamp(2.2rem, 3.2vw, 3.5rem);
-  font-weight: 900;
-  line-height: 1.1;
+  font-family: var(--font-display);
+  font-size: clamp(2.4rem, 3.8vw, 4.2rem);
+  font-weight: 800;
+  line-height: 1.08;
   color: #ffffff;
-  letter-spacing: -0.02em;
-  background: linear-gradient(135deg, #ffffff 30%, #a5f3fc 70%, #c084fc 100%);
+  letter-spacing: -0.03em;
+  background: linear-gradient(135deg, #ffffff 20%, #a5f3fc 65%, #c084fc 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
