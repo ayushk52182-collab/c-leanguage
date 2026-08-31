@@ -3,6 +3,14 @@ const { useState, useEffect, useRef } = React;
 const TEMP_USERNAME = "aayush";
 const TEMP_PASSWORD = "1234";
 
+// Helper to extract YouTube video ID from URL
+const getYouTubeVideoId = (url) => {
+  if (!url) return null;
+  const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+  const match = url.match(regExp);
+  return match && match[2].length === 11 ? match[2] : null;
+};
+
 // Lucide Icon Helper using SVG rendering fallback for smooth standalone UMD compatibility
 const Icon = ({ name, size = 18, className = "" }) => {
   useEffect(() => {
@@ -218,34 +226,6 @@ const SAMPLE_ACHIEVEMENTS = [
   { id: 6, title: "Python Explorer", desc: "Start Python & Data Structures", unlocked: false, icon: "terminal" }
 ];
 
-// Sample Recent Journey Data
-const RECENT_JOURNEY_TOPICS = [
-  {
-    id: "j1",
-    title: "Setup: GCC, MinGW & VS Code",
-    lang: "C",
-    phase: "PHASE 01",
-    progress: 100,
-    url: "https://youtu.be/z2jDamkbBF0?si=k0dKMuofXYDSuY0B"
-  },
-  {
-    id: "j2",
-    title: "Decisions: if-else & switch",
-    lang: "C",
-    phase: "PHASE 02",
-    progress: 75,
-    url: "https://youtu.be/7PSfRdeY5qE?si=QPvhiVD1X-VxcTaC"
-  },
-  {
-    id: "j3",
-    title: "Modularity: Prototyping & Scope",
-    lang: "C",
-    phase: "PHASE 03",
-    progress: 40,
-    url: "https://youtu.be/RFLFX1boGwo?si=rBfb98DMquG0fqUD"
-  }
-];
-
 // Video 3D Icon helper
 const Video3DIcon = ({ active = true }) => {
   return (
@@ -255,10 +235,11 @@ const Video3DIcon = ({ active = true }) => {
   );
 };
 
-// Login Component
+// Premium Student Login Component
 const LoginPage = ({ onLogin }) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
 
   const handleSubmit = (e) => {
@@ -266,20 +247,22 @@ const LoginPage = ({ onLogin }) => {
     if (username === TEMP_USERNAME && password === TEMP_PASSWORD) {
       onLogin(username);
     } else {
-      setError("Invalid username or password. Try: aayush / 1234");
+      setError("Incorrect username or password.");
     }
   };
 
   return (
     <div className="login-overlay">
-      <div className="glass-panel login-card">
+      <div className="glass-panel login-card 3d-login-card">
         <div className="login-header">
-          <span className="badge-3d">
-            <Icon name="shield-check" size={13} />
-            STUDENT PORTAL
-          </span>
-          <h2 className="login-title">Student Learning Portal</h2>
-          <p className="login-subtitle">Enter credentials to access your dashboard</p>
+          <div className="top-badge-row">
+            <span className="badge-3d">
+              <Icon name="layers" size={13} />
+              3D ENGINEERING ROADMAP
+            </span>
+          </div>
+          <h2 className="login-title">Welcome Back, Learner</h2>
+          <p className="login-subtitle">Continue your coding journey and track your learning progress.</p>
         </div>
 
         <form onSubmit={handleSubmit} className="login-form">
@@ -299,30 +282,185 @@ const LoginPage = ({ onLogin }) => {
 
           <div className="form-group">
             <label>Password</label>
-            <input
-              type="password"
-              className="login-input"
-              placeholder="••••"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="password-input-wrapper">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="login-input password-field"
+                placeholder="••••••••"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                className="toggle-password-btn"
+                onClick={() => setShowPassword(!showPassword)}
+                aria-label={showPassword ? "Hide password" : "Show password"}
+              >
+                <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
+              </button>
+            </div>
           </div>
 
           <button type="submit" className="login-submit-btn">
-            Unlock Portal Access
+            Login to Dashboard →
           </button>
         </form>
 
-        <div className="login-hint">
-          <span>Demo Access:</span> <strong>aayush</strong> / <strong>1234</strong>
+        <div className="login-footer-info">
+          <p className="progress-note">
+            <Icon name="shield-check" size={14} />
+            Your learning progress is saved automatically.
+          </p>
+          <div className="login-hint">
+            <span>Demo Credentials:</span> <strong>aayush</strong> / <strong>1234</strong>
+          </div>
+          <p className="login-credit">Designed & Engineered by Aayush Singh</p>
         </div>
       </div>
     </div>
   );
 };
 
-// Navigation Bar
+// In-App YouTube Video Modal Player Component
+const VideoPlayerModal = ({ videoInfo, onClose, onProgressUpdate }) => {
+  const playerRef = useRef(null);
+  const intervalRef = useRef(null);
+  const [playbackState, setPlaybackState] = useState({
+    currentTime: 0,
+    duration: 0,
+    watchedPercent: 0,
+    statusText: "Buffering...",
+    isCompleted: false
+  });
+
+  const videoId = getYouTubeVideoId(videoInfo.url);
+
+  useEffect(() => {
+    let player;
+
+    const createPlayer = () => {
+      player = new window.YT.Player('youtube-player-element', {
+        videoId: videoId,
+        playerVars: {
+          autoplay: 1,
+          controls: 1,
+          rel: 0,
+          modestbranding: 1
+        },
+        events: {
+          onReady: (event) => {
+            playerRef.current = event.target;
+            const dur = event.target.getDuration() || 0;
+            setPlaybackState(prev => ({ ...prev, duration: dur, statusText: "Ready" }));
+          },
+          onStateChange: (event) => {
+            let status = "Paused";
+            if (event.data === window.YT.PlayerState.PLAYING) {
+              status = "Watching";
+            } else if (event.data === window.YT.PlayerState.PAUSED) {
+              status = "Paused";
+            } else if (event.data === window.YT.PlayerState.BUFFERING) {
+              status = "Buffering...";
+            } else if (event.data === window.YT.PlayerState.ENDED) {
+              status = "Completed";
+            }
+            setPlaybackState(prev => ({ ...prev, statusText: status }));
+          }
+        }
+      });
+    };
+
+    if (window.YT && window.YT.Player) {
+      createPlayer();
+    } else {
+      window.onYouTubeIframeAPIReady = createPlayer;
+    }
+
+    intervalRef.current = setInterval(() => {
+      if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
+        const cur = playerRef.current.getCurrentTime() || 0;
+        const dur = playerRef.current.getDuration() || 0;
+        const pct = dur > 0 ? Math.min(100, Math.round((cur / dur) * 100)) : 0;
+        const isComp = pct >= 80;
+
+        setPlaybackState(prev => ({
+          ...prev,
+          currentTime: cur,
+          duration: dur,
+          watchedPercent: Math.max(prev.watchedPercent, pct),
+          isCompleted: prev.isCompleted || isComp
+        }));
+
+        onProgressUpdate({
+          videoId,
+          title: videoInfo.title,
+          lang: videoInfo.lang || "C",
+          phase: videoInfo.phase || "PHASE 01",
+          currentTime: cur,
+          duration: dur,
+          percent: pct,
+          isCompleted: isComp
+        });
+      }
+    }, 1000);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+      if (playerRef.current && typeof playerRef.current.destroy === 'function') {
+        playerRef.current.destroy();
+      }
+    };
+  }, [videoId]);
+
+  const formatTime = (sec) => {
+    const m = Math.floor(sec / 60);
+    const s = Math.floor(sec % 60);
+    return `${m}:${s < 10 ? '0' : ''}${s}`;
+  };
+
+  return (
+    <div className="video-modal-overlay">
+      <div className="glass-panel video-modal-card">
+        <div className="modal-header">
+          <div className="modal-title-group">
+            <span className="phase-badge">{videoInfo.phase || "PHASE 01"}</span>
+            <span className="lang-tag">{videoInfo.lang || "C"}</span>
+            <h3 className="modal-video-title">{videoInfo.title}</h3>
+          </div>
+          <button className="modal-close-btn" onClick={onClose} aria-label="Close Video Player">
+            <Icon name="x" size={20} />
+          </button>
+        </div>
+
+        <div className="iframe-container">
+          <div id="youtube-player-element"></div>
+        </div>
+
+        <div className="video-live-tracker-bar">
+          <div className="tracker-top">
+            <div className="status-indicator">
+              <span className={`status-dot ${playbackState.statusText.toLowerCase()}`}></span>
+              <span className="status-text">{playbackState.statusText}</span>
+              {playbackState.isCompleted && <span className="completion-badge">✓ Completed</span>}
+            </div>
+            <div className="time-display">
+              {formatTime(playbackState.currentTime)} / {formatTime(playbackState.duration)} ({playbackState.watchedPercent}%)
+            </div>
+          </div>
+          <div className="live-progress-track">
+            <div
+              className="live-progress-fill"
+              style={{ width: `${playbackState.watchedPercent}%` }}
+            ></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Navigation Bar Component
 const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => {
   return (
     <nav className="glass-panel nav-bar">
@@ -379,7 +517,7 @@ const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => {
 };
 
 // Header Component for Roadmaps
-const RoadmapHeader = ({ currentLang, onSelectLang, user, onLogout }) => {
+const RoadmapHeader = ({ currentLang, onSelectLang }) => {
   const isPython = currentLang === 'python';
 
   return (
@@ -395,7 +533,6 @@ const RoadmapHeader = ({ currentLang, onSelectLang, user, onLogout }) => {
             BY AAYUSH SINGH
           </span>
           
-          {/* Language Selector Pill */}
           <div className="language-selector-pill">
             <span className="lang-label">PATH:</span>
             <button
@@ -444,11 +581,11 @@ const StatCard = ({ value, label }) => {
 };
 
 // TopicRow Component
-const TopicRow = ({ topic, onTopicClick }) => {
+const TopicRow = ({ topic, phaseBadge, lang, onTopicClick }) => {
   const handleKeyDown = (e) => {
     if (e.key === 'Enter' || e.key === ' ') {
       e.preventDefault();
-      onTopicClick(topic);
+      onTopicClick({ ...topic, phase: phaseBadge, lang });
     }
   };
 
@@ -458,7 +595,7 @@ const TopicRow = ({ topic, onTopicClick }) => {
       tabIndex={0}
       role="button"
       aria-label={`Open topic video: ${topic.title}`}
-      onClick={() => onTopicClick(topic)}
+      onClick={() => onTopicClick({ ...topic, phase: phaseBadge, lang })}
       onKeyDown={handleKeyDown}
     >
       <div className="topic-left">
@@ -470,7 +607,7 @@ const TopicRow = ({ topic, onTopicClick }) => {
 };
 
 // PhaseCard Component with Interactive 3D Mouse Perspective Tilt
-const PhaseCard = ({ phase, onTopicClick, animationDelay }) => {
+const PhaseCard = ({ phase, lang, onTopicClick, animationDelay }) => {
   const cardRef = useRef(null);
   const [transformStyle, setTransformStyle] = useState("");
   const [reflectionStyle, setReflectionStyle] = useState({});
@@ -523,7 +660,13 @@ const PhaseCard = ({ phase, onTopicClick, animationDelay }) => {
 
         <div className="topics-list">
           {phase.topics.map((topic, index) => (
-            <TopicRow key={index} topic={topic} onTopicClick={onTopicClick} />
+            <TopicRow
+              key={index}
+              topic={topic}
+              phaseBadge={phase.badge}
+              lang={lang}
+              onTopicClick={onTopicClick}
+            />
           ))}
         </div>
       </div>
@@ -537,7 +680,12 @@ const PhaseCard = ({ phase, onTopicClick, animationDelay }) => {
 };
 
 // Dashboard View
-const DashboardView = ({ onSelectTab, onTopicClick }) => {
+const DashboardView = ({ onSelectTab, onTopicClick, userProgress }) => {
+  const totalVideos = 32;
+  const completedCount = Object.values(userProgress).filter(v => v.isCompleted).length;
+  const inProgressCount = Object.values(userProgress).filter(v => !v.isCompleted && v.percent > 0).length;
+  const overallPercent = Math.min(100, Math.round((completedCount / totalVideos) * 100));
+
   return (
     <div className="dashboard-container">
       {/* 1. Student Portal Landing Hero Section */}
@@ -556,7 +704,7 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
 
           <h1 className="hero-title">Build Your Coding Future</h1>
           <p className="hero-subtitle">
-            Learn step by step, practice daily and become confident in programming.
+            Watch lessons, learn consistently and complete your roadmap.
           </p>
 
           <div className="hero-cta-group">
@@ -569,7 +717,6 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
           </div>
         </div>
 
-        {/* 3D Coding Illustration Area */}
         <div className="hero-illustration">
           <div className="illustration-window glass-panel">
             <div className="window-bar">
@@ -595,7 +742,36 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
         </div>
       </section>
 
-      {/* 2. Quick Learning Cards Grid */}
+      {/* 2. Live Video Watch Statistics Cards */}
+      <section className="section-block">
+        <h2 className="section-title">
+          <Icon name="bar-chart-2" size={20} />
+          Learning Dashboard Statistics
+        </h2>
+        <div className="quick-cards-grid">
+          <div className="stat-card-dashboard glass-panel">
+            <span className="d-stat-val">{totalVideos}</span>
+            <span className="d-stat-lbl">TOTAL LESSON VIDEOS</span>
+          </div>
+
+          <div className="stat-card-dashboard glass-panel green">
+            <span className="d-stat-val">{completedCount}</span>
+            <span className="d-stat-lbl">COMPLETED VIDEOS</span>
+          </div>
+
+          <div className="stat-card-dashboard glass-panel yellow">
+            <span className="d-stat-val">{inProgressCount}</span>
+            <span className="d-stat-lbl">VIDEOS IN PROGRESS</span>
+          </div>
+
+          <div className="stat-card-dashboard glass-panel cyan">
+            <span className="d-stat-val">{overallPercent}%</span>
+            <span className="d-stat-lbl">OVERALL PROGRESS</span>
+          </div>
+        </div>
+      </section>
+
+      {/* 3. Quick Action Cards */}
       <section className="section-block">
         <h2 className="section-title">
           <Icon name="compass" size={20} />
@@ -609,7 +785,7 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
             <h3>Continue Learning</h3>
             <p>Pick up where you left off</p>
             <div className="quick-card-bottom">
-              <div className="mini-progress-bar"><div className="fill" style={{ width: '45%' }}></div></div>
+              <div className="mini-progress-bar"><div className="fill" style={{ width: `${overallPercent}%` }}></div></div>
               <button className="quick-btn">Continue</button>
             </div>
           </div>
@@ -649,7 +825,7 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
         </div>
       </section>
 
-      {/* 3. Language Path Selector Section */}
+      {/* 4. Language Path Selector Section */}
       <section className="section-block">
         <h2 className="section-title">
           <Icon name="route" size={20} />
@@ -661,7 +837,7 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
               <Icon name="cpu" size={28} className="path-icon" />
               <span className="badge-pro">RECOMMENDED</span>
             </div>
-            <h3>C Language & Algorithmic PPS</h3>
+            <h3>C Language & Algorithmic Blueprint</h3>
             <p>Master memory pointers, recursion, data structures and core low-level logic.</p>
             <div className="path-meta">5 Phases • 20 Topics • Exam Ready</div>
           </div>
@@ -678,28 +854,28 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
         </div>
       </section>
 
-      {/* 4. Progress & Daily Mission Section */}
+      {/* 5. Live Progress & Daily Mission Section */}
       <div className="dashboard-dual-grid">
         <section className="glass-panel progress-card">
           <div className="card-header">
             <Icon name="trending-up" size={20} className="card-header-icon" />
-            <h2>Your Progress</h2>
+            <h2>Your Progress Tracker</h2>
           </div>
 
           <div className="progress-overview">
             <div className="progress-percentage-box">
-              <span className="percentage-number">25%</span>
+              <span className="percentage-number">{overallPercent}%</span>
               <span className="percentage-label">OVERALL COMPLETION</span>
             </div>
             <div className="progress-bar-large">
-              <div className="progress-fill-large" style={{ width: '25%' }}></div>
+              <div className="progress-fill-large" style={{ width: `${overallPercent}%` }}></div>
             </div>
           </div>
 
           <div className="progress-stats-grid">
             <div className="p-stat-item">
-              <span className="p-val">8 / 32</span>
-              <span className="p-lbl">Completed Topics</span>
+              <span className="p-val">{completedCount} of {totalVideos}</span>
+              <span className="p-lbl">Completed Videos</span>
             </div>
             <div className="p-stat-item">
               <span className="p-val">3 Days 🔥</span>
@@ -719,7 +895,7 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
             <h2>Today’s Coding Mission</h2>
           </div>
           <p className="mission-text">
-            “Complete one topic and solve three logic problems.”
+            “Complete one video lesson and solve three logic problems.”
           </p>
           <div className="mission-quote">
             <Icon name="quote" size={14} />
@@ -731,7 +907,7 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
         </section>
       </div>
 
-      {/* 5. Achievements Section */}
+      {/* 6. Achievements Section */}
       <section className="section-block">
         <h2 className="section-title">
           <Icon name="trophy" size={20} />
@@ -752,38 +928,6 @@ const DashboardView = ({ onSelectTab, onTopicClick }) => {
                 <p>{ach.desc}</p>
               </div>
               <span className="ach-status">{ach.unlocked ? 'Unlocked' : 'Locked'}</span>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* 6. Continue Your Journey Recent Topics */}
-      <section className="section-block">
-        <h2 className="section-title">
-          <Icon name="history" size={20} />
-          Continue Your Journey
-        </h2>
-        <div className="recent-journey-grid">
-          {RECENT_JOURNEY_TOPICS.map((item) => (
-            <div
-              key={item.id}
-              className="glass-panel journey-card"
-              onClick={() => onTopicClick(item)}
-            >
-              <div className="journey-top">
-                <span className="phase-badge">{item.phase}</span>
-                <span className="lang-tag">{item.lang}</span>
-              </div>
-              <div className="journey-title-row">
-                <Video3DIcon active={Boolean(item.url)} />
-                <h4 className="journey-title">{item.title}</h4>
-              </div>
-              <div className="journey-bottom">
-                <div className="mini-progress-bar">
-                  <div className="fill" style={{ width: `${item.progress}%` }}></div>
-                </div>
-                <button className="journey-btn">Continue →</button>
-              </div>
             </div>
           ))}
         </div>
@@ -868,7 +1012,7 @@ const Toast = ({ message, onClose }) => {
   );
 };
 
-// Main App Component with Portal Navigation & Authentication Guard
+// Main App Component with Route, In-App Video Player & Progress Storage
 const App = () => {
   const getInitialTab = () => {
     const path = window.location.pathname.toLowerCase();
@@ -878,15 +1022,23 @@ const App = () => {
     return 'dashboard';
   };
 
-  const [user, setUser] = useState(() => localStorage.getItem("roadmap_user"));
+  const [user, setUser] = useState(() => sessionStorage.getItem("roadmap_user"));
   const [activeTab, setActiveTab] = useState(getInitialTab);
   const [toastMessage, setToastMessage] = useState(null);
+  const [activeVideo, setActiveVideo] = useState(null);
+
+  // User-specific progress state stored in localStorage (key: pps-video-progress-${username})
+  const [userProgress, setUserProgress] = useState(() => {
+    if (!user) return {};
+    const saved = localStorage.getItem(`pps-video-progress-${user}`);
+    return saved ? JSON.parse(saved) : {};
+  });
 
   useEffect(() => {
     if (window.lucide) {
       window.lucide.createIcons();
     }
-  }, [activeTab, user]);
+  }, [activeTab, user, activeVideo]);
 
   useEffect(() => {
     const handlePopState = () => {
@@ -898,13 +1050,15 @@ const App = () => {
 
   const handleLogin = (username) => {
     setUser(username);
-    localStorage.setItem("roadmap_user", username);
+    sessionStorage.setItem("roadmap_user", username);
+    const saved = localStorage.getItem(`pps-video-progress-${username}`);
+    setUserProgress(saved ? JSON.parse(saved) : {});
     setToastMessage(`Welcome back, ${username}!`);
   };
 
   const handleLogout = () => {
     setUser(null);
-    localStorage.removeItem("roadmap_user");
+    sessionStorage.removeItem("roadmap_user");
   };
 
   const handleSelectTab = (tab) => {
@@ -918,15 +1072,38 @@ const App = () => {
 
   const handleTopicClick = (topic) => {
     if (topic.url) {
-      window.open(topic.url, "_blank", "noopener,noreferrer");
+      setActiveVideo(topic);
     } else {
       setToastMessage("Video link coming soon.");
     }
   };
 
+  const handleVideoProgressUpdate = (progressData) => {
+    if (!user || !progressData.videoId) return;
+
+    setUserProgress(prev => {
+      const prevEntry = prev[progressData.videoId] || {};
+      const updated = {
+        ...prev,
+        [progressData.videoId]: {
+          videoId: progressData.videoId,
+          title: progressData.title,
+          lang: progressData.lang,
+          phase: progressData.phase,
+          currentTime: progressData.currentTime,
+          duration: progressData.duration,
+          percent: Math.max(prevEntry.percent || 0, progressData.percent),
+          isCompleted: prevEntry.isCompleted || progressData.isCompleted,
+          lastWatchedAt: new Date().toISOString()
+        }
+      };
+      localStorage.setItem(`pps-video-progress-${user}`, JSON.stringify(updated));
+      return updated;
+    });
+  };
+
   return (
     <React.Fragment>
-      {/* Background 3D Perspective Plane & Moving Horizon Particles */}
       <div className="perspective-grid-floor"></div>
       <div className="horizon-glow"></div>
 
@@ -945,6 +1122,7 @@ const App = () => {
             <DashboardView
               onSelectTab={handleSelectTab}
               onTopicClick={handleTopicClick}
+              userProgress={userProgress}
             />
           )}
 
@@ -953,8 +1131,6 @@ const App = () => {
               <RoadmapHeader
                 currentLang={activeTab}
                 onSelectLang={handleSelectTab}
-                user={user}
-                onLogout={handleLogout}
               />
 
               <main className="roadmap-grid">
@@ -962,6 +1138,7 @@ const App = () => {
                   <PhaseCard
                     key={phase.id}
                     phase={phase}
+                    lang={activeTab === 'python' ? 'Python' : 'C'}
                     onTopicClick={handleTopicClick}
                     animationDelay={100 * idx}
                   />
@@ -1001,6 +1178,15 @@ const App = () => {
 
           <Footer />
         </React.Fragment>
+      )}
+
+      {/* In-App YouTube Player Modal */}
+      {activeVideo && (
+        <VideoPlayerModal
+          videoInfo={activeVideo}
+          onClose={() => setActiveVideo(null)}
+          onProgressUpdate={handleVideoProgressUpdate}
+        />
       )}
 
       {toastMessage && (
