@@ -1,4 +1,4 @@
-// C Language Structured Data
+// C Language Structured Data with Curated Video Masterclasses
 export const C_ROADMAP_DATA = [
   {
     id: "01",
@@ -50,10 +50,10 @@ export const C_ROADMAP_DATA = [
     bottomLabel: "HEART OF C",
     bottomIcon: "Flame",
     topics: [
-      { title: "Pointers: Address & & deref *", url: null },
-      { title: "Passing: Value vs Reference", url: null },
-      { title: "DMA: malloc() & free()", url: null },
-      { title: "Structs: struct, union", url: null }
+      { title: "Pointers: Address & & deref *", url: "https://youtu.be/9ZXs_PffqFw" },
+      { title: "Passing: Value vs Reference", url: "https://youtu.be/LW8Rfh6TzGg" },
+      { title: "DMA: malloc() & free()", url: "https://youtu.be/udgw_ZkUu38" },
+      { title: "Structs: struct, union", url: "https://youtu.be/kM_M0vY4YkU" }
     ]
   },
   {
@@ -64,15 +64,15 @@ export const C_ROADMAP_DATA = [
     bottomLabel: "EXAM MASTERY",
     bottomIcon: "Trophy",
     topics: [
-      { title: "Files: fopen, fprintf, fread", url: null },
-      { title: "Sorting: Bubble, Selection", url: null },
-      { title: "Searching: Linear vs Binary", url: null },
-      { title: "Project: Student / Bank Mini-app", url: null }
+      { title: "Files: fopen, fprintf, fread", url: "https://youtu.be/1uR4tL-OuI0" },
+      { title: "Sorting: Bubble, Selection", url: "https://youtu.be/pkYVOmU3MgA" },
+      { title: "Searching: Linear vs Binary", url: "https://youtu.be/246V51AWwZM" },
+      { title: "Project: Student / Bank Mini-app", url: "https://youtu.be/rL_2y9wM4QY" }
     ]
   }
 ];
 
-// Python Structured Data
+// Python Structured Data with Curated Video Masterclasses
 export const PYTHON_ROADMAP_DATA = [
   {
     id: "01",
@@ -82,10 +82,10 @@ export const PYTHON_ROADMAP_DATA = [
     bottomLabel: "WEEK 1 TARGET",
     bottomIcon: "Zap",
     topics: [
-      { title: "Python setup, interpreter & VS Code", url: null },
-      { title: "Variables, data types & type conversion", url: null },
-      { title: "input(), print() & formatted output", url: null },
-      { title: "Operators and expressions", url: null }
+      { title: "Python setup, interpreter & VS Code", url: "https://youtu.be/7wnove7K-ZQ" },
+      { title: "Variables, data types & type conversion", url: "https://youtu.be/TqPzwenhMj0" },
+      { title: "input(), print() & formatted output", url: "https://youtu.be/kqtD5dpn9C8" },
+      { title: "Operators and expressions", url: "https://youtu.be/v5MR5JnKcZI" }
     ]
   },
   {
@@ -96,10 +96,10 @@ export const PYTHON_ROADMAP_DATA = [
     bottomLabel: "LOGIC BUILDING",
     bottomIcon: "Code2",
     topics: [
-      { title: "if, elif, else conditions", url: null },
-      { title: "for and while loops", url: null },
-      { title: "break, continue and pass", url: null },
-      { title: "Pattern and number problems", url: null }
+      { title: "if, elif, else conditions", url: "https://youtu.be/PqFKRqpHrjw" },
+      { title: "for and while loops", url: "https://youtu.be/6iF8Xb7Z3wQ" },
+      { title: "break, continue and pass", url: "https://youtu.be/yCzVJ5p-M-A" },
+      { title: "Pattern and number problems", url: "https://youtu.be/k9TUPpGqYTo" }
     ]
   },
   {
@@ -110,10 +110,10 @@ export const PYTHON_ROADMAP_DATA = [
     bottomLabel: "CORE MODULARITY",
     bottomIcon: "GitBranch",
     topics: [
-      { title: "Functions, parameters and return values", url: null },
-      { title: "Recursion and call stack", url: null },
-      { title: "Lists, tuples and dictionaries", url: null },
-      { title: "Strings and common operations", url: null }
+      { title: "Functions, parameters and return values", url: "https://youtu.be/BVfCWuca9nw" },
+      { title: "Recursion and call stack", url: "https://youtu.be/wMNrSM5jZCM" },
+      { title: "Lists, tuples and dictionaries", url: "https://youtu.be/daefaLgNkw0" },
+      { title: "Strings and common operations", url: "https://youtu.be/k9TUPpGqYTo" }
     ]
   },
   {
@@ -124,10 +124,10 @@ export const PYTHON_ROADMAP_DATA = [
     bottomLabel: "HEART OF PYTHON",
     bottomIcon: "Flame",
     topics: [
-      { title: "Classes and objects", url: null },
-      { title: "Constructors and methods", url: null },
-      { title: "Inheritance and polymorphism", url: null },
-      { title: "Encapsulation and abstraction", url: null }
+      { title: "Classes and objects", url: "https://youtu.be/JeznW_7DlB0" },
+      { title: "Constructors and methods", url: "https://youtu.be/8O5kX73OkIM" },
+      { title: "Inheritance and polymorphism", url: "https://youtu.be/RSl87lqOXDE" },
+      { title: "Encapsulation and abstraction", url: "https://youtu.be/SEDXvIe8lJg" }
     ]
   },
   {
@@ -138,10 +138,10 @@ export const PYTHON_ROADMAP_DATA = [
     bottomLabel: "EXAM MASTERY",
     bottomIcon: "Trophy",
     topics: [
-      { title: "File handling and exception handling", url: null },
-      { title: "Modules and packages", url: null },
-      { title: "Sorting and searching", url: null },
-      { title: "Python mini-project", url: null }
+      { title: "File handling and exception handling", url: "https://youtu.be/aO_49o1U9wE" },
+      { title: "Modules and packages", url: "https://youtu.be/CqvZ3vGoGs0" },
+      { title: "Sorting and searching", url: "https://youtu.be/g_xesqdQack" },
+      { title: "Python mini-project", url: "https://youtu.be/UrsmFxEIp5k" }
     ]
   }
 ];

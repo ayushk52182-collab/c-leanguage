@@ -1,8 +1,10 @@
+import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
 import { BarChart2, RotateCcw, Compass, PlayCircle, Code2, Terminal as TerminalIcon, BrainCircuit, Route, Cpu, TrendingUp, Target, Quote, Trophy, Sparkles } from 'lucide-react';
 import { SAMPLE_ACHIEVEMENTS } from '../data/achievements';
 import { TOTAL_VIDEOS } from '../utils/constants';
 import * as Icons from 'lucide-react';
+import HeroCanvas3D from '../three/HeroCanvas3D';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -21,7 +23,7 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress, onResetTracking })
   return (
     <motion.div className="dashboard-container" variants={containerVariants} initial="hidden" animate="visible">
 
-      {/* Hero Section */}
+      {/* Hero Section with Interactive 3D WebGL Canvas */}
       <motion.section className="glass-card hero-section" variants={itemVariants}>
         <div className="hero-content">
           <div className="top-badge-row">
@@ -32,30 +34,37 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress, onResetTracking })
             <span className="hero-title-line">Build Your</span>
             <span className="hero-title-line gradient-text">Coding Future</span>
           </h1>
-          <p className="hero-subtitle">Watch lessons, learn consistently and complete your roadmap.</p>
+          <p className="hero-subtitle">Watch lessons, master C & Python algorithms, and complete your roadmap in interactive 3D.</p>
           <div className="hero-cta-group">
-            <button className="btn-primary btn-glow" onClick={() => onSelectTab('c')}>Start Learning →</button>
-            <button className="btn-secondary" onClick={() => onSelectTab('python')}>View Roadmap</button>
+            <button className="btn-primary btn-glow" onClick={() => onSelectTab('c')}>Start C Roadmap →</button>
+            <button className="btn-secondary" onClick={() => onSelectTab('python')}>Python Blueprint</button>
+            <button className="btn-secondary" onClick={() => onSelectTab('practice')} style={{ borderColor: 'rgba(180, 74, 255, 0.4)', color: 'var(--neon-purple)' }}>
+              <BrainCircuit size={15} /> Practice Studio
+            </button>
           </div>
         </div>
-        <div className="hero-illustration">
-          <div className="illustration-window glass-card">
+
+        {/* 3D WebGL Scene & Floating Code Card */}
+        <div className="hero-illustration" style={{ minHeight: '320px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ position: 'absolute', top: 0, left: 0, right: 0, bottom: 0, zIndex: 1 }}>
+            <Suspense fallback={<div className="loading-3d">Initializing 3D World...</div>}>
+              <HeroCanvas3D />
+            </Suspense>
+          </div>
+
+          <div className="illustration-window glass-card" style={{ zIndex: 2, pointerEvents: 'auto', background: 'rgba(6, 6, 15, 0.85)', backdropFilter: 'blur(16px)' }}>
             <div className="window-bar">
               <span className="dot red"></span>
               <span className="dot yellow"></span>
               <span className="dot green"></span>
-              <span className="window-title">main.c — Studio</span>
+              <span className="window-title">aayush_mastery.c</span>
             </div>
             <pre className="code-block">
               <code>
-                <span className="code-keyword">#include</span> &lt;stdio.h&gt;{"\n\n"}<span className="code-keyword">int</span> <span className="code-func">main</span>() {"{"}{"\n"}  <span className="code-func">printf</span>(<span className="code-str">"Hello, Coding Master!\\n"</span>);{"\n"}  <span className="code-keyword">return</span> <span className="code-num">0</span>;{"\n"}{"}"}
+                <span className="code-keyword">#include</span> &lt;stdio.h&gt;{"\n\n"}<span className="code-keyword">int</span> <span className="code-func">main</span>() {"{"}{"\n"}  <span className="code-func">printf</span>(<span className="code-str">"Mastering C & Python 3D!\\n"</span>);{"\n"}  <span className="code-keyword">return</span> <span className="code-num">0</span>;{"\n"}{"}"}
               </code>
             </pre>
           </div>
-          <div className="floating-symbol sym-1">{`{ }`}</div>
-          <div className="floating-symbol sym-2">{`</>`}</div>
-          <div className="floating-badge badge-c">C</div>
-          <div className="floating-badge badge-py">PY</div>
         </div>
       </motion.section>
 
@@ -101,7 +110,7 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress, onResetTracking })
           <div className="glass-card quick-card" onClick={() => onSelectTab('practice')}>
             <div className="quick-icon-box cyan"><BrainCircuit size={22} /></div>
             <h3>Practice Zone</h3>
-            <p>Improve logic with coding problems</p>
+            <p>Solve problems in in-browser IDE</p>
             <div className="quick-card-bottom"><button className="quick-btn">Start Practice</button></div>
           </div>
         </div>
@@ -142,7 +151,7 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress, onResetTracking })
         </section>
         <section className="glass-card mission-card">
           <div className="card-header"><Target size={20} className="card-header-icon cyan" /><h2>Today's Coding Mission</h2></div>
-          <p className="mission-text">"Complete one video lesson and solve three logic problems."</p>
+          <p className="mission-text">&ldquo;Complete one video lesson and solve three logic problems.&rdquo;</p>
           <div className="mission-quote"><Quote size={14} /><span>Small progress every day creates strong programming skills.</span></div>
           <button className="btn-primary mission-btn btn-glow" onClick={() => onSelectTab('c')}>Start Mission</button>
         </section>
