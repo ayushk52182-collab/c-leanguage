@@ -10,7 +10,7 @@ const ParticleBackground = () => {
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
     let particles = [];
-    const PARTICLE_COUNT = 120;
+    const PARTICLE_COUNT = 90;
     const resize = () => { canvas.width = window.innerWidth; canvas.height = window.innerHeight; };
     resize();
     window.addEventListener('resize', resize);
@@ -19,11 +19,17 @@ const ParticleBackground = () => {
 
     for (let i = 0; i < PARTICLE_COUNT; i++) {
       particles.push({
-        x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-        vx: (Math.random() - 0.5) * 0.3, vy: (Math.random() - 0.5) * 0.3,
-        size: Math.random() * 2.5 + 0.5, opacity: Math.random() * 0.5 + 0.1,
-        depth: Math.random(), hue: Math.random() > 0.5 ? 185 : 270,
-        pulse: Math.random() * Math.PI * 2, pulseSpeed: Math.random() * 0.02 + 0.005
+        x: Math.random() * canvas.width,
+        y: Math.random() * canvas.height,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: (Math.random() - 0.5) * 0.25,
+        size: Math.random() * 2.8 + 0.8,
+        opacity: Math.random() * 0.4 + 0.15,
+        depth: Math.random(),
+        // Warm Orange (hue ~24) and Amber (hue ~38)
+        hue: Math.random() > 0.5 ? 24 : 38,
+        pulse: Math.random() * Math.PI * 2,
+        pulseSpeed: Math.random() * 0.02 + 0.005
       });
     }
 
@@ -36,8 +42,8 @@ const ParticleBackground = () => {
       const mx = mouseRef.current.x, my = mouseRef.current.y;
 
       particles.forEach((p, i) => {
-        const px = (mx - canvas.width / 2) * p.depth * 0.015;
-        const py = (my - canvas.height / 2) * p.depth * 0.015;
+        const px = (mx - canvas.width / 2) * p.depth * 0.012;
+        const py = (my - canvas.height / 2) * p.depth * 0.012;
         p.x += p.vx; p.y += p.vy; p.pulse += p.pulseSpeed;
         if (p.x < -10) p.x = canvas.width + 10;
         if (p.x > canvas.width + 10) p.x = -10;
@@ -45,25 +51,25 @@ const ParticleBackground = () => {
         if (p.y > canvas.height + 10) p.y = -10;
 
         const dx2 = p.x + px, dy2 = p.y + py;
-        const po = p.opacity + Math.sin(p.pulse) * 0.15;
+        const po = p.opacity + Math.sin(p.pulse) * 0.12;
         const ds = p.size * (0.8 + p.depth * 0.5);
 
-        const g = ctx.createRadialGradient(dx2, dy2, 0, dx2, dy2, ds * 4);
-        g.addColorStop(0, `hsla(${p.hue}, 100%, 70%, ${po * 0.6})`);
-        g.addColorStop(1, `hsla(${p.hue}, 100%, 70%, 0)`);
-        ctx.beginPath(); ctx.arc(dx2, dy2, ds * 4, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
+        const g = ctx.createRadialGradient(dx2, dy2, 0, dx2, dy2, ds * 3.5);
+        g.addColorStop(0, `hsla(${p.hue}, 95%, 55%, ${po * 0.7})`);
+        g.addColorStop(1, `hsla(${p.hue}, 95%, 55%, 0)`);
+        ctx.beginPath(); ctx.arc(dx2, dy2, ds * 3.5, 0, Math.PI * 2); ctx.fillStyle = g; ctx.fill();
         ctx.beginPath(); ctx.arc(dx2, dy2, ds, 0, Math.PI * 2);
-        ctx.fillStyle = `hsla(${p.hue}, 100%, 80%, ${po})`; ctx.fill();
+        ctx.fillStyle = `hsla(${p.hue}, 95%, 50%, ${po * 1.2})`; ctx.fill();
 
         for (let j = i + 1; j < particles.length; j++) {
           const p2 = particles[j];
-          const ddx = dx2 - (p2.x + (mx - canvas.width / 2) * p2.depth * 0.015);
-          const ddy = dy2 - (p2.y + (my - canvas.height / 2) * p2.depth * 0.015);
+          const ddx = dx2 - (p2.x + (mx - canvas.width / 2) * p2.depth * 0.012);
+          const ddy = dy2 - (p2.y + (my - canvas.height / 2) * p2.depth * 0.012);
           const dist = Math.sqrt(ddx * ddx + ddy * ddy);
-          if (dist < 120) {
+          if (dist < 110) {
             ctx.beginPath(); ctx.moveTo(dx2, dy2);
-            ctx.lineTo(p2.x + (mx - canvas.width / 2) * p2.depth * 0.015, p2.y + (my - canvas.height / 2) * p2.depth * 0.015);
-            ctx.strokeStyle = `hsla(${p.hue}, 80%, 60%, ${(1 - dist / 120) * 0.15})`;
+            ctx.lineTo(p2.x + (mx - canvas.width / 2) * p2.depth * 0.012, p2.y + (my - canvas.height / 2) * p2.depth * 0.012);
+            ctx.strokeStyle = `hsla(${p.hue}, 90%, 55%, ${(1 - dist / 110) * 0.12})`;
             ctx.lineWidth = 0.5; ctx.stroke();
           }
         }
