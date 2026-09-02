@@ -889,7 +889,7 @@ const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => {
     <nav className="glass-panel nav-bar">
       <div className="nav-logo" onClick={() => onSelectTab('dashboard')}>
         <Icon name="graduation-cap" size={22} className="logo-icon" />
-        <span className="logo-text">EduPortal 3D</span>
+        <span className="logo-text">Learn with Aayush</span>
       </div>
 
       <div className="nav-links">
