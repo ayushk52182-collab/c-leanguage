@@ -45,10 +45,10 @@ const DSADashboard = ({
   const targetCurrentTime = targetSaved.currentTime || (lastWatchedLesson?.currentTime || 0);
   const targetDuration = targetSaved.duration || continueTarget?.durationSec || 0;
 
-  // Problems breakdown
+  // Dynamic Problems breakdown (scaled against Striver's 474 target)
   const solvedProblemIds = Object.keys(dsaProblemProgress).filter(id => dsaProblemProgress[id]?.solved);
   const solvedCount = solvedProblemIds.length;
-  const totalProblems = DSA_PROBLEMS.length;
+  const totalProblemTarget = 474;
 
   const easySolved = solvedProblemIds.filter(id => {
     const p = DSA_PROBLEMS.find(prob => prob.id === id);
@@ -167,7 +167,7 @@ const DSADashboard = ({
           <span className="d-stat-val" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
             7 Days <Flame size={20} color="var(--orange-primary)" />
           </span>
-          <span className="d-stat-lbl">ACTIVE STUDY STREAK</span>
+          <span className="d-stat-lbl">CURRENT STREAK</span>
         </div>
       </div>
 
@@ -224,37 +224,37 @@ const DSADashboard = ({
         <div className="glass-card dash-panel">
           <div className="panel-header">
             <Target size={20} color="var(--sky-blue)" />
-            <h3>Problems Solved Breakdown</h3>
+            <h3>Problems Solved ({solvedCount} / {totalProblemTarget})</h3>
           </div>
 
           <div className="diff-breakdown-list">
             <div className="diff-stat-row">
               <div className="diff-info">
                 <span className="p-tag easy">EASY</span>
-                <span className="diff-count">{easySolved} Solved</span>
+                <span className="diff-count">{easySolved} / 151</span>
               </div>
               <div className="diff-bar-track">
-                <div className="diff-bar-fill easy" style={{ width: `${Math.min(100, (easySolved / 8) * 100)}%` }} />
+                <div className="diff-bar-fill easy" style={{ width: `${Math.min(100, Math.max(8, (easySolved / 151) * 100))}%` }} />
               </div>
             </div>
 
             <div className="diff-stat-row">
               <div className="diff-info">
                 <span className="p-tag medium">MEDIUM</span>
-                <span className="diff-count">{mediumSolved} Solved</span>
+                <span className="diff-count">{mediumSolved} / 187</span>
               </div>
               <div className="diff-bar-track">
-                <div className="diff-bar-fill medium" style={{ width: `${Math.min(100, (mediumSolved / 8) * 100)}%` }} />
+                <div className="diff-bar-fill medium" style={{ width: `${Math.min(100, Math.max(8, (mediumSolved / 187) * 100))}%` }} />
               </div>
             </div>
 
             <div className="diff-stat-row">
               <div className="diff-info">
                 <span className="p-tag hard">HARD</span>
-                <span className="diff-count">{hardSolved} Solved</span>
+                <span className="diff-count">{hardSolved} / 136</span>
               </div>
               <div className="diff-bar-track">
-                <div className="diff-bar-fill hard" style={{ width: `${Math.min(100, (hardSolved / 4) * 100)}%` }} />
+                <div className="diff-bar-fill hard" style={{ width: `${Math.min(100, Math.max(8, (hardSolved / 136) * 100))}%` }} />
               </div>
             </div>
           </div>

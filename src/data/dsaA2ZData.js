@@ -150,7 +150,7 @@ export const A2Z_SECTIONS = [
         "codeSnippet": {
           "cpp": "void bubbleSort(vector<int>& arr) {\n    int n = arr.size();\n    for(int i = 0; i < n - 1; i++) {\n        bool swapped = false;\n        for(int j = 0; j < n - i - 1; j++) {\n            if(arr[j] > arr[j+1]) { swap(arr[j], arr[j+1]); swapped = true; }\n        }\n        if(!swapped) break;\n    }\n}",
           "java": "// Bubble sort implementation in Java",
-          "python": "def bubble_sort(a):\n    # Python bubble sort\n    pass"
+          "python": "def bubble_sort(a):\n    pass"
         }
       },
       {
@@ -468,7 +468,7 @@ export const A2Z_SECTIONS = [
         ],
         "notes": "Reverse entire string, then reverse individual words in-place for O(1) extra space.",
         "codeSnippet": {
-          "cpp": "string reverseWords(string s) {\n    // Word reverse logic\n    return s;\n}",
+          "cpp": "string reverseWords(string s) {\n    return s;\n}",
           "java": "// Reverse words Java",
           "python": "def reverse_words(s): return \" \".join(s.split()[::-1])"
         }
@@ -598,7 +598,7 @@ export const A2Z_SECTIONS = [
         ],
         "notes": "At each index i, we have 2 choices: include arr[i] in the subset or skip it.",
         "codeSnippet": {
-          "cpp": "void getSubsequences(int idx, vector<int>& ds, vector<int>& arr) {\n    if(idx == arr.size()) { /* print ds */ return; }\n    ds.push_back(arr[idx]);\n    getSubsequences(idx + 1, ds, arr);\n    ds.pop_back(); // Backtrack\n    getSubsequences(idx + 1, ds, arr);\n}",
+          "cpp": "void getSubsequences(int idx, vector<int>& ds, vector<int>& arr) {\n    if(idx == arr.size()) return;\n    ds.push_back(arr[idx]);\n    getSubsequences(idx + 1, ds, arr);\n    ds.pop_back();\n    getSubsequences(idx + 1, ds, arr);\n}",
           "java": "// Subsequences Java",
           "python": "def get_subsequences(): pass"
         }
@@ -675,7 +675,7 @@ export const A2Z_SECTIONS = [
         "codeSnippet": {
           "cpp": "int singleNumber(vector<int>& nums) {\n    int ans = 0;\n    for(int x : nums) ans ^= x;\n    return ans;\n}",
           "java": "int singleNumber(int[] nums) { int ans = 0; for(int x : nums) ans ^= x; return ans; }",
-          "python": "def single_number(nums):\n    res = 0\n    for x in nums: res ^= x\n    return res"
+          "python": "def single_number(nums): pass"
         }
       }
     ]
@@ -812,7 +812,7 @@ export const A2Z_SECTIONS = [
         ],
         "notes": "Parent = (i-1)/2, Left = 2i+1, Right = 2i+2.",
         "codeSnippet": {
-          "cpp": "#include <queue>\npriority_queue<int> maxHeap; // Max Heap\npriority_queue<int, vector<int>, greater<int>> minHeap; // Min Heap",
+          "cpp": "#include <queue>\npriority_queue<int> maxHeap; // Max Heap",
           "java": "PriorityQueue<Integer> pq = new PriorityQueue<>();",
           "python": "import heapq; h = []; heapq.heappush(h, 10)"
         }

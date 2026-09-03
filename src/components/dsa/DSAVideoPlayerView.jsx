@@ -3,10 +3,11 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play, Pause, RotateCcw, CheckCircle2, Circle, AlertTriangle,
   ArrowLeft, ArrowRight, ChevronDown, ChevronRight, BookOpen,
-  Code2, BrainCircuit, Copy, Check, Sparkles, Volume2, Maximize2,
-  Clock, Flame, Menu, X, ExternalLink
+  Code2, BrainCircuit, Copy, Check, Sparkles, Volume2, VolumeX,
+  Maximize2, Clock, Flame, Menu, X, ExternalLink, HelpCircle
 } from 'lucide-react';
 import { A2Z_SECTIONS, getAllA2ZLessons } from '../../data/dsaA2ZData';
+import { DSA_PROBLEMS } from '../../data/dsaProblems';
 import { formatTime } from '../../utils/youtube';
 
 const DSAVideoPlayerView = ({
@@ -14,6 +15,7 @@ const DSAVideoPlayerView = ({
   onSelectLesson,
   onBack,
   dsaProgress = {},
+  dsaProblemProgress = {},
   onProgressUpdate,
   onCompleteLesson,
   onOpenProblem
@@ -26,6 +28,10 @@ const DSAVideoPlayerView = ({
   const [activeTab, setActiveTab] = useState('notes'); // 'notes' | 'code' | 'problems'
   const [codeLang, setCodeLang] = useState('cpp');
   const [copied, setCopied] = useState(false);
+  const [speed, setSpeed] = useState(1);
+  const [volume, setVolume] = useState(100);
+  const [isMuted, setIsMuted] = useState(false);
+  const [showExplanationModal, setShowExplanationModal] = useState(false);
 
   // Saved progress for this specific lesson
   const savedEntry = dsaProgress[lesson.id] || {};
@@ -84,7 +90,6 @@ const DSAVideoPlayerView = ({
                 statusText: "Ready"
               }));
 
-              // If saved time exists, seek to it
               if (startPosition > 5) {
                 e.target.seekTo(startPosition, true);
               }
@@ -162,10 +167,67 @@ const DSAVideoPlayerView = ({
     };
   }, [lesson.id, lesson.videoId]);
 
+  // Video Controls Callbacks
+  const handleTogglePlay = () => {
+    if (!playerRef.current) return;
+    if (isPlaying) {
+      if (typeof playerRef.current.pauseVideo === 'function') playerRef.current.pauseVideo();
+    } else {
+      if (typeof playerRef.current.playVideo === 'function') playerRef.current.playVideo();
+    }
+  };
+
+  const handleSeekChange = (e) => {
+    const newTime = Number(e.target.value);
+    setPlaybackState(prev => ({ ...prev, currentTime: newTime }));
+    if (playerRef.current && typeof playerRef.current.seekTo === 'function') {
+      playerRef.current.seekTo(newTime, true);
+    }
+  };
+
   const handleSeekToResume = (seconds) => {
     if (playerRef.current && typeof playerRef.current.seekTo === 'function') {
       playerRef.current.seekTo(seconds, true);
       playerRef.current.playVideo();
+    }
+  };
+
+  const handleVolumeChange = (e) => {
+    const v = Number(e.target.value);
+    setVolume(v);
+    setIsMuted(v === 0);
+    if (playerRef.current && typeof playerRef.current.setVolume === 'function') {
+      playerRef.current.setVolume(v);
+    }
+  };
+
+  const handleToggleMute = () => {
+    if (!playerRef.current) return;
+    if (isMuted) {
+      if (playerRef.current.unMute) playerRef.current.unMute();
+      setIsMuted(false);
+      if (playerRef.current.setVolume) playerRef.current.setVolume(volume || 80);
+    } else {
+      if (playerRef.current.mute) playerRef.current.mute();
+      setIsMuted(true);
+    }
+  };
+
+  const handleSpeedChange = (rate) => {
+    setSpeed(rate);
+    if (playerRef.current && typeof playerRef.current.setPlaybackRate === 'function') {
+      playerRef.current.setPlaybackRate(rate);
+    }
+  };
+
+  const handleFullscreen = () => {
+    const el = document.getElementById('dsa-player-frame-card');
+    if (el) {
+      if (document.fullscreenElement) {
+        document.exitFullscreen();
+      } else if (el.requestFullscreen) {
+        el.requestFullscreen();
+      }
     }
   };
 
@@ -181,6 +243,10 @@ const DSAVideoPlayerView = ({
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
   const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
 
+  // Resolve related problem
+  const matchedProblem = DSA_PROBLEMS.find(p => p.id === lesson.problemId) || DSA_PROBLEMS[0];
+  const isProblemSolved = !!dsaProblemProgress[matchedProblem?.id]?.solved;
+
   return (
     <div className="dsa-player-layout">
       {/* Mobile Sidebar Toggle Button */}
@@ -189,14 +255,14 @@ const DSAVideoPlayerView = ({
         onClick={() => setIsSidebarOpen(!isSidebarOpen)}
       >
         {isSidebarOpen ? <X size={18} /> : <Menu size={18} />}
-        <span>{isSidebarOpen ? "Close Curriculum" : "Curriculum Menu"}</span>
+        <span>{isSidebarOpen ? "Close Curriculum" : "Curriculum Menu (18 Steps)"}</span>
       </button>
 
       {/* LEFT COLUMN: 18 SECTIONS CURRICULUM SIDEBAR */}
       <aside className={`dsa-curriculum-sidebar glass-card ${isSidebarOpen ? 'open' : ''}`}>
         <div className="curriculum-sidebar-header">
           <button className="sidebar-back-btn" onClick={onBack}>
-            <ArrowLeft size={16} /> All Sections
+            <ArrowLeft size={16} /> All Steps
           </button>
           <span className="sidebar-header-title">Striver A2Z Sheet</span>
         </div>
@@ -265,8 +331,12 @@ const DSAVideoPlayerView = ({
                               <span className="sli-title">{l.title}</span>
                               <div className="sli-meta">
                                 <span className="sli-duration"><Clock size={11} /> {l.duration}</span>
-                                {pct > 0 && !isDone && (
-                                  <span className="sli-percent-tag">{pct}% watched</span>
+                                {isDone ? (
+                                  <span className="sli-percent-tag done">✓ 100% watched</span>
+                                ) : pct > 0 ? (
+                                  <span className="sli-percent-tag in-prog">◉ {pct}% watched</span>
+                                ) : (
+                                  <span className="sli-percent-tag not-start">○ Not Started</span>
                                 )}
                               </div>
                             </div>
@@ -297,8 +367,8 @@ const DSAVideoPlayerView = ({
                 <span className="chip-dot" />
                 <span>
                   {playbackState.isCompleted
-                    ? "✓ Completed"
-                    : `${playbackState.watchedPercent}% Watched (${formatTime(playbackState.currentTime)} / ${formatTime(playbackState.duration)})`
+                    ? "✓ Completed (100%)"
+                    : `Watched ${playbackState.watchedPercent}% (${formatTime(playbackState.currentTime)} / ${formatTime(playbackState.duration)})`
                   }
                 </span>
               </div>
@@ -309,13 +379,13 @@ const DSAVideoPlayerView = ({
               onClick={() => onCompleteLesson(lesson.id, lesson.sectionId, lesson.title)}
             >
               <CheckCircle2 size={15} />
-              {playbackState.isCompleted ? "Completed ✓" : "Mark as Done"}
+              {playbackState.isCompleted ? "Completed ✓" : "Mark as Completed"}
             </button>
           </div>
         </div>
 
-        {/* Video Player Card */}
-        <div className="video-player-frame-card glass-card">
+        {/* Video Player Card with Custom Controls Toolbar */}
+        <div id="dsa-player-frame-card" className="video-player-frame-card glass-card">
           {embedError ? (
             <div className="embed-error-box">
               <AlertTriangle size={36} color="var(--rose-coral)" />
@@ -337,13 +407,77 @@ const DSAVideoPlayerView = ({
             </div>
           )}
 
-          {/* Real-time Resume Bar */}
+          {/* Real Working Video Controls Toolbar */}
+          <div className="custom-video-controls-toolbar">
+            {/* Play/Pause Button */}
+            <button
+              className="ctrl-btn play-btn"
+              onClick={handleTogglePlay}
+              title={isPlaying ? "Pause" : "Play"}
+            >
+              {isPlaying ? <Pause size={17} /> : <Play size={17} />}
+            </button>
+
+            {/* Time & Scrubbable Seek Bar */}
+            <div className="ctrl-timeline-group">
+              <span className="ctrl-timestamp">{formatTime(playbackState.currentTime)}</span>
+              <input
+                type="range"
+                min="0"
+                max={playbackState.duration || 100}
+                value={playbackState.currentTime}
+                onChange={handleSeekChange}
+                className="ctrl-seekbar"
+                aria-label="Seek Video"
+              />
+              <span className="ctrl-timestamp">{formatTime(playbackState.duration)}</span>
+            </div>
+
+            {/* Volume Control */}
+            <div className="ctrl-volume-group">
+              <button className="ctrl-btn" onClick={handleToggleMute} title={isMuted ? "Unmute" : "Mute"}>
+                {isMuted || volume === 0 ? <VolumeX size={16} /> : <Volume2 size={16} />}
+              </button>
+              <input
+                type="range"
+                min="0"
+                max="100"
+                value={isMuted ? 0 : volume}
+                onChange={handleVolumeChange}
+                className="ctrl-volume-slider"
+                aria-label="Volume"
+              />
+            </div>
+
+            {/* Playback Speed Selector */}
+            <div className="ctrl-speed-group">
+              {[0.75, 1, 1.25, 1.5, 2].map(r => (
+                <button
+                  key={r}
+                  className={`ctrl-speed-chip ${speed === r ? 'active' : ''}`}
+                  onClick={() => handleSpeedChange(r)}
+                >
+                  {r}x
+                </button>
+              ))}
+            </div>
+
+            {/* Fullscreen Button */}
+            <button className="ctrl-btn" onClick={handleFullscreen} title="Fullscreen">
+              <Maximize2 size={16} />
+            </button>
+          </div>
+
+          {/* Sub-bar: Real-time Resume Bar & Visual Progress Bar */}
           <div className="video-playback-sub-bar">
             <div className="vps-left">
               <span className="vps-source">Source: {lesson.source || "takeUforward / Striver"}</span>
-              <span className="vps-time">
-                <Clock size={13} /> {formatTime(playbackState.currentTime)} / {formatTime(playbackState.duration)}
-              </span>
+              <div className="live-percentage-indicator">
+                <strong>Watched: {playbackState.watchedPercent}%</strong>
+                <span className="visual-progress-meter">
+                  {'█'.repeat(Math.floor(playbackState.watchedPercent / 8)) + '░'.repeat(Math.max(0, 12 - Math.floor(playbackState.watchedPercent / 8)))}
+                </span>
+              </div>
             </div>
 
             <div className="vps-right">
@@ -357,7 +491,7 @@ const DSAVideoPlayerView = ({
               )}
               <span className="completion-threshold-label">
                 {playbackState.watchedPercent >= 90
-                  ? "✓ Threshold Met (Auto-Completed)"
+                  ? "✓ 90% Threshold Met (Auto-Completed)"
                   : `${playbackState.watchedPercent}% watched (90% required to complete)`
                 }
               </span>
@@ -440,19 +574,61 @@ const DSAVideoPlayerView = ({
 
             {activeTab === 'problems' && (
               <div className="problems-tab-body">
-                <div className="problem-recommendation-chip glass-card">
-                  <div className="prc-left">
-                    <span className="p-tag easy">{lesson.difficulty || "Medium"}</span>
-                    <h4>Practice Problem: {lesson.title}</h4>
-                    <p>Solve this problem in our interactive in-browser IDE with automated test cases.</p>
+                {/* Exact Problem Card format from prompt */}
+                <div className="exact-problem-card glass-card">
+                  <div className="epc-top-row">
+                    <div className="epc-meta-left">
+                      <h4 className="epc-title">{matchedProblem.title}</h4>
+                      <div className="epc-tags">
+                        <span className={`p-tag ${matchedProblem.difficulty.toLowerCase()}`}>
+                          {matchedProblem.difficulty}
+                        </span>
+                        <span className="topic-badge">{matchedProblem.topic}</span>
+                      </div>
+                    </div>
+
+                    <div className="epc-status">
+                      <span className="epc-status-lbl">Status:</span>
+                      {isProblemSolved ? (
+                        <span className="status-pill completed">✓ Solved</span>
+                      ) : (
+                        <span className="status-pill not-started">○ Not Started</span>
+                      )}
+                    </div>
                   </div>
-                  <button
-                    className="btn-primary btn-glow"
-                    onClick={() => onOpenProblem(lesson.problemId || "two-sum")}
-                  >
-                    <Play size={14} /> Open Problem in Studio
-                  </button>
+
+                  <p className="epc-desc">{matchedProblem.description}</p>
+
+                  <div className="epc-actions-row">
+                    <button
+                      className="btn-primary btn-glow"
+                      onClick={() => onOpenProblem(matchedProblem.id)}
+                    >
+                      <Play size={14} /> Solve Problem in Studio
+                    </button>
+                    <button
+                      className="btn-secondary"
+                      onClick={() => setShowExplanationModal(true)}
+                    >
+                      <HelpCircle size={14} /> View Explanation
+                    </button>
+                  </div>
                 </div>
+
+                {/* Explanation Modal */}
+                {showExplanationModal && (
+                  <div className="explanation-preview-box glass-card">
+                    <h4>Intuition & Solution Approach</h4>
+                    <p>{matchedProblem.explanation || "Break down the problem into invariants. Use hash map or two-pointer logic depending on input constraints."}</p>
+                    <button
+                      className="quick-btn"
+                      onClick={() => setShowExplanationModal(false)}
+                      style={{ marginTop: '0.8rem' }}
+                    >
+                      Close Explanation
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

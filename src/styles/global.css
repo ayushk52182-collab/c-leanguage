@@ -4076,3 +4076,237 @@ html[data-theme="dark"] .sec-progress-bar-track {
     grid-template-columns: 1fr;
   }
 }
+
+/* ============================================================
+   CUSTOM VIDEO CONTROLS TOOLBAR & VISUAL PROGRESS METER
+   ============================================================ */
+.custom-video-controls-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.65rem 1.2rem;
+  background: #070712;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.ctrl-btn {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #fff;
+  border-radius: var(--radius-sm);
+  width: 34px;
+  height: 34px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+}
+
+.ctrl-btn:hover {
+  background: rgba(249, 115, 22, 0.25);
+  border-color: var(--orange-primary);
+  color: var(--orange-primary);
+}
+
+.ctrl-btn.play-btn {
+  background: linear-gradient(135deg, var(--orange-primary), var(--orange-deep));
+  border-color: var(--orange-primary);
+}
+
+.ctrl-btn.play-btn:hover {
+  transform: scale(1.06);
+}
+
+.ctrl-timeline-group {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  flex: 1;
+  min-width: 220px;
+}
+
+.ctrl-timestamp {
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+
+.ctrl-seekbar {
+  flex: 1;
+  height: 6px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.ctrl-seekbar::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  background: var(--orange-primary);
+  cursor: pointer;
+  box-shadow: 0 0 8px rgba(249, 115, 22, 0.8);
+}
+
+.ctrl-volume-group {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.ctrl-volume-slider {
+  width: 60px;
+  height: 4px;
+  -webkit-appearance: none;
+  appearance: none;
+  background: rgba(255, 255, 255, 0.2);
+  border-radius: 4px;
+  outline: none;
+  cursor: pointer;
+}
+
+.ctrl-volume-slider::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: #fff;
+  cursor: pointer;
+}
+
+.ctrl-speed-group {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.ctrl-speed-chip {
+  padding: 0.2rem 0.45rem;
+  border-radius: 4px;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #94a3b8;
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  cursor: pointer;
+}
+
+.ctrl-speed-chip.active, .ctrl-speed-chip:hover {
+  background: var(--orange-primary);
+  color: #fff;
+  border-color: var(--orange-primary);
+}
+
+.live-percentage-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  font-size: 0.78rem;
+  color: #e2e8f0;
+}
+
+.visual-progress-meter {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  letter-spacing: 1px;
+  color: var(--orange-primary);
+}
+
+/* Problem Card in Studio */
+.exact-problem-card {
+  padding: 1.6rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  background: rgba(249, 115, 22, 0.03);
+}
+
+.epc-top-row {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.epc-title {
+  font-family: var(--font-display);
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.epc-tags {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.epc-status {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.epc-status-lbl {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  font-weight: 700;
+}
+
+.epc-desc {
+  font-size: 0.88rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+.epc-actions-row {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  flex-wrap: wrap;
+}
+
+.explanation-preview-box {
+  padding: 1.2rem;
+  margin-top: 1rem;
+  border-left: 3px solid var(--sky-blue);
+  background: rgba(14, 165, 233, 0.05);
+}
+
+.explanation-preview-box h4 {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 0.4rem;
+}
+
+.explanation-preview-box p {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.6;
+}
+
+/* Sidebar progress pills */
+.sli-percent-tag.done {
+  background: rgba(16, 185, 129, 0.15);
+  color: var(--emerald-green);
+}
+
+.sli-percent-tag.in-prog {
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--amber-gold);
+}
+
+.sli-percent-tag.not-start {
+  background: rgba(255, 255, 255, 0.06);
+  color: var(--text-muted);
+}
