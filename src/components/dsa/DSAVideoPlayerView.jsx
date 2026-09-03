@@ -4,7 +4,7 @@ import {
   Play, Pause, RotateCcw, CheckCircle2, Circle, AlertTriangle,
   ArrowLeft, ArrowRight, ChevronDown, ChevronRight, BookOpen,
   Code2, BrainCircuit, Copy, Check, Sparkles, Volume2, VolumeX,
-  Maximize2, Clock, Flame, Menu, X, ExternalLink, HelpCircle
+  Maximize2, Clock, Flame, Menu, X, HelpCircle, FileText
 } from 'lucide-react';
 import { A2Z_SECTIONS, getAllA2ZLessons } from '../../data/dsaA2ZData';
 import { DSA_PROBLEMS } from '../../data/dsaProblems';
@@ -25,7 +25,7 @@ const DSAVideoPlayerView = ({
   const [embedError, setEmbedError] = useState(false);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [activeTab, setActiveTab] = useState('notes'); // 'notes' | 'code' | 'problems'
+  const [activeTab, setActiveTab] = useState('notes'); // 'notes' | 'code'
   const [codeLang, setCodeLang] = useState('cpp');
   const [copied, setCopied] = useState(false);
   const [speed, setSpeed] = useState(1);
@@ -55,7 +55,7 @@ const DSAVideoPlayerView = ({
     setExpandedSections(prev => ({ ...prev, [sId]: !prev[sId] }));
   };
 
-  // 1. YouTube IFrame Player Instance Setup
+  // 1. YouTube IFrame Player Instance Setup with modest branding
   useEffect(() => {
     setEmbedError(false);
     setIsPlaying(false);
@@ -74,6 +74,7 @@ const DSAVideoPlayerView = ({
             controls: 1,
             playsinline: 1,
             rel: 0,
+            modestbranding: 1, // Minimize visible YouTube branding in player controls
             iv_load_policy: 3,
             enablejsapi: 1,
             start: startPosition > 10 ? startPosition : 0
@@ -167,7 +168,7 @@ const DSAVideoPlayerView = ({
     };
   }, [lesson.id, lesson.videoId]);
 
-  // Video Controls Callbacks
+  // Video Controls Callbacks (Real, functional controls)
   const handleTogglePlay = () => {
     if (!playerRef.current) return;
     if (isPlaying) {
@@ -185,9 +186,16 @@ const DSAVideoPlayerView = ({
     }
   };
 
-  const handleSeekToResume = (seconds) => {
+  const handleResume = () => {
     if (playerRef.current && typeof playerRef.current.seekTo === 'function') {
-      playerRef.current.seekTo(seconds, true);
+      playerRef.current.seekTo(playbackState.currentTime || 0, true);
+      playerRef.current.playVideo();
+    }
+  };
+
+  const handleRestart = () => {
+    if (playerRef.current && typeof playerRef.current.seekTo === 'function') {
+      playerRef.current.seekTo(0, true);
       playerRef.current.playVideo();
     }
   };
@@ -358,7 +366,7 @@ const DSAVideoPlayerView = ({
         <div className="lesson-top-bar glass-card">
           <div className="ltb-left">
             <span className="badge-cyber">{lesson.sectionBadge || "STEP"}</span>
-            <span className="lesson-nav-title">{lesson.title}</span>
+            <h2 className="lesson-nav-title">{lesson.title}</h2>
           </div>
 
           <div className="ltb-right">
@@ -367,8 +375,8 @@ const DSAVideoPlayerView = ({
                 <span className="chip-dot" />
                 <span>
                   {playbackState.isCompleted
-                    ? "✓ Completed (100%)"
-                    : `Watched ${playbackState.watchedPercent}% (${formatTime(playbackState.currentTime)} / ${formatTime(playbackState.duration)})`
+                    ? "✓ Completed"
+                    : `${playbackState.watchedPercent}% Watched (${formatTime(playbackState.currentTime)} / ${formatTime(playbackState.duration)})`
                   }
                 </span>
               </div>
@@ -384,22 +392,13 @@ const DSAVideoPlayerView = ({
           </div>
         </div>
 
-        {/* Video Player Card with Custom Controls Toolbar */}
+        {/* Video Player Card with Custom Controls Toolbar (Clean native platform design) */}
         <div id="dsa-player-frame-card" className="video-player-frame-card glass-card">
           {embedError ? (
             <div className="embed-error-box">
               <AlertTriangle size={36} color="var(--rose-coral)" />
-              <h3>Direct Embed Restricted</h3>
-              <p>This lecture can be viewed directly on YouTube via the official link below.</p>
-              <a
-                href={lesson.videoUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="btn-primary"
-                style={{ textDecoration: 'none', display: 'inline-flex', alignItems: 'center', gap: '0.4rem' }}
-              >
-                Watch on YouTube <ExternalLink size={15} />
-              </a>
+              <h3>Video unavailable for embedded playback.</h3>
+              <p>Playback restrictions prevent embedded viewing for this specific lecture.</p>
             </div>
           ) : (
             <div className="iframe-aspect-ratio">
@@ -468,12 +467,14 @@ const DSAVideoPlayerView = ({
             </button>
           </div>
 
-          {/* Sub-bar: Real-time Resume Bar & Visual Progress Bar */}
+          {/* Clean Progress Sub-bar: 62% Watched • 18:42 / 30:00 • [ Resume ] [ Restart ] */}
           <div className="video-playback-sub-bar">
             <div className="vps-left">
-              <span className="vps-source">Source: {lesson.source || "takeUforward / Striver"}</span>
               <div className="live-percentage-indicator">
-                <strong>Watched: {playbackState.watchedPercent}%</strong>
+                <strong>{playbackState.watchedPercent}% Watched</strong>
+                <span className="vps-time-inline">
+                  {formatTime(playbackState.currentTime)} / {formatTime(playbackState.duration)}
+                </span>
                 <span className="visual-progress-meter">
                   {'█'.repeat(Math.floor(playbackState.watchedPercent / 8)) + '░'.repeat(Math.max(0, 12 - Math.floor(playbackState.watchedPercent / 8)))}
                 </span>
@@ -481,25 +482,76 @@ const DSAVideoPlayerView = ({
             </div>
 
             <div className="vps-right">
-              {playbackState.currentTime > 15 && !playbackState.isCompleted && (
+              {playbackState.currentTime > 10 && !playbackState.isCompleted && (
                 <button
                   className="resume-pill-btn"
-                  onClick={() => handleSeekToResume(playbackState.currentTime)}
+                  onClick={handleResume}
                 >
                   <Play size={12} /> Resume from {formatTime(playbackState.currentTime)}
                 </button>
               )}
-              <span className="completion-threshold-label">
-                {playbackState.watchedPercent >= 90
-                  ? "✓ 90% Threshold Met (Auto-Completed)"
-                  : `${playbackState.watchedPercent}% watched (90% required to complete)`
-                }
-              </span>
+              <button
+                className="restart-pill-btn"
+                onClick={handleRestart}
+                title="Restart from beginning"
+              >
+                <RotateCcw size={12} /> Restart
+              </button>
             </div>
           </div>
         </div>
 
-        {/* Lesson Studio Tabs: Notes, Code, Problems */}
+        {/* 📝 PRACTICE TEST SECTION (Directly below Video & Progress) */}
+        <div className="practice-test-banner glass-card">
+          <div className="ptb-left">
+            <div className="ptb-header">
+              <span className="ptb-icon">📝</span>
+              <h3>Practice Test: {matchedProblem.title}</h3>
+              <span className={`p-tag ${matchedProblem.difficulty.toLowerCase()}`}>
+                {matchedProblem.difficulty}
+              </span>
+              <span className="topic-badge">{matchedProblem.topic}</span>
+              {isProblemSolved ? (
+                <span className="status-pill completed">✓ Solved</span>
+              ) : (
+                <span className="status-pill not-started">○ Not Started</span>
+              )}
+            </div>
+            <p className="ptb-desc">
+              Test your knowledge from this lesson with hands-on coding tests and automated test cases in our in-browser studio.
+            </p>
+          </div>
+
+          <div className="ptb-actions">
+            <button
+              className="btn-primary btn-glow"
+              onClick={() => onOpenProblem(matchedProblem.id)}
+            >
+              <Play size={14} /> Start Practice Test
+            </button>
+            <button
+              className="btn-secondary"
+              onClick={() => setShowExplanationModal(true)}
+            >
+              <HelpCircle size={14} /> View Explanation
+            </button>
+          </div>
+        </div>
+
+        {/* Explanation Modal */}
+        {showExplanationModal && (
+          <div className="explanation-preview-box glass-card">
+            <div className="ep-header-row">
+              <h4>📝 Practice Test Explanation & Invariants</h4>
+              <button className="search-close-btn" onClick={() => setShowExplanationModal(false)}>
+                <X size={16} />
+              </button>
+            </div>
+            <p>{matchedProblem.explanation || "Deconstruct the problem requirements into mathematical or state invariants. Consider time/space tradeoffs before writing code."}</p>
+          </div>
+        )}
+
+        {/* Lesson Studio Tabs: Notes, Code */}
         <div className="lesson-studio-container glass-card">
           <div className="studio-tabs-header">
             <button
@@ -513,12 +565,6 @@ const DSAVideoPlayerView = ({
               onClick={() => setActiveTab('code')}
             >
               <Code2 size={16} /> Code Implementations
-            </button>
-            <button
-              className={`studio-tab ${activeTab === 'problems' ? 'active' : ''}`}
-              onClick={() => setActiveTab('problems')}
-            >
-              <BrainCircuit size={16} /> Practice Problems
             </button>
           </div>
 
@@ -569,66 +615,6 @@ const DSAVideoPlayerView = ({
                 <pre className="code-display-block">
                   <code>{lesson.codeSnippet?.[codeLang] || "// Code template available in coding sandbox."}</code>
                 </pre>
-              </div>
-            )}
-
-            {activeTab === 'problems' && (
-              <div className="problems-tab-body">
-                {/* Exact Problem Card format from prompt */}
-                <div className="exact-problem-card glass-card">
-                  <div className="epc-top-row">
-                    <div className="epc-meta-left">
-                      <h4 className="epc-title">{matchedProblem.title}</h4>
-                      <div className="epc-tags">
-                        <span className={`p-tag ${matchedProblem.difficulty.toLowerCase()}`}>
-                          {matchedProblem.difficulty}
-                        </span>
-                        <span className="topic-badge">{matchedProblem.topic}</span>
-                      </div>
-                    </div>
-
-                    <div className="epc-status">
-                      <span className="epc-status-lbl">Status:</span>
-                      {isProblemSolved ? (
-                        <span className="status-pill completed">✓ Solved</span>
-                      ) : (
-                        <span className="status-pill not-started">○ Not Started</span>
-                      )}
-                    </div>
-                  </div>
-
-                  <p className="epc-desc">{matchedProblem.description}</p>
-
-                  <div className="epc-actions-row">
-                    <button
-                      className="btn-primary btn-glow"
-                      onClick={() => onOpenProblem(matchedProblem.id)}
-                    >
-                      <Play size={14} /> Solve Problem in Studio
-                    </button>
-                    <button
-                      className="btn-secondary"
-                      onClick={() => setShowExplanationModal(true)}
-                    >
-                      <HelpCircle size={14} /> View Explanation
-                    </button>
-                  </div>
-                </div>
-
-                {/* Explanation Modal */}
-                {showExplanationModal && (
-                  <div className="explanation-preview-box glass-card">
-                    <h4>Intuition & Solution Approach</h4>
-                    <p>{matchedProblem.explanation || "Break down the problem into invariants. Use hash map or two-pointer logic depending on input constraints."}</p>
-                    <button
-                      className="quick-btn"
-                      onClick={() => setShowExplanationModal(false)}
-                      style={{ marginTop: '0.8rem' }}
-                    >
-                      Close Explanation
-                    </button>
-                  </div>
-                )}
               </div>
             )}
           </div>
