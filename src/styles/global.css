@@ -3696,14 +3696,46 @@ html[data-theme="dark"] .vis-display-area {
   width: 100%;
   padding-top: 56.25%; /* 16:9 Aspect Ratio */
   background: #000;
+  overflow: hidden; /* Clips any native YouTube top header or bottom bar */
 }
 
 .youtube-embed-target {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: -6%;
+  left: -3%;
+  width: 106%;
+  height: 112%;
+  pointer-events: none; /* Interacted with exclusively via overlay and custom controls */
+}
+
+.video-click-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 10;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  pointer-events: auto;
+}
+
+.overlay-play-badge {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  background: rgba(249, 115, 22, 0.9);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 0 30px rgba(249, 115, 22, 0.7);
+  transition: transform 0.2s ease, opacity 0.2s ease;
+  backdrop-filter: blur(8px);
+}
+
+.video-click-overlay:hover .overlay-play-badge {
+  transform: scale(1.1);
 }
 
 .video-playback-sub-bar {

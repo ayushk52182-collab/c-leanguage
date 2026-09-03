@@ -71,12 +71,15 @@ const DSAVideoPlayerView = ({
           videoId: lesson.videoId,
           playerVars: {
             autoplay: 1,
-            controls: 1,
+            controls: 0, // Completely disable native YouTube progress bar and controls
             playsinline: 1,
-            rel: 0,
-            modestbranding: 1, // Minimize visible YouTube branding in player controls
-            iv_load_policy: 3,
+            rel: 0, // Prevent recommended/related video suggestions
+            modestbranding: 1, // Minimize visible YouTube branding
+            fs: 0, // Disable native fullscreen button inside iframe (custom fullscreen used)
+            iv_load_policy: 3, // Turn off video annotations
+            disablekb: 1, // Disable YouTube native keyboard shortcuts so custom controls handle them
             enablejsapi: 1,
+            origin: window.location.origin,
             start: startPosition > 10 ? startPosition : 0
           },
           events: {
@@ -238,6 +241,39 @@ const DSAVideoPlayerView = ({
       }
     }
   };
+
+  // Custom keyboard shortcuts for player
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if (['INPUT', 'TEXTAREA', 'SELECT'].includes(e.target.tagName)) return;
+      if (e.code === 'Space') {
+        e.preventDefault();
+        handleTogglePlay();
+      } else if (e.code === 'ArrowLeft') {
+        e.preventDefault();
+        if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
+          const cur = playerRef.current.getCurrentTime() || 0;
+          playerRef.current.seekTo(Math.max(0, cur - 5), true);
+        }
+      } else if (e.code === 'ArrowRight') {
+        e.preventDefault();
+        if (playerRef.current && typeof playerRef.current.getCurrentTime === 'function') {
+          const cur = playerRef.current.getCurrentTime() || 0;
+          const dur = playerRef.current.getDuration() || 0;
+          playerRef.current.seekTo(Math.min(dur, cur + 5), true);
+        }
+      } else if (e.key === 'f' || e.key === 'F') {
+        e.preventDefault();
+        handleFullscreen();
+      } else if (e.key === 'm' || e.key === 'M') {
+        e.preventDefault();
+        handleToggleMute();
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [isPlaying, volume, isMuted]);
 
   const handleCopyCode = () => {
     const code = lesson.codeSnippet?.[codeLang] || "";
@@ -403,6 +439,19 @@ const DSAVideoPlayerView = ({
           ) : (
             <div className="iframe-aspect-ratio">
               <div id="dsa-youtube-iframe-player" className="youtube-embed-target" />
+              {/* Transparent Overlay: user interacts solely via custom controls and direct video click */}
+              <div
+                className="video-click-overlay"
+                onClick={handleTogglePlay}
+                onDoubleClick={handleFullscreen}
+                title={isPlaying ? "Click to Pause" : "Click to Play"}
+              >
+                {!isPlaying && (
+                  <div className="overlay-play-badge">
+                    <Play size={32} />
+                  </div>
+                )}
+              </div>
             </div>
           )}
 
