@@ -1,15 +1,17 @@
 import { motion } from 'framer-motion';
-import { GraduationCap, LayoutDashboard, Flame, Code2, Terminal as TerminalIcon, BrainCircuit, LogOut } from 'lucide-react';
+import { GraduationCap, LayoutDashboard, Flame, Code2, Terminal as TerminalIcon, BrainCircuit, Boxes, LogOut, Search, Sun, Moon } from 'lucide-react';
 
 const navItems = [
   { key: 'dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { key: 'oneshot', label: 'One-Shot 1-Video', icon: Flame },
+  { key: 'dsa', label: 'DSA Roadmap', icon: Boxes },
+  { key: 'dsa-problems', label: 'DSA Problems', icon: BrainCircuit },
   { key: 'c', label: 'C Roadmap', icon: Code2 },
-  { key: 'python', label: 'Python Roadmap', icon: TerminalIcon },
-  { key: 'practice', label: 'Practice', icon: BrainCircuit },
+  { key: 'python', label: 'Python', icon: TerminalIcon },
+  { key: 'oneshot', label: 'One-Shot', icon: Flame },
+  { key: 'practice', label: 'C IDE', icon: TerminalIcon },
 ];
 
-const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => (
+const Navbar = ({ activeTab, onSelectTab, user, onLogout, theme, toggleTheme, onOpenSearch }) => (
   <motion.nav
     className="nav-bar"
     initial={{ y: -60, opacity: 0 }}
@@ -44,6 +46,27 @@ const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => (
     </div>
 
     <div className="nav-user-area">
+      {/* Global Search Trigger */}
+      <button
+        className="nav-search-trigger"
+        onClick={onOpenSearch}
+        title="Search DSA topics and problems (Cmd+K / Ctrl+K)"
+        aria-label="Search"
+      >
+        <Search size={15} />
+        <span className="search-shortcut">⌘K</span>
+      </button>
+
+      {/* Dark Mode Toggle */}
+      <button
+        className="nav-theme-toggle"
+        onClick={toggleTheme}
+        title={theme === 'dark' ? "Switch to Light Mode" : "Switch to Dark Mode"}
+        aria-label="Toggle Theme"
+      >
+        {theme === 'dark' ? <Sun size={17} color="var(--amber-gold)" /> : <Moon size={17} color="var(--orange-primary)" />}
+      </button>
+
       <div className="nav-profile-chip">
         <div className="avatar-circle">AS</div>
         <div className="user-details">
@@ -51,7 +74,8 @@ const Navbar = ({ activeTab, onSelectTab, user, onLogout }) => (
           <span className="user-role">Coding Learner</span>
         </div>
       </div>
-      <button className="nav-logout-btn" onClick={onLogout} aria-label="Logout">
+
+      <button className="nav-logout-btn" onClick={onLogout} aria-label="Logout" title="Logout">
         <LogOut size={15} />
       </button>
     </div>
