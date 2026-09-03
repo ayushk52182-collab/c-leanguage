@@ -1,43 +1,57 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Boxes, PlayCircle, CheckCircle2, ChevronDown, ChevronRight, Sparkles, BookOpen, Trophy, ArrowRight, Lock, Award } from 'lucide-react';
-import { DSA_MODULES, getAllDsaLessons } from '../../data/dsaData';
+import {
+  Boxes, CheckCircle2, Circle, PlayCircle, ChevronDown, ChevronRight,
+  Sparkles, Award, Clock, ArrowRight, Play, BookOpen, Layers
+} from 'lucide-react';
+import { A2Z_SECTIONS, getAllA2ZLessons } from '../../data/dsaA2ZData';
+import { formatTime } from '../../utils/youtube';
 
 const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning }) => {
-  const [expandedModules, setExpandedModules] = useState({ 'mod-1': true, 'mod-2': true });
-  const allLessons = getAllDsaLessons();
+  const allLessons = getAllA2ZLessons();
+  const totalLessons = allLessons.length;
+  const completedLessons = allLessons.filter(l => dsaProgress[l.id]?.isCompleted);
+  const completedCount = completedLessons.length;
+  const overallPercent = totalLessons > 0 ? Math.min(100, Math.round((completedCount / totalLessons) * 100)) : 0;
 
-  const toggleModule = (modId) => {
-    setExpandedModules(prev => ({
-      ...prev,
-      [modId]: !prev[modId]
-    }));
+  // Auto-detect next unfinished lesson or first in-progress
+  const inProgressLesson = allLessons.find(l => !dsaProgress[l.id]?.isCompleted && (dsaProgress[l.id]?.percent || 0) > 0);
+  const nextUnfinished = inProgressLesson || allLessons.find(l => !dsaProgress[l.id]?.isCompleted) || allLessons[0];
+  const nextSaved = nextUnfinished ? (dsaProgress[nextUnfinished.id] || {}) : {};
+
+  // Accordion state
+  const [expandedSections, setExpandedSections] = useState({
+    1: true,
+    2: true,
+    3: true
+  });
+
+  const toggleSection = (id) => {
+    setExpandedSections(prev => ({ ...prev, [id]: !prev[id] }));
   };
 
-  // Compute live dynamic statistics
-  const completedLessons = allLessons.filter(l => dsaProgress[l.id]?.status === 'completed');
-  const completedCount = completedLessons.length;
-  const totalLessons = allLessons.length;
-  const progressPercent = Math.min(100, Math.round((completedCount / totalLessons) * 100));
+  const expandAll = () => {
+    const allExp = {};
+    A2Z_SECTIONS.forEach(s => { allExp[s.id] = true; });
+    setExpandedSections(allExp);
+  };
 
-  // Determine next unfinished lesson
-  const nextUnfinished = allLessons.find(l => dsaProgress[l.id]?.status !== 'completed') || null;
+  const collapseAll = () => {
+    setExpandedSections({});
+  };
 
   return (
     <div className="dsa-course-container">
-      {/* Course Hero Banner */}
-      <motion.div
-        className="glass-card dsa-hero-card"
-        initial={{ opacity: 0, y: -20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4 }}
-      >
+      {/* Hero Banner with Course Metadata */}
+      <div className="glass-card dsa-hero-card">
         <div className="dsa-hero-left">
           <div className="top-badge-row">
             <span className="badge-cyber">
-              <Boxes size={13} /> MASTER ARCHITECTURE
+              <Sparkles size={13} /> STRIVER A2Z CURRICULUM
             </span>
-            <span className="badge-pro">COMPREHENSIVE CURRICULUM</span>
+            <span className="badge-pro" style={{ background: 'linear-gradient(135deg, var(--orange-primary), var(--rose-coral))' }}>
+              INTERVIEW READY
+            </span>
           </div>
 
           <div className="dsa-title-group">
@@ -45,187 +59,181 @@ const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning })
               <Boxes size={32} />
             </div>
             <div>
-              <h1 className="dsa-main-title">Data Structures & Algorithms</h1>
-              <span className="dsa-sub-title">14 In-Depth Modules • 98 Core Topics • Interview & Exam Mastery</span>
+              <h1 className="dsa-main-title">DSA – Data Structures & Algorithms</h1>
+              <span className="dsa-sub-title">18 Curated Steps • 474+ Curated Problems • Official Video Masterclasses</span>
             </div>
           </div>
 
           <p className="dsa-hero-desc">
-            Master algorithmic problem solving from the ground up: Time complexity, Arrays, Two-pointers, Stacks, Trees, Heaps, Dynamic Programming, and Graph theory with interactive visualizations and multi-language code implementations.
+            Master Data Structures and Algorithms from basics to advanced with structured lessons, official video lectures, interactive visualizations, and real-time live playback watch tracking.
           </p>
 
           <div className="dsa-hero-actions">
-            {completedCount === totalLessons && totalLessons > 0 ? (
-              <div className="course-completed-badge">
-                <Trophy size={18} color="var(--amber-gold)" />
-                <span>🎉 DSA Course Completed! (100% Mastery)</span>
-              </div>
-            ) : (
+            {nextUnfinished && (
               <button
                 className="btn-primary btn-glow dsa-continue-btn"
                 onClick={() => onContinueLearning(nextUnfinished)}
               >
                 <PlayCircle size={18} />
                 <span>
-                  {completedCount === 0 ? "Start Learning DSA" : `Continue: ${nextUnfinished ? nextUnfinished.title : "Next Lesson"}`}
+                  {nextSaved.percent > 0
+                    ? `Resume: ${nextUnfinished.title} (${nextSaved.percent}%)`
+                    : `Start: ${nextUnfinished.title}`
+                  }
                 </span>
                 <ArrowRight size={15} />
               </button>
             )}
+
+            {completedCount === totalLessons && totalLessons > 0 && (
+              <div className="course-completed-badge">
+                <Award size={18} /> All Lessons Completed!
+              </div>
+            )}
           </div>
         </div>
 
-        {/* Hero Progress Metrics Card */}
+        {/* Hero Progress Metrics */}
         <div className="dsa-hero-metrics glass-card">
           <div className="metrics-header">
-            <Trophy size={20} color="var(--orange-primary)" />
-            <h3>Your DSA Progress</h3>
+            <Award size={18} color="var(--orange-primary)" />
+            <h3>Your Overall DSA Mastery</h3>
           </div>
 
           <div className="metrics-big-percent">
-            <span className="percent-number">{progressPercent}%</span>
+            <span className="percent-number">{overallPercent}%</span>
             <span className="percent-label">CURRICULUM COMPLETED</span>
           </div>
 
-          <div className="progress-bar-large">
-            <div className="progress-fill-large" style={{ width: `${progressPercent}%` }} />
+          <div className="mini-progress-bar" style={{ height: '8px', marginBottom: '1.2rem' }}>
+            <div className="fill" style={{ width: `${overallPercent}%` }} />
           </div>
 
           <div className="metrics-stats-grid">
             <div className="m-stat">
-              <span className="val">{completedCount}</span>
-              <span className="lbl">Completed</span>
+              <span className="val">{completedCount} / {totalLessons}</span>
+              <span className="lbl">Videos Completed</span>
             </div>
             <div className="m-stat">
-              <span className="val">{totalLessons - completedCount}</span>
-              <span className="lbl">Remaining</span>
+              <span className="val">18</span>
+              <span className="lbl">A2Z Steps</span>
             </div>
             <div className="m-stat">
-              <span className="val">{totalLessons}</span>
-              <span className="lbl">Total Topics</span>
+              <span className="val">474+</span>
+              <span className="lbl">Problems Target</span>
             </div>
           </div>
         </div>
-      </motion.div>
+      </div>
 
-      {/* Curriculum Section */}
-      <div className="dsa-curriculum-section">
-        <div className="curriculum-header-row">
-          <div className="curriculum-title">
-            <BookOpen size={22} color="var(--orange-primary)" />
-            <h2>Course Curriculum (14 Modules)</h2>
-          </div>
-          <div className="expand-all-actions">
-            <button
-              className="quick-btn"
-              onClick={() => {
-                const all = {};
-                DSA_MODULES.forEach(m => { all[m.id] = true; });
-                setExpandedModules(all);
-              }}
-            >
-              Expand All
-            </button>
-            <button
-              className="quick-btn"
-              onClick={() => setExpandedModules({})}
-            >
-              Collapse All
-            </button>
-          </div>
+      {/* Curriculum Sections List */}
+      <div className="curriculum-header-row">
+        <div className="curriculum-title">
+          <Layers size={22} color="var(--orange-primary)" />
+          <h2>A2Z Structured Curriculum (18 Steps)</h2>
         </div>
 
-        {/* Modules Accordion List */}
-        <div className="dsa-modules-list">
-          {DSA_MODULES.map((module) => {
-            const isExpanded = !!expandedModules[module.id];
-            const modLessons = module.topics;
-            const modCompleted = modLessons.filter(l => dsaProgress[l.id]?.status === 'completed').length;
-            const modPercent = Math.round((modCompleted / modLessons.length) * 100);
+        <div className="expand-all-actions">
+          <button className="quick-btn" onClick={expandAll}>Expand All</button>
+          <button className="quick-btn" onClick={collapseAll}>Collapse All</button>
+        </div>
+      </div>
 
-            return (
-              <motion.div
-                key={module.id}
-                className={`dsa-module-card glass-card ${isExpanded ? 'expanded' : ''}`}
-                initial={{ opacity: 0, y: 15 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3 }}
+      <div className="dsa-modules-list">
+        {A2Z_SECTIONS.map((section) => {
+          const isExpanded = !!expandedSections[section.id];
+          const sectionLessons = section.lessons || [];
+          const completedCount = sectionLessons.filter(l => dsaProgress[l.id]?.isCompleted).length;
+          const secPercent = sectionLessons.length > 0
+            ? Math.round((completedCount / sectionLessons.length) * 100)
+            : 0;
+
+          return (
+            <div key={section.id} className="dsa-module-card glass-card">
+              {/* Section Header */}
+              <div
+                className="module-card-header"
+                onClick={() => toggleSection(section.id)}
               >
-                {/* Module Header Bar */}
-                <div className="module-card-header" onClick={() => toggleModule(module.id)}>
-                  <div className="mod-header-left">
-                    <span className="mod-badge">{module.badge}</span>
-                    <div className="mod-title-desc">
-                      <h3>{module.title}</h3>
-                      <p>{module.description}</p>
-                    </div>
-                  </div>
-
-                  <div className="mod-header-right">
-                    <div className="mod-progress-mini">
-                      <span className="mod-count">{modCompleted} / {modLessons.length} Topics</span>
-                      <div className="mod-mini-bar">
-                        <div className="mod-mini-fill" style={{ width: `${modPercent}%` }} />
-                      </div>
-                    </div>
-                    <button className="mod-toggle-btn" aria-label="Toggle Module">
-                      {isExpanded ? <ChevronDown size={20} /> : <ChevronRight size={20} />}
-                    </button>
+                <div className="mod-header-left">
+                  <span className="mod-badge">{section.badge}</span>
+                  <div className="mod-title-desc">
+                    <h3>{section.title}</h3>
+                    <p>{section.description}</p>
                   </div>
                 </div>
 
-                {/* Module Topics List */}
-                <AnimatePresence>
-                  {isExpanded && (
-                    <motion.div
-                      className="module-topics-list"
-                      initial={{ height: 0, opacity: 0 }}
-                      animate={{ height: "auto", opacity: 1 }}
-                      exit={{ height: 0, opacity: 0 }}
-                      transition={{ duration: 0.25 }}
-                    >
-                      {modLessons.map((lesson, idx) => {
-                        const status = dsaProgress[lesson.id]?.status || 'not-started';
-                        const isDone = status === 'completed';
+                <div className="mod-header-right">
+                  <div className="mod-progress-mini">
+                    <span className="mod-count">{completedCount} of {sectionLessons.length} watched ({secPercent}%)</span>
+                    <div className="mod-mini-bar">
+                      <div className="mod-mini-fill" style={{ width: `${secPercent}%` }} />
+                    </div>
+                  </div>
+                  <button className="mod-toggle-btn" aria-label="Toggle Section">
+                    {isExpanded ? <ChevronDown size={18} /> : <ChevronRight size={18} />}
+                  </button>
+                </div>
+              </div>
 
-                        return (
-                          <div
-                            key={lesson.id}
-                            className={`module-topic-row ${isDone ? 'completed' : ''}`}
-                            onClick={() => onSelectLesson(lesson)}
-                          >
-                            <div className="topic-row-left">
-                              <span className="topic-num">{idx + 1 < 10 ? `0${idx + 1}` : idx + 1}</span>
-                              <div className="topic-text">
-                                <h4>{lesson.title}</h4>
-                                <span className="topic-short-desc">{lesson.description}</span>
-                              </div>
-                            </div>
+              {/* Lesson Items inside Section */}
+              <AnimatePresence>
+                {isExpanded && (
+                  <motion.div
+                    className="module-topics-list"
+                    initial={{ height: 0, opacity: 0 }}
+                    animate={{ height: "auto", opacity: 1 }}
+                    exit={{ height: 0, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                  >
+                    {sectionLessons.map((l, index) => {
+                      const lProgress = dsaProgress[l.id] || {};
+                      const isCompleted = lProgress.isCompleted;
+                      const percent = lProgress.percent || 0;
+                      const currentTime = lProgress.currentTime || 0;
 
-                            <div className="topic-row-right">
-                              <span className="complexity-badge-sm">{lesson.timeComplexity}</span>
-                              <span className={`status-pill ${status}`}>
-                                {isDone ? (
-                                  <>
-                                    <CheckCircle2 size={13} /> Completed
-                                  </>
-                                ) : (
-                                  <>
-                                    <PlayCircle size={13} /> Start
-                                  </>
-                                )}
-                              </span>
+                      return (
+                        <div
+                          key={l.id}
+                          className={`module-topic-row ${isCompleted ? 'completed' : ''}`}
+                          onClick={() => onSelectLesson(l)}
+                        >
+                          <div className="topic-row-left">
+                            <span className="topic-num">{index + 1}</span>
+                            <div className="topic-text">
+                              <h4>{l.title}</h4>
+                              <span className="topic-short-desc">{l.description}</span>
                             </div>
                           </div>
-                        );
-                      })}
-                    </motion.div>
-                  )}
-                </AnimatePresence>
-              </motion.div>
-            );
-          })}
-        </div>
+
+                          <div className="topic-row-right">
+                            <span className="complexity-badge-sm">
+                              <Clock size={11} /> {l.duration}
+                            </span>
+
+                            {isCompleted ? (
+                              <span className="status-pill completed">
+                                <CheckCircle2 size={13} /> 100% Watched
+                              </span>
+                            ) : percent > 0 ? (
+                              <span className="status-pill in-progress">
+                                <Play size={11} /> {percent}% Watched ({formatTime(currentTime)})
+                              </span>
+                            ) : (
+                              <span className="status-pill not-started">
+                                <Circle size={13} /> Not Started
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </motion.div>
+                )}
+              </AnimatePresence>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

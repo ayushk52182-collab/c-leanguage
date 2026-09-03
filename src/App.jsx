@@ -12,9 +12,9 @@ import Footer from './components/Footer';
 import Toast from './components/Toast';
 import SearchModal from './components/SearchModal';
 
-// DSA Components
+// DSA Striver A2Z Components
 import DSACoursePage from './components/dsa/DSACoursePage';
-import DSALessonView from './components/dsa/DSALessonView';
+import DSAVideoPlayerView from './components/dsa/DSAVideoPlayerView';
 import DSADashboard from './components/dsa/DSADashboard';
 import DSAProblemSet from './components/dsa/DSAProblemSet';
 import DSAProblemView from './components/dsa/DSAProblemView';
@@ -22,7 +22,7 @@ import DSAProblemView from './components/dsa/DSAProblemView';
 import { useProgress } from './hooks/useProgress';
 import { useTheme } from './hooks/useTheme';
 import { getAllTopicsList } from './data/roadmapData';
-import { getAllDsaLessons } from './data/dsaData';
+import { getAllA2ZLessons } from './data/dsaA2ZData';
 
 const App = () => {
   const getInitialTab = () => {
@@ -50,7 +50,8 @@ const App = () => {
   // Hooks
   const {
     userProgress, updateProgress,
-    dsaProgress, updateDsaProgress,
+    dsaProgress, updateDsaVideoProgress, markDsaLessonComplete,
+    lastWatchedLesson, totalWatchTimeFormatted,
     dsaProblemProgress, updateDsaProblemProgress,
     resetProgress, loadProgress
   } = useProgress(user);
@@ -94,24 +95,22 @@ const App = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
-  // DSA Handlers
+  // DSA Lesson Handlers
   const handleSelectDsaLesson = useCallback((lesson) => {
     setActiveDsaLesson(lesson);
     setActiveTab('dsa');
-    // Automatically mark as in-progress if not yet started
-    if (!dsaProgress[lesson.id] || dsaProgress[lesson.id].status !== 'completed') {
-      updateDsaProgress(lesson.id, 'in-progress', lesson.moduleId);
-    }
-  }, [dsaProgress, updateDsaProgress]);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
-  const handleCompleteDsaLesson = useCallback((lessonId) => {
-    updateDsaProgress(lessonId, 'completed');
-    setToastMessage("🎉 Topic marked as Completed! Great progress!");
-  }, [updateDsaProgress]);
+  const handleCompleteDsaLesson = useCallback((lessonId, sectionId, title) => {
+    markDsaLessonComplete(lessonId, sectionId, title);
+    setToastMessage("🎉 Lecture marked as Completed (100%)!");
+  }, [markDsaLessonComplete]);
 
   const handleSelectDsaProblem = useCallback((probId) => {
     setActiveDsaProblemId(probId);
     setActiveTab('dsa-problems');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }, []);
 
   const handleProblemSolved = useCallback((probId) => {
@@ -119,16 +118,21 @@ const App = () => {
     setToastMessage("🏆 Problem solved successfully! +50 Algorithmic XP");
   }, [updateDsaProblemProgress]);
 
-  const handleContinueLearning = useCallback((nextLesson) => {
-    if (nextLesson) {
-      handleSelectDsaLesson(nextLesson);
+  // Continue Learning Engine: automatically finds last watched or earliest unfinished
+  const handleContinueLearning = useCallback((targetLesson) => {
+    if (targetLesson) {
+      handleSelectDsaLesson(targetLesson);
+    } else if (lastWatchedLesson?.lessonId) {
+      const all = getAllA2ZLessons();
+      const match = all.find(l => l.id === lastWatchedLesson.lessonId);
+      handleSelectDsaLesson(match || all[0]);
     } else {
-      const all = getAllDsaLessons();
+      const all = getAllA2ZLessons();
       handleSelectDsaLesson(all[0]);
     }
-  }, [handleSelectDsaLesson]);
+  }, [handleSelectDsaLesson, lastWatchedLesson]);
 
-  // C / Python Video Handlers
+  // C / Python Video Handlers (Preserved)
   const handleTopicClick = useCallback((topic) => {
     if (topic.url) setActiveVideo(topic);
     else setToastMessage("Video link coming soon.");
@@ -146,7 +150,7 @@ const App = () => {
   }, [activeVideo]);
 
   const handleResetTracking = useCallback(() => {
-    if (window.confirm("Are you sure you want to reset all your learning progress (Videos & DSA)?")) {
+    if (window.confirm("Are you sure you want to reset all your learning progress (C, Python & Striver A2Z)?")) {
       resetProgress();
       setToastMessage("Your learning progress has been reset.");
     }
@@ -182,22 +186,24 @@ const App = () => {
                   onTopicClick={handleTopicClick}
                   userProgress={userProgress}
                   dsaProgress={dsaProgress}
+                  lastWatchedLesson={lastWatchedLesson}
+                  totalWatchTimeFormatted={totalWatchTimeFormatted}
                   onResetTracking={handleResetTracking}
                 />
               )}
 
-              {/* DSA Main Course / Lesson View */}
+              {/* Striver A2Z Main Course / Video Player View */}
               {activeTab === 'dsa' && (
                 activeDsaLesson ? (
-                  <DSALessonView
+                  <DSAVideoPlayerView
                     key={activeDsaLesson.id}
                     lesson={activeDsaLesson}
+                    onSelectLesson={handleSelectDsaLesson}
                     onBack={() => setActiveDsaLesson(null)}
+                    dsaProgress={dsaProgress}
+                    onProgressUpdate={updateDsaVideoProgress}
                     onCompleteLesson={handleCompleteDsaLesson}
-                    onNextLesson={handleSelectDsaLesson}
-                    onPrevLesson={handleSelectDsaLesson}
                     onOpenProblem={handleSelectDsaProblem}
-                    isCompleted={dsaProgress[activeDsaLesson.id]?.status === 'completed'}
                   />
                 ) : (
                   <DSACoursePage
@@ -209,12 +215,14 @@ const App = () => {
                 )
               )}
 
-              {/* DSA Dedicated Dashboard */}
+              {/* Dedicated Striver A2Z Dashboard */}
               {activeTab === 'dsa-dashboard' && (
                 <DSADashboard
                   key="dsa-dash"
                   dsaProgress={dsaProgress}
                   dsaProblemProgress={dsaProblemProgress}
+                  lastWatchedLesson={lastWatchedLesson}
+                  totalWatchTimeFormatted={totalWatchTimeFormatted}
                   onSelectLesson={handleSelectDsaLesson}
                   onSelectTab={handleSelectTab}
                 />
@@ -273,7 +281,7 @@ const App = () => {
         )}
       </AnimatePresence>
 
-      {/* Video Player Modal (Preserved) */}
+      {/* Video Player Modal for C / Python (Preserved) */}
       <AnimatePresence>
         {activeVideo && (
           <VideoPlayerModal

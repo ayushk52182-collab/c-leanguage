@@ -1,18 +1,49 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { PlayCircle, Award, CheckCircle2, TrendingUp, Flame, BrainCircuit, Target, BookOpen, ArrowRight, Sparkles, Code2, Layers } from 'lucide-react';
-import { getAllDsaLessons } from '../../data/dsaData';
+import {
+  PlayCircle, Award, CheckCircle2, TrendingUp, Flame, BrainCircuit,
+  Target, BookOpen, ArrowRight, Sparkles, Code2, Layers, Clock,
+  CheckCircle, Play, Compass, RotateCcw
+} from 'lucide-react';
+import { A2Z_SECTIONS, getAllA2ZLessons } from '../../data/dsaA2ZData';
 import { DSA_PROBLEMS } from '../../data/dsaProblems';
+import { formatTime } from '../../utils/youtube';
 
-const DSADashboard = ({ dsaProgress = {}, dsaProblemProgress = {}, onSelectLesson, onSelectTab }) => {
-  const allLessons = getAllDsaLessons();
-  const completedLessons = allLessons.filter(l => dsaProgress[l.id]?.status === 'completed');
-  const completedCount = completedLessons.length;
+const DSADashboard = ({
+  dsaProgress = {},
+  dsaProblemProgress = {},
+  lastWatchedLesson = null,
+  totalWatchTimeFormatted = "0m",
+  onSelectLesson,
+  onSelectTab
+}) => {
+  const allLessons = getAllA2ZLessons();
   const totalLessons = allLessons.length;
-  const overallPercent = Math.min(100, Math.round((completedCount / totalLessons) * 100));
 
-  // Next unfinished lesson
-  const nextLesson = allLessons.find(l => dsaProgress[l.id]?.status !== 'completed') || allLessons[0];
+  const completedLessons = allLessons.filter(l => dsaProgress[l.id]?.isCompleted);
+  const inProgressLessons = allLessons.filter(l => !dsaProgress[l.id]?.isCompleted && (dsaProgress[l.id]?.percent || 0) > 0);
+  const notStartedCount = Math.max(0, totalLessons - completedLessons.length - inProgressLessons.length);
+
+  const completedCount = completedLessons.length;
+  const inProgressCount = inProgressLessons.length;
+  const overallPercent = totalLessons > 0 ? Math.min(100, Math.round((completedCount / totalLessons) * 100)) : 0;
+
+  // Continue Learning Resolution:
+  // 1. If lastWatchedLesson exists and is incomplete, prioritize it.
+  // 2. Otherwise pick first unfinished lesson.
+  let continueTarget = null;
+  if (lastWatchedLesson?.lessonId) {
+    const found = allLessons.find(l => l.id === lastWatchedLesson.lessonId);
+    if (found) continueTarget = found;
+  }
+  if (!continueTarget) {
+    continueTarget = inProgressLessons[0] || allLessons.find(l => !dsaProgress[l.id]?.isCompleted) || allLessons[0];
+  }
+
+  const targetSaved = continueTarget ? (dsaProgress[continueTarget.id] || {}) : {};
+  const targetWatchedPercent = targetSaved.percent || (lastWatchedLesson?.percent || 0);
+  const targetCurrentTime = targetSaved.currentTime || (lastWatchedLesson?.currentTime || 0);
+  const targetDuration = targetSaved.duration || continueTarget?.durationSec || 0;
 
   // Problems breakdown
   const solvedProblemIds = Object.keys(dsaProblemProgress).filter(id => dsaProblemProgress[id]?.solved);
@@ -41,74 +72,159 @@ const DSADashboard = ({ dsaProgress = {}, dsaProblemProgress = {}, onSelectLesso
         <div className="dash-welcome-left">
           <div className="top-badge-row">
             <span className="badge-cyber">
-              <Sparkles size={13} /> DSA COMMAND CENTER
+              <Sparkles size={13} /> STRIVER A2Z COMMAND CENTER
             </span>
           </div>
-          <h1>Welcome to DSA Mastery</h1>
+          <h1>Welcome back 👋</h1>
           <p>
-            Track your progress across 14 modules, practice algorithmic problem solving, and monitor your difficulty breakdown.
+            Master Data Structures & Algorithms from basics to advanced with structured lessons, official video lectures, and live playback watch tracking.
           </p>
 
           <div className="dash-hero-actions">
-            <button
-              className="btn-primary btn-glow"
-              onClick={() => onSelectLesson(nextLesson)}
-            >
-              <PlayCircle size={17} />
-              <span>Continue Learning: {nextLesson.title}</span>
-              <ArrowRight size={15} />
-            </button>
+            {continueTarget && (
+              <button
+                className="btn-primary btn-glow"
+                onClick={() => onSelectLesson(continueTarget)}
+              >
+                <PlayCircle size={18} />
+                <span>
+                  {targetWatchedPercent > 0
+                    ? `Resume: ${continueTarget.title}`
+                    : `Start: ${continueTarget.title}`
+                  }
+                </span>
+                <ArrowRight size={15} />
+              </button>
+            )}
+
             <button
               className="btn-secondary"
-              onClick={() => onSelectTab('dsa-problems')}
+              onClick={() => onSelectTab('dsa')}
             >
-              <BrainCircuit size={17} />
-              <span>Solve Problems</span>
+              <Layers size={17} />
+              <span>Full A2Z Roadmap</span>
             </button>
           </div>
         </div>
 
-        {/* Current Topic Target Card */}
-        <div className="dash-target-card glass-card">
-          <span className="target-lbl">RECOMMENDED NEXT TOPIC</span>
-          <h3>{nextLesson.title}</h3>
-          <p>{nextLesson.description}</p>
-          <div className="target-meta">
-            <span className="topic-badge">{nextLesson.moduleTitle}</span>
-            <span className="complexity-badge-sm">{nextLesson.timeComplexity}</span>
+        {/* Continue Learning Target Card */}
+        {continueTarget && (
+          <div className="dash-target-card glass-card">
+            <div className="target-card-header">
+              <span className="target-lbl">
+                {targetWatchedPercent > 0 ? "CURRENT LESSON IN PROGRESS" : "RECOMMENDED NEXT LESSON"}
+              </span>
+              {targetWatchedPercent > 0 && (
+                <span className="target-percent-badge">{targetWatchedPercent}% Watched</span>
+              )}
+            </div>
+
+            <h3>{continueTarget.title}</h3>
+            <p>{continueTarget.description}</p>
+
+            <div className="target-meta">
+              <span className="topic-badge">{continueTarget.sectionTitle || "A2Z Section"}</span>
+              <span className="complexity-badge-sm"><Clock size={11} /> {continueTarget.duration}</span>
+            </div>
+
+            {/* Resume timestamp bar */}
+            <div className="target-resume-action-box">
+              {targetCurrentTime > 10 ? (
+                <div className="resume-time-info">
+                  <span>Resume from: <strong>{formatTime(targetCurrentTime)}</strong> / {formatTime(targetDuration)}</span>
+                </div>
+              ) : (
+                <div className="resume-time-info">
+                  <span>Not started yet</span>
+                </div>
+              )}
+              <button
+                className="resume-now-btn"
+                onClick={() => onSelectLesson(continueTarget)}
+              >
+                <Play size={13} /> {targetCurrentTime > 10 ? `Resume at ${formatTime(targetCurrentTime)}` : "Start Lesson"}
+              </button>
+            </div>
           </div>
-        </div>
+        )}
       </div>
 
       {/* KPI Stats Grid */}
       <div className="dash-kpi-grid">
         <div className="stat-card-dashboard glass-card cyan">
           <span className="d-stat-val">{overallPercent}%</span>
-          <span className="d-stat-lbl">OVERALL DSA PROGRESS</span>
+          <span className="d-stat-lbl">DSA OVERALL PROGRESS</span>
         </div>
         <div className="stat-card-dashboard glass-card green">
           <span className="d-stat-val">{completedCount} / {totalLessons}</span>
-          <span className="d-stat-lbl">TOPICS COMPLETED</span>
+          <span className="d-stat-lbl">VIDEOS COMPLETED</span>
         </div>
         <div className="stat-card-dashboard glass-card yellow">
-          <span className="d-stat-val">{solvedCount} / {totalProblems}</span>
-          <span className="d-stat-lbl">PROBLEMS SOLVED</span>
+          <span className="d-stat-val">{totalWatchTimeFormatted}</span>
+          <span className="d-stat-lbl">TOTAL WATCH TIME</span>
         </div>
         <div className="stat-card-dashboard glass-card">
           <span className="d-stat-val" style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
-            5 Days <Flame size={20} color="var(--orange-primary)" />
+            7 Days <Flame size={20} color="var(--orange-primary)" />
           </span>
           <span className="d-stat-lbl">ACTIVE STUDY STREAK</span>
         </div>
       </div>
 
-      {/* Dual Column Section: Difficulty Breakdown & Recent Activity */}
+      {/* Lessons Status Breakdown: Completed, In Progress, Not Started */}
+      <div className="dash-triple-status-grid">
+        <div className="status-kpi-card glass-card green-border">
+          <span className="kpi-num">{completedCount}</span>
+          <span className="kpi-title">Lessons Completed</span>
+          <span className="kpi-sub">≥ 90% watched threshold met</span>
+        </div>
+        <div className="status-kpi-card glass-card orange-border">
+          <span className="kpi-num">{inProgressCount}</span>
+          <span className="kpi-title">Lessons In Progress</span>
+          <span className="kpi-sub">Ready to resume anytime</span>
+        </div>
+        <div className="status-kpi-card glass-card blue-border">
+          <span className="kpi-num">{notStartedCount}</span>
+          <span className="kpi-title">Lessons Not Started</span>
+          <span className="kpi-sub">Ahead in curriculum</span>
+        </div>
+      </div>
+
+      {/* Dual Column: Section Progress & Problem Solving Breakdown */}
       <div className="dash-dual-grid">
-        {/* Difficulty Breakdown */}
+        {/* 18 Sections Curriculum Progress */}
         <div className="glass-card dash-panel">
           <div className="panel-header">
-            <Target size={20} color="var(--orange-primary)" />
-            <h3>Problem Difficulty Breakdown</h3>
+            <Layers size={20} color="var(--orange-primary)" />
+            <h3>A2Z Section-by-Section Progress</h3>
+          </div>
+
+          <div className="sections-progress-list">
+            {A2Z_SECTIONS.map((sec) => {
+              const secLessons = sec.lessons || [];
+              const secCompleted = secLessons.filter(l => dsaProgress[l.id]?.isCompleted).length;
+              const secPct = secLessons.length > 0 ? Math.round((secCompleted / secLessons.length) * 100) : 0;
+
+              return (
+                <div key={sec.id} className="sec-progress-row">
+                  <div className="sec-progress-info">
+                    <span className="sec-p-title">{sec.title}</span>
+                    <span className="sec-p-count">{secCompleted} / {secLessons.length} ({secPct}%)</span>
+                  </div>
+                  <div className="sec-progress-bar-track">
+                    <div className="sec-progress-bar-fill" style={{ width: `${secPct}%` }} />
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Problem Difficulty Breakdown */}
+        <div className="glass-card dash-panel">
+          <div className="panel-header">
+            <Target size={20} color="var(--sky-blue)" />
+            <h3>Problems Solved Breakdown</h3>
           </div>
 
           <div className="diff-breakdown-list">
@@ -142,33 +258,14 @@ const DSADashboard = ({ dsaProgress = {}, dsaProblemProgress = {}, onSelectLesso
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Quick Curriculum Explorer */}
-        <div className="glass-card dash-panel">
-          <div className="panel-header">
-            <BookOpen size={20} color="var(--sky-blue)" />
-            <h3>Curriculum Quick Launch</h3>
-          </div>
-
-          <div className="quick-launch-links">
-            <button className="ql-item" onClick={() => onSelectTab('dsa')}>
-              <div className="ql-left">
-                <Layers size={18} color="var(--orange-primary)" />
-                <div>
-                  <strong>Complete 14 Modules Roadmap</strong>
-                  <span>Browse all 98 topics and video guides</span>
-                </div>
-              </div>
-              <ArrowRight size={16} />
-            </button>
-
+          <div className="quick-launch-links" style={{ marginTop: '1.5rem' }}>
             <button className="ql-item" onClick={() => onSelectTab('dsa-problems')}>
               <div className="ql-left">
                 <Code2 size={18} color="var(--emerald-green)" />
                 <div>
-                  <strong>Algorithmic Problem Set</strong>
-                  <span>Practice Two Sum, Reverse LL, Kadane's</span>
+                  <strong>Open Algorithmic Problem Set</strong>
+                  <span>Practice Two Sum, Kadane's, Reverse LL & more</span>
                 </div>
               </div>
               <ArrowRight size={16} />

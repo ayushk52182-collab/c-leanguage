@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, X, BookOpen, Code2, ArrowRight, Layers } from 'lucide-react';
-import { getAllDsaLessons } from '../data/dsaData';
+import { Search, X, BookOpen, Code2, ArrowRight, Layers, Clock } from 'lucide-react';
+import { getAllA2ZLessons } from '../data/dsaA2ZData';
 import { DSA_PROBLEMS } from '../data/dsaProblems';
 
 const SearchModal = ({ isOpen, onClose, onSelectLesson, onSelectProblem }) => {
@@ -21,7 +21,7 @@ const SearchModal = ({ isOpen, onClose, onSelectLesson, onSelectProblem }) => {
       if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
         e.preventDefault();
         if (isOpen) onClose();
-        else onClose(false); // toggle trigger
+        else onClose(false);
       }
       if (e.key === 'Escape' && isOpen) {
         onClose();
@@ -33,15 +33,16 @@ const SearchModal = ({ isOpen, onClose, onSelectLesson, onSelectProblem }) => {
 
   if (!isOpen) return null;
 
-  const allLessons = getAllDsaLessons();
+  const allLessons = getAllA2ZLessons();
   const q = query.trim().toLowerCase();
 
   const matchedLessons = q
     ? allLessons.filter(l =>
         l.title.toLowerCase().includes(q) ||
-        l.moduleTitle.toLowerCase().includes(q) ||
-        l.description.toLowerCase().includes(q)
-      ).slice(0, 6)
+        l.sectionTitle.toLowerCase().includes(q) ||
+        l.description.toLowerCase().includes(q) ||
+        (l.topicsCovered && l.topicsCovered.some(t => t.toLowerCase().includes(q)))
+      ).slice(0, 8)
     : [];
 
   const matchedProblems = q
@@ -49,7 +50,7 @@ const SearchModal = ({ isOpen, onClose, onSelectLesson, onSelectProblem }) => {
         p.title.toLowerCase().includes(q) ||
         p.topic.toLowerCase().includes(q) ||
         p.difficulty.toLowerCase().includes(q)
-      ).slice(0, 4)
+      ).slice(0, 5)
     : [];
 
   return (
@@ -74,12 +75,12 @@ const SearchModal = ({ isOpen, onClose, onSelectLesson, onSelectProblem }) => {
             <input
               ref={inputRef}
               type="text"
-              placeholder="Search algorithms, data structures, lessons, problems... (e.g. binary search)"
+              placeholder="Search A2Z lessons, videos, algorithms, problems... (e.g. binary search)"
               value={query}
               onChange={e => setQuery(e.target.value)}
               className="search-box-input"
             />
-            <button className="search-close-btn" onClick={onClose}>
+            <button className="search-close-btn" onClick={onClose} aria-label="Close search">
               <X size={18} />
             </button>
           </div>
@@ -88,9 +89,9 @@ const SearchModal = ({ isOpen, onClose, onSelectLesson, onSelectProblem }) => {
           <div className="search-results-container">
             {q === '' ? (
               <div className="search-empty-hint">
-                <p>Type keywords like <strong>"binary search"</strong>, <strong>"linked list"</strong>, <strong>"dp"</strong>, or <strong>"two sum"</strong>.</p>
+                <p>Type keywords like <strong>"binary search"</strong>, <strong>"kadane"</strong>, <strong>"linked list"</strong>, <strong>"dijkstra"</strong>, or <strong>"two sum"</strong>.</p>
                 <div className="search-tags">
-                  {['Arrays', 'Recursion', 'Binary Search', 'Linked List', 'Stack', 'Trees', 'Graph', 'Two Sum'].map(t => (
+                  {['Basics', 'Kadane', 'Binary Search', 'Linked List', 'Stack', 'Trees', 'Graph', 'DP', 'Two Sum'].map(t => (
                     <button key={t} className="search-tag-chip" onClick={() => setQuery(t)}>
                       {t}
                     </button>
@@ -106,7 +107,7 @@ const SearchModal = ({ isOpen, onClose, onSelectLesson, onSelectProblem }) => {
                 {matchedLessons.length > 0 && (
                   <div className="search-category-group">
                     <div className="search-category-title">
-                      <BookOpen size={14} /> LESSONS & TOPICS ({matchedLessons.length})
+                      <BookOpen size={14} /> A2Z VIDEO LESSONS ({matchedLessons.length})
                     </div>
                     {matchedLessons.map(l => (
                       <div
@@ -118,7 +119,7 @@ const SearchModal = ({ isOpen, onClose, onSelectLesson, onSelectProblem }) => {
                         }}
                       >
                         <div className="sri-left">
-                          <span className="sri-module">{l.moduleTitle}</span>
+                          <span className="sri-module">{l.sectionTitle} • <Clock size={10} /> {l.duration}</span>
                           <strong>{l.title}</strong>
                           <span className="sri-desc">{l.description}</span>
                         </div>

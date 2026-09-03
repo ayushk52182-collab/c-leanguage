@@ -1,11 +1,16 @@
 import React, { Suspense } from 'react';
 import { motion } from 'framer-motion';
-import { BarChart2, RotateCcw, Compass, PlayCircle, Code2, Terminal as TerminalIcon, BrainCircuit, Route, Cpu, TrendingUp, Target, Quote, Trophy, Sparkles, Boxes, ArrowRight, Layers } from 'lucide-react';
+import {
+  BarChart2, RotateCcw, Compass, PlayCircle, Code2, Terminal as TerminalIcon,
+  BrainCircuit, Route, Cpu, TrendingUp, Target, Quote, Trophy, Sparkles,
+  Boxes, ArrowRight, Layers, Clock
+} from 'lucide-react';
 import { SAMPLE_ACHIEVEMENTS } from '../data/achievements';
 import { TOTAL_VIDEOS } from '../utils/constants';
 import * as Icons from 'lucide-react';
 import HeroCanvas3D from '../three/HeroCanvas3D';
-import { getAllDsaLessons } from '../data/dsaData';
+import { getAllA2ZLessons } from '../data/dsaA2ZData';
+import { formatTime } from '../utils/youtube';
 
 const containerVariants = {
   hidden: { opacity: 0 },
@@ -16,21 +21,24 @@ const itemVariants = {
   visible: { opacity: 1, y: 0, transition: { type: "spring", damping: 20 } }
 };
 
-const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress = {}, onResetTracking }) => {
+const Dashboard = ({
+  onSelectTab,
+  onTopicClick,
+  userProgress = {},
+  dsaProgress = {},
+  lastWatchedLesson = null,
+  totalWatchTimeFormatted = "0m",
+  onResetTracking
+}) => {
   const completedCount = Object.values(userProgress).filter(v => v.isCompleted).length;
   const inProgressCount = Object.values(userProgress).filter(v => !v.isCompleted && v.percent > 0).length;
   const videoPercent = Math.min(100, Math.round((completedCount / (TOTAL_VIDEOS || 40)) * 100));
 
-  // DSA calculations
-  const allDsaLessons = getAllDsaLessons();
-  const dsaTotalCount = allDsaLessons.length || 98;
-  const dsaCompletedCount = allDsaLessons.filter(l => dsaProgress[l.id]?.status === 'completed').length;
+  // Striver A2Z calculations
+  const allDsaLessons = getAllA2ZLessons();
+  const dsaTotalCount = allDsaLessons.length || 46;
+  const dsaCompletedCount = allDsaLessons.filter(l => dsaProgress[l.id]?.isCompleted).length;
   const dsaPercent = Math.min(100, Math.round((dsaCompletedCount / dsaTotalCount) * 100));
-
-  // Combined overall stats
-  const totalItems = (TOTAL_VIDEOS || 40) + dsaTotalCount;
-  const totalCompleted = completedCount + dsaCompletedCount;
-  const overallMasteryPercent = Math.min(100, Math.round((totalCompleted / totalItems) * 100));
 
   return (
     <motion.div className="dashboard-container" variants={containerVariants} initial="hidden" animate="visible">
@@ -39,7 +47,7 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
       <motion.section className="glass-card hero-section" variants={itemVariants}>
         <div className="hero-content">
           <div className="top-badge-row">
-            <span className="badge-cyber"><Sparkles size={13} /> WELCOME TO YOUR LEARNING SPACE</span>
+            <span className="badge-cyber"><Sparkles size={13} /> STRIVER A2Z + C + PYTHON PLATFORM</span>
             <span className="badge-creator"><Code2 size={12} /> Designed & Engineered by Aayush Singh</span>
           </div>
           <h1 className="hero-title">
@@ -47,11 +55,11 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
             <span className="hero-title-line gradient-text">Algorithms 3D</span>
           </h1>
           <p className="hero-subtitle">
-            Curated roadmap for C Language, Python 3.12+, and comprehensive Data Structures & Algorithms with interactive visualizers.
+            Master Data Structures and Algorithms from basics to advanced with structured lessons, official video lectures, practice problems and automatic progress tracking.
           </p>
           <div className="hero-cta-group">
             <button className="btn-primary btn-glow" onClick={() => onSelectTab('dsa')}>
-              <Boxes size={16} /> Explore DSA Roadmap →
+              <Boxes size={16} /> Explore A2Z DSA Sheet →
             </button>
             <button className="btn-secondary" onClick={() => onSelectTab('c')}>
               C Blueprint
@@ -75,11 +83,11 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
               <span className="dot red"></span>
               <span className="dot yellow"></span>
               <span className="dot green"></span>
-              <span className="window-title">dsa_mastery.cpp</span>
+              <span className="window-title">strivers_a2z.cpp</span>
             </div>
             <pre className="code-block">
               <code>
-                <span className="code-keyword">#include</span> &lt;iostream&gt;{"\n\n"}<span className="code-keyword">int</span> <span className="code-func">main</span>() {"{"}{"\n"}  <span className="code-func">printf</span>(<span className="code-str">"Mastering C, Python & DSA!\\n"</span>);{"\n"}  <span className="code-keyword">return</span> <span className="code-num">0</span>;{"\n"}{"}"}
+                <span className="code-keyword">#include</span> &lt;iostream&gt;{"\n\n"}<span className="code-keyword">int</span> <span className="code-func">main</span>() {"{"}{"\n"}  <span className="code-func">printf</span>(<span className="code-str">"Mastering Striver A2Z DSA!\\n"</span>);{"\n"}  <span className="code-keyword">return</span> <span className="code-num">0</span>;{"\n"}{"}"}
               </code>
             </pre>
           </div>
@@ -90,11 +98,11 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
       <motion.section className="section-block" variants={itemVariants}>
         <div className="section-header-row">
           <h2 className="section-title"><Route size={20} /> Choose Your Learning Path</h2>
-          <span className="header-subtitle-tag">3 Comprehensive Programs</span>
+          <span className="header-subtitle-tag">3 Curated Roadmaps</span>
         </div>
 
         <div className="path-selection-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))' }}>
-          {/* DSA Course Card */}
+          {/* Striver A2Z DSA Course Card (Exact requirements) */}
           <motion.div
             className="glass-card path-card active dsa-path-highlight"
             onClick={() => onSelectTab('dsa')}
@@ -103,22 +111,22 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
             <div className="path-header">
               <Boxes size={32} className="path-icon dsa-glow" />
               <span className="badge-pro" style={{ background: 'linear-gradient(135deg, var(--orange-primary), var(--rose-coral))' }}>
-                NEW • INTERVIEW ESSENTIAL
+                A2Z DSA SHEET
               </span>
             </div>
             <h3>DSA – Data Structures & Algorithms</h3>
             <p>
-              Master 14 core modules: Arrays, Linked Lists, Stack, Queue, Hashing, Trees, Heaps, Graphs, DP & Greedy with interactive visualizers.
+              Master Data Structures and Algorithms from basics to advanced with structured lessons, videos, practice problems and automatic progress tracking.
             </p>
             <div className="path-meta">
-              <span>14 Modules • {dsaTotalCount} Topics • Visual Labs</span>
+              <span>Topics: 18+ Sections • Problems: 474+ • Difficulty: Easy / Medium / Hard</span>
             </div>
 
             {/* Course Progress Section */}
             <div className="path-progress-container">
               <div className="path-progress-info">
                 <span>Progress: {dsaPercent}%</span>
-                <span>{dsaCompletedCount} of {dsaTotalCount} Topics</span>
+                <span>{dsaCompletedCount} of {dsaTotalCount} Completed</span>
               </div>
               <div className="mini-progress-bar">
                 <div className="fill" style={{ width: `${dsaPercent}%` }} />
@@ -128,7 +136,7 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
             <div className="path-card-action">
               <button className="btn-primary btn-glow" style={{ width: '100%' }}>
                 <PlayCircle size={15} />
-                {dsaCompletedCount === 0 ? "Start Learning DSA" : "Continue Learning DSA"}
+                Continue Learning
               </button>
             </div>
           </motion.div>
@@ -205,19 +213,19 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
         <div className="quick-cards-grid">
           <div className="stat-card-dashboard glass-card">
             <span className="d-stat-val">{dsaTotalCount}</span>
-            <span className="d-stat-lbl">DSA CURRICULUM TOPICS</span>
+            <span className="d-stat-lbl">TOTAL VIDEO LESSONS</span>
           </div>
           <div className="stat-card-dashboard glass-card green">
             <span className="d-stat-val">{dsaCompletedCount}</span>
-            <span className="d-stat-lbl">COMPLETED DSA TOPICS</span>
+            <span className="d-stat-lbl">COMPLETED LESSONS</span>
           </div>
           <div className="stat-card-dashboard glass-card yellow">
-            <span className="d-stat-val">{completedCount}</span>
-            <span className="d-stat-lbl">VIDEO LESSONS WATCHED</span>
+            <span className="d-stat-val">{totalWatchTimeFormatted}</span>
+            <span className="d-stat-lbl">TOTAL WATCH TIME</span>
           </div>
           <div className="stat-card-dashboard glass-card cyan">
             <span className="d-stat-val">{dsaPercent}%</span>
-            <span className="d-stat-lbl">DSA ROADMAP PROGRESS</span>
+            <span className="d-stat-lbl">DSA OVERALL PROGRESS</span>
           </div>
         </div>
       </motion.section>
@@ -230,11 +238,11 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
             <div className="quick-icon-box" style={{ background: 'linear-gradient(135deg, var(--orange-primary), var(--rose-coral))', color: '#fff' }}>
               <Boxes size={22} />
             </div>
-            <h3>DSA Curriculum</h3>
-            <p>14 Modules & 98 Topics</p>
+            <h3>A2Z Curriculum</h3>
+            <p>18 Curated Sections</p>
             <div className="quick-card-bottom">
               <div className="mini-progress-bar"><div className="fill" style={{ width: `${dsaPercent}%` }}></div></div>
-              <button className="quick-btn">Learn DSA</button>
+              <button className="quick-btn">Learn A2Z</button>
             </div>
           </div>
 
@@ -278,14 +286,14 @@ const Dashboard = ({ onSelectTab, onTopicClick, userProgress = {}, dsaProgress =
           </div>
           <div className="progress-stats-grid">
             <div className="p-stat-item"><span className="p-val">{dsaCompletedCount} of {dsaTotalCount}</span><span className="p-lbl">Completed DSA</span></div>
-            <div className="p-stat-item"><span className="p-val">5 Days 🔥</span><span className="p-lbl">Study Streak</span></div>
-            <div className="p-stat-item"><span className="p-val">14 Modules</span><span className="p-lbl">Curriculum Scope</span></div>
+            <div className="p-stat-item"><span className="p-val">7 Days 🔥</span><span className="p-lbl">Study Streak</span></div>
+            <div className="p-stat-item"><span className="p-val">18 Steps</span><span className="p-lbl">A2Z Scope</span></div>
           </div>
         </section>
 
         <section className="glass-card mission-card">
           <div className="card-header"><Target size={20} color="var(--orange-primary)" /><h2>Today's Coding Mission</h2></div>
-          <p className="mission-text">&ldquo;Complete one Data Structures topic and solve two algorithmic problems.&rdquo;</p>
+          <p className="mission-text">&ldquo;Watch one A2Z masterclass video and solve two practice problems.&rdquo;</p>
           <div className="mission-quote"><Quote size={14} /><span>Consistency with data structures creates unstoppable problem-solving skills.</span></div>
           <button className="btn-primary mission-btn btn-glow" onClick={() => onSelectTab('dsa')}>Start Mission</button>
         </section>
