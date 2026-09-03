@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useRef, useCallback } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import {
   Play, Pause, RotateCcw, CheckCircle2, Circle, AlertTriangle,
   ArrowLeft, ArrowRight, ChevronDown, ChevronRight, BookOpen,
-  Code2, BrainCircuit, Copy, Check, Sparkles, Volume2, VolumeX,
-  Maximize2, Clock, Flame, Menu, X, HelpCircle, FileText
+  Code2, Copy, Check, Volume2, VolumeX, Maximize2, Clock,
+  Menu, X, HelpCircle
 } from 'lucide-react';
 import { A2Z_SECTIONS, getAllA2ZLessons } from '../../data/dsaA2ZData';
 import { DSA_PROBLEMS } from '../../data/dsaProblems';
@@ -31,6 +31,7 @@ const DSAVideoPlayerView = ({
   const [speed, setSpeed] = useState(1);
   const [volume, setVolume] = useState(100);
   const [isMuted, setIsMuted] = useState(false);
+  const [isCCActive, setIsCCActive] = useState(false);
   const [showExplanationModal, setShowExplanationModal] = useState(false);
 
   // Saved progress for this specific lesson
@@ -55,19 +56,24 @@ const DSAVideoPlayerView = ({
     setExpandedSections(prev => ({ ...prev, [sId]: !prev[sId] }));
   };
 
-  // 1. YouTube IFrame Player Instance Setup with modest branding
+  // 1. Resilient YouTube IFrame Player Lifecycle Setup
   useEffect(() => {
     setEmbedError(false);
     setIsPlaying(false);
+    let isMounted = true;
+    let pollTimer = null;
     let playerInstance = null;
 
     const startPosition = Math.floor(initialTime);
+    const targetElementId = `dsa-yt-player-${lesson.id}`;
 
-    const initPlayer = () => {
+    const createPlayer = () => {
+      if (!isMounted) return false;
+      const element = document.getElementById(targetElementId);
+      if (!element || !window.YT || !window.YT.Player) return false;
+
       try {
-        if (!window.YT || !window.YT.Player) return;
-
-        playerInstance = new window.YT.Player('dsa-youtube-iframe-player', {
+        playerInstance = new window.YT.Player(targetElementId, {
           videoId: lesson.videoId,
           playerVars: {
             autoplay: 1,
@@ -84,6 +90,7 @@ const DSAVideoPlayerView = ({
           },
           events: {
             onReady: (e) => {
+              if (!isMounted) return;
               playerRef.current = e.target;
               const dur = Math.floor(e.target.getDuration() || lesson.durationSec || 0);
               setPlaybackState(prev => ({
@@ -97,8 +104,17 @@ const DSAVideoPlayerView = ({
               if (startPosition > 5) {
                 e.target.seekTo(startPosition, true);
               }
+
+              // Apply active captions if toggle was already enabled
+              if (isCCActive) {
+                try {
+                  e.target.loadModule('captions');
+                  e.target.setOption('captions', 'track', { languageCode: 'en' });
+                } catch (err) {}
+              }
             },
             onStateChange: (e) => {
+              if (!isMounted) return;
               let status = "Paused";
               if (e.data === window.YT.PlayerState.PLAYING) {
                 status = "Watching";
@@ -124,19 +140,32 @@ const DSAVideoPlayerView = ({
               setPlaybackState(prev => ({ ...prev, statusText: status }));
             },
             onError: () => {
-              setEmbedError(true);
+              if (isMounted) setEmbedError(true);
             }
           }
         });
+        return true;
       } catch (err) {
-        setEmbedError(true);
+        if (isMounted) setEmbedError(true);
+        return false;
+      }
+    };
+
+    // Retry polling until element & API are fully mounted
+    let attempts = 0;
+    const tryInit = () => {
+      if (createPlayer()) return;
+      if (attempts < 25 && isMounted) {
+        attempts++;
+        pollTimer = setTimeout(tryInit, 120);
       }
     };
 
     if (window.YT && window.YT.Player) {
-      initPlayer();
+      tryInit();
     } else {
-      window.onYouTubeIframeAPIReady = initPlayer;
+      window.onYouTubeIframeAPIReady = tryInit;
+      tryInit();
     }
 
     // 2. Real-time Periodic Playback Watch Tracker (every 2.5 seconds)
@@ -164,10 +193,13 @@ const DSAVideoPlayerView = ({
     }, 2500);
 
     return () => {
+      isMounted = false;
+      if (pollTimer) clearTimeout(pollTimer);
       if (intervalRef.current) clearInterval(intervalRef.current);
       if (playerRef.current && typeof playerRef.current.destroy === 'function') {
         try { playerRef.current.destroy(); } catch (e) {}
       }
+      playerRef.current = null;
     };
   }, [lesson.id, lesson.videoId]);
 
@@ -224,6 +256,35 @@ const DSAVideoPlayerView = ({
     }
   };
 
+  // Captions (CC) Toggle Handler
+  const handleToggleCC = () => {
+    const next = !isCCActive;
+    setIsCCActive(next);
+
+    if (playerRef.current) {
+      try {
+        if (next) {
+          if (typeof playerRef.current.loadModule === 'function') {
+            playerRef.current.loadModule('captions');
+          }
+          if (typeof playerRef.current.setOption === 'function') {
+            playerRef.current.setOption('captions', 'track', { languageCode: 'en' });
+            playerRef.current.setOption('captions', 'reload', true);
+          }
+        } else {
+          if (typeof playerRef.current.unloadModule === 'function') {
+            playerRef.current.unloadModule('captions');
+          }
+          if (typeof playerRef.current.setOption === 'function') {
+            playerRef.current.setOption('captions', 'track', {});
+          }
+        }
+      } catch (err) {
+        console.warn('Captions toggle error:', err);
+      }
+    }
+  };
+
   const handleSpeedChange = (rate) => {
     setSpeed(rate);
     if (playerRef.current && typeof playerRef.current.setPlaybackRate === 'function') {
@@ -268,12 +329,15 @@ const DSAVideoPlayerView = ({
       } else if (e.key === 'm' || e.key === 'M') {
         e.preventDefault();
         handleToggleMute();
+      } else if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        handleToggleCC();
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [isPlaying, volume, isMuted]);
+  }, [isPlaying, volume, isMuted, isCCActive]);
 
   const handleCopyCode = () => {
     const code = lesson.codeSnippet?.[codeLang] || "";
@@ -316,9 +380,6 @@ const DSAVideoPlayerView = ({
             const isExpanded = !!expandedSections[section.id];
             const sectionLessons = section.lessons || [];
             const completedCount = sectionLessons.filter(l => dsaProgress[l.id]?.isCompleted).length;
-            const secPercent = sectionLessons.length > 0
-              ? Math.round((completedCount / sectionLessons.length) * 100)
-              : 0;
 
             return (
               <div key={section.id} className="sidebar-section-group">
@@ -437,8 +498,8 @@ const DSAVideoPlayerView = ({
               <p>Playback restrictions prevent embedded viewing for this specific lecture.</p>
             </div>
           ) : (
-            <div className="iframe-aspect-ratio">
-              <div id="dsa-youtube-iframe-player" className="youtube-embed-target" />
+            <div key={lesson.id} className="iframe-aspect-ratio">
+              <div id={`dsa-yt-player-${lesson.id}`} className="youtube-embed-target" />
               {/* Transparent Overlay: user interacts solely via custom controls and direct video click */}
               <div
                 className="video-click-overlay"
@@ -496,6 +557,16 @@ const DSAVideoPlayerView = ({
                 aria-label="Volume"
               />
             </div>
+
+            {/* Captions (CC) Toggle Button */}
+            <button
+              className={`ctrl-btn cc-btn ${isCCActive ? 'active' : ''}`}
+              onClick={handleToggleCC}
+              title={isCCActive ? "Subtitles (CC): ON - Click to disable" : "Subtitles (CC): OFF - Click to enable"}
+              aria-label="Toggle Closed Captions"
+            >
+              CC
+            </button>
 
             {/* Playback Speed Selector */}
             <div className="ctrl-speed-group">
