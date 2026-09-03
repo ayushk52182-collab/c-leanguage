@@ -65,7 +65,7 @@ const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning })
           </div>
 
           <p className="dsa-hero-desc">
-            Master Data Structures and Algorithms from basics to advanced with structured lessons, official video lectures, interactive visualizations, and real-time live playback watch tracking.
+            Master Data Structures and Algorithms from basics to advanced with structured lessons, videos, practice problems and automatic progress tracking.
           </p>
 
           <div className="dsa-hero-actions">
@@ -77,7 +77,7 @@ const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning })
                 <PlayCircle size={18} />
                 <span>
                   {nextSaved.percent > 0
-                    ? `Resume: ${nextUnfinished.title} (${nextSaved.percent}%)`
+                    ? `Continue: ${nextUnfinished.title} (${nextSaved.percent}% watched)`
                     : `Start: ${nextUnfinished.title}`
                   }
                 </span>
@@ -93,16 +93,21 @@ const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning })
           </div>
         </div>
 
-        {/* Hero Progress Metrics */}
+        {/* Hero Progress Metrics with exact Live Course Progress meter */}
         <div className="dsa-hero-metrics glass-card">
           <div className="metrics-header">
             <Award size={18} color="var(--orange-primary)" />
-            <h3>Your Overall DSA Mastery</h3>
+            <h3>DSA Progress</h3>
           </div>
 
-          <div className="metrics-big-percent">
-            <span className="percent-number">{overallPercent}%</span>
-            <span className="percent-label">CURRICULUM COMPLETED</span>
+          <div className="dsa-visual-meter-box">
+            <div className="dsa-ascii-bar">
+              {'█'.repeat(Math.floor(overallPercent / 5)) + '░'.repeat(Math.max(0, 20 - Math.floor(overallPercent / 5)))}
+            </div>
+            <div className="dsa-meter-stats">
+              <span className="dsa-big-pct">{overallPercent}%</span>
+              <span className="dsa-count-sub">{completedCount} / {totalLessons} lessons completed</span>
+            </div>
           </div>
 
           <div className="mini-progress-bar" style={{ height: '8px', marginBottom: '1.2rem' }}>
@@ -150,7 +155,7 @@ const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning })
 
           return (
             <div key={section.id} className="dsa-module-card glass-card">
-              {/* Section Header */}
+              {/* Section Header with Section Progress */}
               <div
                 className="module-card-header"
                 onClick={() => toggleSection(section.id)}
@@ -165,7 +170,10 @@ const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning })
 
                 <div className="mod-header-right">
                   <div className="mod-progress-mini">
-                    <span className="mod-count">{completedCount} of {sectionLessons.length} watched ({secPercent}%)</span>
+                    <span className="mod-count">{completedCount} / {sectionLessons.length} completed ({secPercent}%)</span>
+                    <div className="mod-ascii-mini">
+                      {'█'.repeat(Math.floor(secPercent / 10)) + '░'.repeat(Math.max(0, 10 - Math.floor(secPercent / 10)))}
+                    </div>
                     <div className="mod-mini-bar">
                       <div className="mod-mini-fill" style={{ width: `${secPercent}%` }} />
                     </div>
@@ -176,7 +184,7 @@ const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning })
                 </div>
               </div>
 
-              {/* Lesson Items inside Section */}
+              {/* Lesson Items inside Section with exact video-by-video status */}
               <AnimatePresence>
                 {isExpanded && (
                   <motion.div
@@ -213,15 +221,15 @@ const DSACoursePage = ({ onSelectLesson, dsaProgress = {}, onContinueLearning })
 
                             {isCompleted ? (
                               <span className="status-pill completed">
-                                <CheckCircle2 size={13} /> 100% Watched
+                                <CheckCircle2 size={13} /> ✓ Completed (100% watched)
                               </span>
                             ) : percent > 0 ? (
                               <span className="status-pill in-progress">
-                                <Play size={11} /> {percent}% Watched ({formatTime(currentTime)})
+                                <Play size={11} /> ◉ {percent}% watched ({formatTime(currentTime)})
                               </span>
                             ) : (
                               <span className="status-pill not-started">
-                                <Circle size={13} /> Not Started
+                                <Circle size={13} /> ○ Not Started
                               </span>
                             )}
                           </div>
