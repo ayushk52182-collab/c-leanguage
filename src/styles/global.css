@@ -4601,3 +4601,54 @@ html[data-theme="dark"] .sec-progress-bar-track {
   box-shadow: 0 0 14px rgba(249, 115, 22, 0.65);
   transform: scale(1.02);
 }
+
+
+/* ---- Google Auth & Divider in Cyber Theme ---- */
+.btn-google-cyber {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: #ffffff;
+  border: 1.5px solid rgba(249, 115, 22, 0.25);
+  border-radius: var(--radius-md);
+  color: var(--text-primary);
+  font-family: var(--font-display);
+  font-size: 0.84rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-smooth);
+  box-shadow: 0 2px 8px rgba(249, 115, 22, 0.08);
+  margin-bottom: 1rem;
+}
+
+.btn-google-cyber:hover {
+  background: #fffbf7;
+  border-color: var(--orange-primary);
+  box-shadow: 0 4px 14px rgba(249, 115, 22, 0.2);
+  transform: translateY(-1px);
+}
+
+.auth-cyber-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  margin-bottom: 1.1rem;
+}
+
+.auth-cyber-divider::before,
+.auth-cyber-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid rgba(249, 115, 22, 0.18);
+}
+
+.auth-cyber-divider span {
+  padding: 0 10px;
+}

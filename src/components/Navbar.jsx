@@ -67,11 +67,20 @@ const Navbar = ({ activeTab, onSelectTab, user, onLogout, theme, toggleTheme, on
         {theme === 'dark' ? <Sun size={17} color="var(--amber-gold)" /> : <Moon size={17} color="var(--orange-primary)" />}
       </button>
 
-      <div className="nav-profile-chip">
-        <div className="avatar-circle">AS</div>
+      <div className="nav-profile-chip" title="Account Holder (Online)">
+        <div className="avatar-circle">
+          {typeof user === 'string' && user.trim().length > 0
+            ? user.trim().split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase()
+            : 'AS'}
+        </div>
         <div className="user-details">
-          <span className="user-profile-name">Aayush Singh</span>
-          <span className="user-role">Coding Learner</span>
+          <span className="user-profile-name">
+            {typeof user === 'string' && user.trim().length > 0 ? user : 'Aayush Singh'}
+          </span>
+          <span className="user-role" style={{ display: 'flex', alignItems: 'center', gap: '5px', color: '#10b981', fontWeight: '700', fontSize: '0.72rem' }}>
+            <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981', display: 'inline-block', boxShadow: '0 0 6px #10b981' }}></span>
+            Online
+          </span>
         </div>
       </div>
 
