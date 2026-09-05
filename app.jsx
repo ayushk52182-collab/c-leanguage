@@ -242,19 +242,123 @@ const Video3DIcon = ({ active = true }) => {
   );
 };
 
-// Premium Student Login Component with 3D Coding Background
+// Premium Student Login & Registration Component with 3D Coding Background
 const LoginPage = ({ onLogin }) => {
+  const [mode, setMode] = useState("login"); // 'login' | 'signup'
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [email, setEmail] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [error, setError] = useState("");
+  const [success, setSuccess] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleSwitchMode = (newMode) => {
+    setMode(newMode);
+    setError("");
+    setSuccess("");
+  };
+
+  const handleLoginSubmit = (e) => {
     e.preventDefault();
-    if (username === TEMP_USERNAME && password === TEMP_PASSWORD) {
-      onLogin(username);
-    } else {
-      setError("Incorrect username or password.");
+    setError("");
+    setSuccess("");
+    const trimmedUsername = username.trim();
+
+    if (!trimmedUsername || !password) {
+      setError("Please fill in all fields.");
+      return;
+    }
+
+    // 1. Check default credentials
+    if (trimmedUsername === TEMP_USERNAME && password === TEMP_PASSWORD) {
+      setSuccess("Session verified! Launching dashboard...");
+      setTimeout(() => onLogin(trimmedUsername), 400);
+      return;
+    }
+
+    // 2. Check registered users in localStorage
+    try {
+      const registered = JSON.parse(localStorage.getItem("roadmap_registered_users") || "[]");
+      const match = registered.find(
+        (u) =>
+          (u.username.toLowerCase() === trimmedUsername.toLowerCase() ||
+            (u.email && u.email.toLowerCase() === trimmedUsername.toLowerCase())) &&
+          u.password === password
+      );
+
+      if (match) {
+        setSuccess();
+        setTimeout(() => onLogin(match.username), 400);
+        return;
+      }
+    } catch (err) {
+      console.error("Error reading registered users:", err);
+    }
+
+    setError("Incorrect username or password. Default demo is aayush / 1234, or create an account via Sign Up.");
+  };
+
+  const handleSignupSubmit = (e) => {
+    e.preventDefault();
+    setError("");
+    setSuccess("");
+
+    const trimmedUsername = username.trim();
+    const trimmedFullName = fullName.trim();
+    const trimmedEmail = email.trim();
+
+    if (!trimmedFullName || !trimmedUsername || !password || !confirmPassword) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+
+    if (trimmedUsername.length < 3) {
+      setError("Username must be at least 3 characters long.");
+      return;
+    }
+
+    if (password.length < 4) {
+      setError("Password must be at least 4 characters long.");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError("Passwords do not match.");
+      return;
+    }
+
+    try {
+      const registered = JSON.parse(localStorage.getItem("roadmap_registered_users") || "[]");
+      const exists = registered.some(
+        (u) => u.username.toLowerCase() === trimmedUsername.toLowerCase()
+      );
+
+      if (exists || trimmedUsername.toLowerCase() === TEMP_USERNAME.toLowerCase()) {
+        setError("Username already taken. Please choose another username or log in.");
+        return;
+      }
+
+      const newUser = {
+        fullName: trimmedFullName,
+        username: trimmedUsername,
+        email: trimmedEmail,
+        password: password,
+        createdAt: new Date().toISOString()
+      };
+
+      registered.push(newUser);
+      localStorage.setItem("roadmap_registered_users", JSON.stringify(registered));
+
+      setSuccess("Account created successfully! Initializing your session...");
+      setTimeout(() => {
+        onLogin(newUser.username);
+      }, 700);
+    } catch (err) {
+      console.error("Error saving new user:", err);
+      setError("Failed to create account. Please try again.");
     }
   };
 
@@ -291,55 +395,195 @@ const LoginPage = ({ onLogin }) => {
         <div className="login-header">
           <div className="top-badge-row">
             <span className="badge-3d">
-              <Icon name="layers" size={13} />
-              3D ENGINEERING ROADMAP
+              <Icon name={mode === 'login' ? 'layers' : 'user-plus'} size={13} />
+              {mode === 'login' ? 'CYBERPUNK CODE ACADEMY' : 'NEW LEARNER PROTOCOL'}
             </span>
           </div>
-          <h2 className="login-title">Welcome Back, Learner</h2>
-          <p className="login-subtitle">Continue your coding journey and track your learning progress.</p>
+          <h2 className="login-title">
+            {mode === 'login' ? 'Welcome Back, Learner' : 'Create Learner Account'}
+          </h2>
+          <p className="login-subtitle">
+            {mode === 'login'
+              ? 'Continue your coding journey and track your learning progress.'
+              : 'Register your account to unlock the interactive 3D learning platform.'}
+          </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
-          {error && <div className="login-error">{error}</div>}
-          
-          <div className="form-group">
-            <label>Username</label>
-            <input
-              type="text"
-              className="login-input"
-              placeholder="e.g. aayush"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              required
-            />
-          </div>
+        {/* Auth Switcher Tabs */}
+        <div className="auth-tab-row">
+          <button
+            type="button"
+            className={}
+            onClick={() => handleSwitchMode('login')}
+          >
+            <Icon name="log-in" size={14} />
+            Sign In
+          </button>
+          <button
+            type="button"
+            className={}
+            onClick={() => handleSwitchMode('signup')}
+          >
+            <Icon name="user-plus" size={14} />
+            Sign Up
+          </button>
+        </div>
 
-          <div className="form-group">
-            <label>Password</label>
-            <div className="password-input-wrapper">
+        {error && <div className="login-error">{error}</div>}
+        {success && <div className="login-success">{success}</div>}
+
+        {mode === 'login' ? (
+          <form onSubmit={handleLoginSubmit} className="login-form">
+            <div className="form-group">
+              <label>Username</label>
               <input
-                type={showPassword ? "text" : "password"}
-                className="login-input password-field"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
+                type="text"
+                className="login-input"
+                placeholder="e.g. aayush"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
                 required
+                autoFocus
               />
+            </div>
+
+            <div className="form-group">
+              <label>Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="login-input password-field"
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+                <button
+                  type="button"
+                  className="toggle-password-btn"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" className="login-submit-btn">
+              Initialize Session →
+            </button>
+
+            <div className="switch-auth-mode">
+              Don't have an account?
               <button
                 type="button"
-                className="toggle-password-btn"
-                onClick={() => setShowPassword(!showPassword)}
-                aria-label={showPassword ? "Hide password" : "Show password"}
+                className="switch-auth-btn"
+                onClick={() => handleSwitchMode('signup')}
               >
-                <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
+                Sign Up Free →
               </button>
             </div>
-          </div>
+          </form>
+        ) : (
+          <form onSubmit={handleSignupSubmit} className="login-form">
+            <div className="form-group">
+              <label>Full Name</label>
+              <input
+                type="text"
+                className="login-input"
+                placeholder="e.g. Aayush Singh"
+                value={fullName}
+                onChange={(e) => setFullName(e.target.value)}
+                required
+                autoFocus
+              />
+            </div>
 
-          <button type="submit" className="login-submit-btn">
-            Login to Dashboard →
-          </button>
-        </form>
+            <div className="form-group">
+              <label>Choose Username</label>
+              <input
+                type="text"
+                className="login-input"
+                placeholder="e.g. aayush_coder"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                required
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Email Address (Optional)</label>
+              <input
+                type="email"
+                className="login-input"
+                placeholder="e.g. aayush@example.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </div>
+
+            <div className="form-group">
+              <label>Create Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  className="login-input password-field"
+                  placeholder="At least 4 characters"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={4}
+                />
+                <button
+                  type="button"
+                  className="toggle-password-btn"
+                  onClick={() => setShowPassword(!showPassword)}
+                  aria-label={showPassword ? "Hide password" : "Show password"}
+                >
+                  <Icon name={showPassword ? "eye-off" : "eye"} size={16} />
+                </button>
+              </div>
+            </div>
+
+            <div className="form-group">
+              <label>Confirm Password</label>
+              <div className="password-input-wrapper">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  className="login-input password-field"
+                  placeholder="Re-enter your password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={4}
+                />
+                <button
+                  type="button"
+                  className="toggle-password-btn"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  aria-label={showConfirmPassword ? "Hide password" : "Show password"}
+                >
+                  <Icon name={showConfirmPassword ? "eye-off" : "eye"} size={16} />
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" className="login-submit-btn">
+              Create Account & Initialize →
+            </button>
+
+            <div className="switch-auth-mode">
+              Already registered?
+              <button
+                type="button"
+                className="switch-auth-btn"
+                onClick={() => handleSwitchMode('login')}
+              >
+                Log In Here →
+              </button>
+            </div>
+          </form>
+        )}
 
         <div className="login-footer-info">
           <p className="progress-note">
