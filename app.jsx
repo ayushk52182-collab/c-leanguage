@@ -1763,6 +1763,9 @@ const App = () => {
   const handleLogout = () => {
     setUser(null);
     sessionStorage.removeItem("roadmap_user");
+    localStorage.removeItem("roadmap_user");
+    localStorage.removeItem("roadmap_session");
+    setToastMessage("Successfully exited session.");
   };
 
   const handleSelectTab = (tab) => {

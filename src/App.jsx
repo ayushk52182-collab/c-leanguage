@@ -37,7 +37,7 @@ const App = () => {
     return 'dashboard';
   };
 
-  const [user, setUser] = useState(() => sessionStorage.getItem("roadmap_user"));
+  const [user, setUser] = useState(() => sessionStorage.getItem("roadmap_user") || localStorage.getItem("roadmap_user"));
   const [activeTab, setActiveTab] = useState(getInitialTab);
   const [toastMessage, setToastMessage] = useState(null);
   const [activeVideo, setActiveVideo] = useState(null);
@@ -67,6 +67,7 @@ const App = () => {
   const handleLogin = useCallback((username) => {
     setUser(username);
     sessionStorage.setItem("roadmap_user", username);
+    localStorage.setItem("roadmap_user", username);
     loadProgress(username);
     setToastMessage(`Welcome back, ${username}!`);
   }, [loadProgress]);
@@ -74,6 +75,12 @@ const App = () => {
   const handleLogout = useCallback(() => {
     setUser(null);
     sessionStorage.removeItem("roadmap_user");
+    localStorage.removeItem("roadmap_user");
+    localStorage.removeItem("roadmap_session");
+    setActiveDsaLesson(null);
+    setActiveDsaProblemId(null);
+    setActiveVideo(null);
+    setToastMessage("Successfully exited session. See you soon!");
   }, []);
 
   const handleSelectTab = useCallback((tab) => {
@@ -162,8 +169,7 @@ const App = () => {
       <div className="cyber-grid-floor"></div>
       <div className="horizon-glow"></div>
 
-      <AnimatePresence mode="wait">
-        {!user ? (
+      {!user ? (
           <LoginPage key="login" onLogin={handleLogin} />
         ) : (
           <div key="app" className="app-shell">
@@ -279,7 +285,6 @@ const App = () => {
             <Footer />
           </div>
         )}
-      </AnimatePresence>
 
       {/* Video Player Modal for C / Python (Preserved) */}
       <AnimatePresence>

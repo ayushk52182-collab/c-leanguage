@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layers, ShieldCheck, Eye, EyeOff, UserPlus, LogIn } from 'lucide-react';
+import { Layers, ShieldCheck, Eye, EyeOff, UserPlus, LogIn, ArrowLeft } from 'lucide-react';
 import { TEMP_USERNAME, TEMP_PASSWORD } from '../utils/constants';
 
 const LoginPage = ({ onLogin }) => {
@@ -175,6 +175,30 @@ const LoginPage = ({ onLogin }) => {
         transition={{ type: 'spring', damping: 20, delay: 0.2 }}
       >
         <div className="login-header">
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', width: '100%' }}>
+            <a
+              href="/"
+              className="login-back-home-btn"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.76rem',
+                color: 'var(--text-secondary)',
+                textDecoration: 'none',
+                fontWeight: 600,
+                padding: '4px 10px',
+                borderRadius: '8px',
+                background: 'rgba(249, 115, 22, 0.08)',
+                border: '1px solid rgba(249, 115, 22, 0.2)',
+                transition: 'all 0.2s ease'
+              }}
+              title="Return to Main University Portal"
+            >
+              <ArrowLeft size={13} />
+              <span>Main Portal</span>
+            </a>
+          </div>
           <div className="top-badge-row">
             <span className="badge-cyber">
               {mode === 'login' ? <Layers size={13} /> : <UserPlus size={13} />}
