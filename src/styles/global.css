@@ -1906,35 +1906,85 @@ body {
 }
 
 /* ============================================================
-   DARK THEME OVERRIDES (DATA-THEME="DARK")
+   COMPREHENSIVE DARK THEME SYSTEM (DATA-THEME="DARK")
+   Complete Dark Mode Styling for Learn with Aayush Platform
    ============================================================ */
 html[data-theme="dark"] {
-  --bg-void: #07070f;
-  --bg-surface: #0d0d1c;
-  --bg-elevated: #15152a;
-  --bg-card: rgba(16, 16, 32, 0.9);
+  /* Surface & Background Hierarchy */
+  --bg-void: #080811;
+  --bg-surface: #0f0f1e;
+  --bg-elevated: #16162c;
+  --bg-card: rgba(18, 18, 36, 0.92);
 
-  --text-primary: #f4f4f6;
-  --text-secondary: #a1a1b2;
-  --text-muted: #717184;
-  --text-inverse: #07070f;
+  /* High-Contrast Typography */
+  --text-primary: #f5f5f7;
+  --text-secondary: #a3a3b8;
+  --text-muted: #73738a;
+  --text-dim: #525268;
+  --text-inverse: #080811;
 
-  --glass-bg: rgba(16, 16, 32, 0.88);
+  /* Neon Orange & Cyber Accents */
+  --orange-primary: #f97316;
+  --orange-deep: #fb923c;
+  --orange-soft: rgba(249, 115, 22, 0.2);
+  --orange-ultra-soft: rgba(249, 115, 22, 0.1);
+  --amber-gold: #fbbf24;
+  --rose-coral: #fb7185;
+  --emerald-green: #34d399;
+  --sky-blue: #38bdf8;
+
+  /* Glassmorphic Boundaries */
+  --glass-bg: rgba(18, 18, 36, 0.88);
   --glass-border: rgba(249, 115, 22, 0.22);
-  --glass-border-hover: rgba(249, 115, 22, 0.6);
+  --glass-border-hover: rgba(249, 115, 22, 0.55);
+  --glass-blur: 24px;
 
-  --glow-cyan: 0 10px 30px rgba(249, 115, 22, 0.3), 0 1px 3px rgba(0, 0, 0, 0.8);
-  --glow-purple: 0 10px 30px rgba(245, 158, 11, 0.3), 0 1px 3px rgba(0, 0, 0, 0.8);
+  /* Ambient Glows & Shadows */
+  --glow-cyan: 0 10px 35px rgba(249, 115, 22, 0.25), 0 2px 6px rgba(0, 0, 0, 0.8);
+  --glow-purple: 0 10px 35px rgba(245, 158, 11, 0.25), 0 2px 6px rgba(0, 0, 0, 0.8);
+  --glow-green: 0 8px 24px rgba(16, 185, 129, 0.25);
+  --glow-pink: 0 8px 24px rgba(225, 29, 72, 0.25);
+  --glow-card: 0 20px 50px -15px rgba(0, 0, 0, 0.8), 0 0 30px rgba(249, 115, 22, 0.08);
+  --glow-card-hover: 0 25px 60px -12px rgba(0, 0, 0, 0.95), 0 0 45px rgba(249, 115, 22, 0.22);
 }
 
+/* 1. Global Shell & Base */
 html[data-theme="dark"] body {
-  background: var(--bg-void);
-  color: var(--text-primary);
+  background-color: var(--bg-void) !important;
+  color: var(--text-primary) !important;
 }
 
+html[data-theme="dark"] .cyber-grid-floor {
+  opacity: 0.65;
+  background:
+    linear-gradient(transparent 90%, rgba(249, 115, 22, 0.08) 100%),
+    repeating-linear-gradient(90deg, transparent, transparent 79px, rgba(249, 115, 22, 0.08) 79px, rgba(249, 115, 22, 0.08) 80px),
+    repeating-linear-gradient(0deg, transparent, transparent 79px, rgba(249, 115, 22, 0.08) 79px, rgba(249, 115, 22, 0.08) 80px);
+}
+
+html[data-theme="dark"] .horizon-glow {
+  background: radial-gradient(ellipse 80% 50% at 50% 100%, rgba(249, 115, 22, 0.12) 0%, transparent 70%);
+}
+
+/* 2. Glass Panels & Cards Generic */
+html[data-theme="dark"] .glass-card,
+html[data-theme="dark"] .glass-panel {
+  background: var(--glass-bg);
+  border-color: var(--glass-border);
+  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.55);
+}
+
+html[data-theme="dark"] .glass-card:hover,
+html[data-theme="dark"] .glass-panel:hover {
+  border-color: var(--glass-border-hover);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 35px rgba(249, 115, 22, 0.15);
+}
+
+/* 3. Navigation Bar */
 html[data-theme="dark"] .nav-bar {
-  background: rgba(7, 7, 15, 0.94);
-  border-bottom-color: rgba(255, 255, 255, 0.08);
+  background: rgba(8, 8, 17, 0.95) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 4px 25px rgba(0, 0, 0, 0.6) !important;
 }
 
 html[data-theme="dark"] .nav-btn {
@@ -1943,20 +1993,701 @@ html[data-theme="dark"] .nav-btn {
 
 html[data-theme="dark"] .nav-btn:hover,
 html[data-theme="dark"] .nav-btn.active {
-  color: var(--orange-primary);
-  background: rgba(249, 115, 22, 0.15);
+  color: var(--orange-primary) !important;
+  background: rgba(249, 115, 22, 0.15) !important;
 }
 
-html[data-theme="dark"] .quick-btn {
-  background: rgba(255, 255, 255, 0.04);
-  color: var(--text-primary);
-  border-color: rgba(255, 255, 255, 0.1);
+html[data-theme="dark"] .nav-search-trigger {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: var(--text-secondary) !important;
 }
 
-html[data-theme="dark"] .quick-btn:hover {
-  background: rgba(249, 115, 22, 0.12);
-  border-color: var(--orange-primary);
-  color: var(--orange-primary);
+html[data-theme="dark"] .nav-search-trigger:hover {
+  background: rgba(249, 115, 22, 0.15) !important;
+  border-color: var(--orange-primary) !important;
+  color: var(--orange-deep) !important;
+}
+
+html[data-theme="dark"] .search-shortcut {
+  background: rgba(255, 255, 255, 0.12) !important;
+  color: var(--text-primary) !important;
+}
+
+html[data-theme="dark"] .nav-theme-toggle {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: #fbbf24 !important;
+}
+
+html[data-theme="dark"] .nav-theme-toggle:hover {
+  background: rgba(251, 191, 36, 0.18) !important;
+  border-color: #fbbf24 !important;
+}
+
+html[data-theme="dark"] .nav-user-pill {
+  background: rgba(255, 255, 255, 0.06) !important;
+  border-color: rgba(255, 255, 255, 0.12) !important;
+  color: var(--text-primary) !important;
+}
+
+html[data-theme="dark"] .nav-logout-btn {
+  background: rgba(244, 63, 94, 0.12) !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+  color: #fb7185 !important;
+}
+
+html[data-theme="dark"] .nav-logout-btn:hover {
+  background: rgba(244, 63, 94, 0.22) !important;
+  color: #ffffff !important;
+}
+
+/* 4. Hero Section (Main Dashboard View) */
+html[data-theme="dark"] .hero-section {
+  background: linear-gradient(135deg, rgba(20, 18, 38, 0.96), rgba(30, 20, 24, 0.92)) !important;
+  border: 1px solid rgba(249, 115, 22, 0.25) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 45px rgba(249, 115, 22, 0.1) !important;
+}
+
+html[data-theme="dark"] .hero-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .hero-title-line:not(.gradient-text) {
+  color: #f5f5f7 !important;
+  text-shadow: 0 2px 12px rgba(0, 0, 0, 0.6);
+}
+
+html[data-theme="dark"] .hero-subtitle {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .badge-cyber {
+  background: rgba(249, 115, 22, 0.15) !important;
+  border: 1px solid rgba(249, 115, 22, 0.35) !important;
+  color: #fb923c !important;
+}
+
+html[data-theme="dark"] .badge-creator {
+  background: rgba(245, 158, 11, 0.15) !important;
+  border: 1px solid rgba(245, 158, 11, 0.35) !important;
+  color: #fbbf24 !important;
+}
+
+html[data-theme="dark"] .illustration-window {
+  background: rgba(12, 12, 24, 0.96) !important;
+  border: 1px solid rgba(249, 115, 22, 0.3) !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.8) !important;
+}
+
+html[data-theme="dark"] .window-bar {
+  background: #141428 !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .window-title {
+  color: #fb923c !important;
+}
+
+html[data-theme="dark"] .code-block {
+  background: #0a0a16 !important;
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .btn-secondary {
+  background: rgba(255, 255, 255, 0.06) !important;
+  color: #f5f5f7 !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.15) !important;
+}
+
+html[data-theme="dark"] .btn-secondary:hover {
+  background: rgba(249, 115, 22, 0.15) !important;
+  border-color: var(--orange-primary) !important;
+  color: #fb923c !important;
+}
+
+/* 5. Path Selection Cards (Choose Your Learning Path) */
+html[data-theme="dark"] .path-card {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.45) !important;
+}
+
+html[data-theme="dark"] .path-card:hover {
+  background: rgba(26, 22, 48, 0.96) !important;
+  border-color: var(--orange-primary) !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.65), 0 0 35px rgba(249, 115, 22, 0.2) !important;
+}
+
+html[data-theme="dark"] .path-card.active {
+  background: linear-gradient(135deg, rgba(28, 22, 48, 0.96), rgba(38, 24, 28, 0.92)) !important;
+  border-color: var(--orange-primary) !important;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 0 30px rgba(249, 115, 22, 0.18) !important;
+}
+
+html[data-theme="dark"] .path-card h3 {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .path-card p {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .path-meta {
+  color: #fb923c !important;
+}
+
+html[data-theme="dark"] .section-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .header-subtitle-tag {
+  color: #a3a3b8 !important;
+}
+
+/* 6. Dashboard Dual Grid: Progress & Mission Cards */
+html[data-theme="dark"] .progress-card,
+html[data-theme="dark"] .mission-card {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .card-header h2 {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .percentage-label {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .progress-bar-large,
+html[data-theme="dark"] .sub-progress-track {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .sub-stat-lbl {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .sub-stat-val {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .mission-quote-box {
+  background: rgba(249, 115, 22, 0.08) !important;
+  border-color: rgba(249, 115, 22, 0.25) !important;
+}
+
+html[data-theme="dark"] .mission-text {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .target-box {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .target-label {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .target-value {
+  color: #f5f5f7 !important;
+}
+
+/* 7. Stat Cards & Quick Cards */
+html[data-theme="dark"] .stat-card-dashboard,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .quick-card {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .quick-card:hover,
+html[data-theme="dark"] .stat-card:hover,
+html[data-theme="dark"] .stat-card-dashboard:hover {
+  background: rgba(26, 22, 48, 0.96) !important;
+  border-color: var(--orange-primary) !important;
+}
+
+html[data-theme="dark"] .quick-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .quick-desc {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .quick-icon-box.blue {
+  background: rgba(249, 115, 22, 0.15) !important;
+}
+
+html[data-theme="dark"] .quick-icon-box.purple {
+  background: rgba(245, 158, 11, 0.15) !important;
+}
+
+html[data-theme="dark"] .quick-icon-box.cyan {
+  background: rgba(2, 132, 199, 0.15) !important;
+}
+
+html[data-theme="dark"] .stat-value {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .stat-label {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .reset-tracking-btn {
+  background: rgba(244, 63, 94, 0.12) !important;
+  color: #fb7185 !important;
+  border-color: rgba(244, 63, 94, 0.3) !important;
+}
+
+html[data-theme="dark"] .reset-tracking-btn:hover {
+  background: rgba(244, 63, 94, 0.22) !important;
+  color: #ffffff !important;
+}
+
+/* 8. DSA Hero & Course Modules */
+html[data-theme="dark"] .dsa-hero-card {
+  background: linear-gradient(135deg, rgba(20, 18, 38, 0.96), rgba(30, 20, 24, 0.92)) !important;
+  border: 1px solid rgba(249, 115, 22, 0.25) !important;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.7), 0 0 45px rgba(249, 115, 22, 0.1) !important;
+}
+
+html[data-theme="dark"] .dsa-main-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .dsa-sub-title {
+  color: #fb923c !important;
+}
+
+html[data-theme="dark"] .dsa-hero-desc {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .dsa-module-card {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .module-card-header {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+html[data-theme="dark"] .module-card-header:hover {
+  background: rgba(249, 115, 22, 0.08) !important;
+}
+
+html[data-theme="dark"] .mod-title-desc h3 {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .mod-title-desc p {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .module-topic-row {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-theme="dark"] .module-topic-row:hover {
+  background: rgba(249, 115, 22, 0.1) !important;
+  border-color: var(--orange-primary) !important;
+}
+
+html[data-theme="dark"] .topic-text {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .topic-short-desc {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .mod-mini-bar {
+  background: rgba(255, 255, 255, 0.1) !important;
+}
+
+/* 9. Dedicated Striver A2Z Dashboard */
+html[data-theme="dark"] .dash-panel,
+html[data-theme="dark"] .dash-target-card,
+html[data-theme="dark"] .status-kpi-card {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .kpi-num,
+html[data-theme="dark"] .d-stat-val {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .kpi-sub,
+html[data-theme="dark"] .d-stat-lbl,
+html[data-theme="dark"] .kpi-title {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .diff-bar-track {
+  background: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .ql-item {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-theme="dark"] .ql-item:hover {
+  background: rgba(249, 115, 22, 0.1) !important;
+  border-color: var(--orange-primary) !important;
+}
+
+html[data-theme="dark"] .ql-item .title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .ql-item .sub {
+  color: #a3a3b8 !important;
+}
+
+/* 10. DSA Problem Set & Table */
+html[data-theme="dark"] .problemset-filter-bar,
+html[data-theme="dark"] .problems-table,
+html[data-theme="dark"] .ps-stat-box {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .table-header-row {
+  background: rgba(12, 12, 24, 0.85) !important;
+  color: #a3a3b8 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .table-row {
+  background: transparent !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+html[data-theme="dark"] .table-row:hover {
+  background: rgba(249, 115, 22, 0.08) !important;
+}
+
+html[data-theme="dark"] .col-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .col-topic {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .ps-search-wrapper {
+  background: rgba(12, 12, 24, 0.85) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] .ps-search-input {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .ps-topic-select {
+  background: rgba(12, 12, 24, 0.85) !important;
+  color: #f5f5f7 !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] .filter-label {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .ps-stat-val {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .ps-stat-lbl {
+  color: #a3a3b8 !important;
+}
+
+/* 11. DSA Problem Studio & Code Pane */
+html[data-theme="dark"] .problem-specs-pane,
+html[data-theme="dark"] .complexity-card,
+html[data-theme="dark"] .explanation-card,
+html[data-theme="dark"] .testcase-card {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .problem-description-text,
+html[data-theme="dark"] .pane-scrollable-content p {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .example-box,
+html[data-theme="dark"] .constraints-box,
+html[data-theme="dark"] .intuition-notes-box,
+html[data-theme="dark"] .algorithm-pseudocode-box {
+  background: rgba(12, 12, 24, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #e2e8f0 !important;
+}
+
+html[data-theme="dark"] .problem-editor-pane {
+  background: #06060f !important;
+}
+
+html[data-theme="dark"] .code-editor-textarea {
+  background: #06060f !important;
+  color: #38bdf8 !important;
+}
+
+/* 12. DSA Video Player View */
+html[data-theme="dark"] .dsa-curriculum-sidebar {
+  background: rgba(14, 14, 28, 0.97) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .curriculum-sidebar-header {
+  background: rgba(18, 18, 34, 0.95) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .sidebar-section-header {
+  background: rgba(22, 22, 42, 0.95) !important;
+  border-bottom-color: rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-theme="dark"] .sidebar-lesson-item {
+  background: transparent !important;
+  border-bottom-color: rgba(255, 255, 255, 0.04) !important;
+}
+
+html[data-theme="dark"] .sidebar-lesson-item:hover {
+  background: rgba(249, 115, 22, 0.08) !important;
+}
+
+html[data-theme="dark"] .sidebar-lesson-item.active {
+  background: rgba(249, 115, 22, 0.16) !important;
+}
+
+html[data-theme="dark"] .sli-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .sli-duration {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .lesson-practice-card {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .custom-video-controls-toolbar {
+  background: rgba(12, 12, 24, 0.95) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* 13. C Roadmap & Python Views (RoadmapView.jsx) */
+html[data-theme="dark"] .phase-card,
+html[data-theme="dark"] .protocol-panel,
+html[data-theme="dark"] .achievement-chip,
+html[data-theme="dark"] .language-selector-pill {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .phase-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .phase-desc {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .topic-item {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-theme="dark"] .topic-item:hover {
+  background: rgba(249, 115, 22, 0.1) !important;
+  border-color: var(--orange-primary) !important;
+}
+
+html[data-theme="dark"] .topic-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .topic-desc {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .topic-status-badge.in-progress {
+  background: rgba(249, 115, 22, 0.18) !important;
+  color: #fb923c !important;
+}
+
+/* 14. One-Shot & Practice Views */
+html[data-theme="dark"] .oneshot-header-card,
+html[data-theme="dark"] .oneshot-timestamps-card,
+html[data-theme="dark"] .practice-zone-view,
+html[data-theme="dark"] .p-card,
+html[data-theme="dark"] .handbook-drawer-card {
+  background: rgba(18, 18, 36, 0.92) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .timestamp-row {
+  background: rgba(255, 255, 255, 0.03) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-theme="dark"] .timestamp-row:hover {
+  background: rgba(249, 115, 22, 0.1) !important;
+  border-color: var(--orange-primary) !important;
+}
+
+html[data-theme="dark"] .timestamp-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .p-card:hover {
+  background: rgba(26, 22, 48, 0.96) !important;
+  border-color: var(--orange-primary) !important;
+}
+
+html[data-theme="dark"] .p-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .p-desc {
+  color: #a3a3b8 !important;
+}
+
+/* 15. Login Page */
+html[data-theme="dark"] .login-card {
+  background: rgba(18, 18, 36, 0.96) !important;
+  border: 1.5px solid rgba(249, 115, 22, 0.25) !important;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.75) !important;
+}
+
+html[data-theme="dark"] .login-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .login-subtitle {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .login-input {
+  background: rgba(10, 10, 22, 0.85) !important;
+  color: #f5f5f7 !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.12) !important;
+}
+
+html[data-theme="dark"] .login-input:focus {
+  background: rgba(14, 14, 28, 0.95) !important;
+  border-color: var(--orange-primary) !important;
+  box-shadow: 0 0 20px rgba(249, 115, 22, 0.2) !important;
+}
+
+html[data-theme="dark"] .auth-tab-row {
+  background: rgba(10, 10, 22, 0.8) !important;
+  border: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .auth-tab-btn {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .auth-tab-btn.active {
+  background: rgba(28, 24, 48, 0.95) !important;
+  color: var(--orange-primary) !important;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4) !important;
+}
+
+html[data-theme="dark"] .btn-google-cyber {
+  background: rgba(255, 255, 255, 0.07) !important;
+  color: #f5f5f7 !important;
+  border: 1.5px solid rgba(255, 255, 255, 0.14) !important;
+}
+
+html[data-theme="dark"] .btn-google-cyber:hover {
+  background: rgba(255, 255, 255, 0.12) !important;
+  border-color: var(--orange-primary) !important;
+}
+
+/* 16. Modals, Search & Toasts */
+html[data-theme="dark"] .search-modal-box {
+  background: rgba(18, 18, 36, 0.98) !important;
+  border: 1.5px solid rgba(249, 115, 22, 0.3) !important;
+  box-shadow: 0 25px 70px rgba(0, 0, 0, 0.8) !important;
+}
+
+html[data-theme="dark"] .search-modal-header {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .search-modal-input {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .search-result-item {
+  background: rgba(255, 255, 255, 0.02) !important;
+  border: 1px solid rgba(255, 255, 255, 0.06) !important;
+}
+
+html[data-theme="dark"] .search-result-item:hover {
+  background: rgba(249, 115, 22, 0.1) !important;
+  border-color: var(--orange-primary) !important;
+}
+
+html[data-theme="dark"] .sri-title {
+  color: #f5f5f7 !important;
+}
+
+html[data-theme="dark"] .sri-sub {
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .video-modal-card {
+  background: #0e0e1c !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] .modal-header {
+  background: #141426 !important;
+  border-bottom-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .modal-close-btn {
+  background: rgba(255, 255, 255, 0.08) !important;
+  color: #a3a3b8 !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+
+html[data-theme="dark"] .toast {
+  background: rgba(18, 18, 36, 0.96) !important;
+  border: 1.5px solid rgba(249, 115, 22, 0.35) !important;
+  color: #f5f5f7 !important;
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.7), 0 0 30px rgba(249, 115, 22, 0.15) !important;
+}
+
+html[data-theme="dark"] .footer-container {
+  border-top-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+html[data-theme="dark"] .footer-credit {
+  background: rgba(12, 12, 24, 0.8) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+  color: #a3a3b8 !important;
+}
+
+html[data-theme="dark"] .footer-text {
+  color: #737388 !important;
 }
 
 /* ============================================================

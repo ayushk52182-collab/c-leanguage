@@ -1,4 +1,33 @@
 /* Custom CSS Tokens & Light Orange Warm White Studio Palette */
+
+/* Dark Theme Tokens */
+html[data-theme="dark"], [data-theme="dark"] {
+  --bg-dark: #080811;
+  --bg-subtle: #0f0f1e;
+  --bg-grid-line: rgba(249, 115, 22, 0.08);
+  --card-bg: rgba(18, 18, 36, 0.92);
+  --card-bg-elevated: rgba(22, 22, 44, 0.95);
+  --card-border: rgba(249, 115, 22, 0.22);
+  --card-border-hover: rgba(249, 115, 22, 0.55);
+
+  --neon-cyan: #f97316;
+  --neon-cyan-glow: rgba(249, 115, 22, 0.35);
+  --neon-blue: #fb923c;
+  --electric-blue: #f97316;
+  --purple-accent: #ea580c;
+  --purple-glow: rgba(234, 88, 12, 0.25);
+  --gold-accent: #fbbf24;
+
+  --text-main: #f5f5f7;
+  --text-muted: #a3a3b8;
+  --text-dim: #73738a;
+
+  --glow-cyan: 0 0 35px rgba(249, 115, 22, 0.3);
+  --glow-purple: 0 0 35px rgba(234, 88, 12, 0.3);
+  --glow-card: 0 20px 40px -15px rgba(0, 0, 0, 0.8), 0 4px 16px rgba(0, 0, 0, 0.5);
+  --glow-card-hover: 0 25px 50px -12px rgba(0, 0, 0, 0.95), 0 8px 24px rgba(0, 0, 0, 0.6);
+}
+
 :root {
   --bg-dark: #fffbf7;
   --bg-subtle: #fff4ea;
