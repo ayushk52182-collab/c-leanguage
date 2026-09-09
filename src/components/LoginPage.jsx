@@ -1,6 +1,19 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Layers, ShieldCheck, Eye, EyeOff, UserPlus, LogIn, ArrowLeft } from 'lucide-react';
+import {
+  Layers,
+  ShieldCheck,
+  Eye,
+  EyeOff,
+  UserPlus,
+  LogIn,
+  ArrowLeft,
+  X,
+  User,
+  Mail,
+  AlertCircle,
+  Plus
+} from 'lucide-react';
 import { TEMP_USERNAME, TEMP_PASSWORD } from '../utils/constants';
 
 const LoginPage = ({ onLogin }) => {
@@ -15,19 +28,121 @@ const LoginPage = ({ onLogin }) => {
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
+  // Google Auth Dialog states for other users
+  const [isGoogleModalOpen, setIsGoogleModalOpen] = useState(false);
+  const [googleName, setGoogleName] = useState('');
+  const [googleEmail, setGoogleEmail] = useState('');
+  const [googleModalError, setGoogleModalError] = useState('');
+  const [googleFormTab, setGoogleFormTab] = useState('select'); // 'select' | 'new'
+
   const handleSwitchMode = (newMode) => {
     setMode(newMode);
     setError('');
     setSuccess('');
   };
 
+  const getSavedUsers = () => {
+    try {
+      const list = JSON.parse(localStorage.getItem('roadmap_registered_users') || '[]');
+      return Array.isArray(list) ? list : [];
+    } catch {
+      return [];
+    }
+  };
+
+  // Open Google Dialog
   const handleGoogleAuth = () => {
     setError('');
-    setSuccess('Google Authentication verified! Initializing session...');
-    const googleUser = 'Aayush Singh';
+    setGoogleModalError('');
+    const saved = getSavedUsers();
+    if (saved.length > 0) {
+      setGoogleFormTab('select');
+    } else {
+      setGoogleFormTab('new');
+    }
+    setIsGoogleModalOpen(true);
+  };
+
+  // Select an existing Google account
+  const handleSelectGoogleAccount = (savedUser) => {
+    const chosenName = savedUser.fullName || savedUser.username;
+    setSuccess(`Google Authentication verified! Welcome back, ${chosenName}!`);
+    setIsGoogleModalOpen(false);
+    sessionStorage.setItem('roadmap_user', chosenName);
+    localStorage.setItem('roadmap_user', chosenName);
+    if (savedUser.email) {
+      sessionStorage.setItem('roadmap_user_email', savedUser.email);
+      localStorage.setItem('roadmap_user_email', savedUser.email);
+    }
     setTimeout(() => {
-      onLogin(googleUser);
-    }, 500);
+      onLogin(chosenName);
+    }, 400);
+  };
+
+  // Submit new/other Google account
+  const handleGoogleSubmit = (e) => {
+    e.preventDefault();
+    setGoogleModalError('');
+
+    const trimmedName = googleName.trim();
+    const trimmedEmail = googleEmail.trim().toLowerCase();
+
+    if (!trimmedName) {
+      setGoogleModalError('Please enter your full name.');
+      return;
+    }
+
+    if (!trimmedEmail || !trimmedEmail.includes('@') || !trimmedEmail.includes('.')) {
+      setGoogleModalError('Please enter a valid Google email address (@gmail.com).');
+      return;
+    }
+
+    const registered = getSavedUsers();
+
+    // Unique email enforcement: verify email doesn't belong to another different person
+    const existingWithEmail = registered.find(
+      (u) => u.email && u.email.toLowerCase() === trimmedEmail
+    );
+    if (
+      existingWithEmail &&
+      existingWithEmail.fullName &&
+      existingWithEmail.fullName.toLowerCase() !== trimmedName.toLowerCase()
+    ) {
+      setGoogleModalError(
+        `This email address is already registered to "${existingWithEmail.fullName}". Each email belongs to only one account holder.`
+      );
+      return;
+    }
+
+    // Save if new user
+    if (!existingWithEmail) {
+      const newUser = {
+        fullName: trimmedName,
+        username: trimmedEmail.split('@')[0],
+        email: trimmedEmail,
+        provider: 'google',
+        createdAt: new Date().toISOString()
+      };
+      registered.push(newUser);
+      try {
+        localStorage.setItem('roadmap_registered_users', JSON.stringify(registered));
+      } catch (err) {
+        console.error('Error saving Google user:', err);
+      }
+    }
+
+    // Save session
+    sessionStorage.setItem('roadmap_user', trimmedName);
+    sessionStorage.setItem('roadmap_user_email', trimmedEmail);
+    sessionStorage.setItem('roadmap_user_provider', 'google');
+    localStorage.setItem('roadmap_user', trimmedName);
+    localStorage.setItem('roadmap_user_email', trimmedEmail);
+
+    setIsGoogleModalOpen(false);
+    setSuccess(`Google session verified! Launching dashboard as ${trimmedName}...`);
+    setTimeout(() => {
+      onLogin(trimmedName);
+    }, 450);
   };
 
   const handleLoginSubmit = (e) => {
@@ -153,16 +268,20 @@ const LoginPage = ({ onLogin }) => {
           <pre className="code-block">
             <code>
               <span className="code-keyword">def</span> <span className="code-func">solve_problem</span>():<br/>
-              &nbsp;&nbsp;points = [<span className="code-num">100</span>, <span className="code-num">200</span>, <span className="code-num">300</span>]<br/>
-              &nbsp;&nbsp;<span className="code-keyword">return</span> <span className="code-func">sum</span>(points)<br/><br/>
-              &nbsp;&nbsp;<span className="code-func">print</span>(<span className="code-str">"Mastering Python 3D!"</span>)
+              &nbsp;&nbsp;<span className="code-comment"># Striver A2Z DSA Sheet</span><br/>
+              &nbsp;&nbsp;arr = [1, 2, 3, 4, 5]<br/>
+              &nbsp;&nbsp;<span className="code-keyword">return</span> sum(arr) * 2<br/>
             </code>
           </pre>
         </div>
-        <div className="bg-symbol sym-a">{"{ }"}</div>
-        <div className="bg-symbol sym-b">{"</>"}</div>
-        <div className="bg-symbol sym-c">01</div>
-        <div className="bg-symbol sym-d">101</div>
+
+        <div className="bg-floating-c-card glass-card">
+          <div className="c-code-header">
+            <span className="window-title">quick_sort.c</span>
+          </div>
+          <code>void quickSort(int *a, int low, int high);</code>
+        </div>
+
         <div className="bg-badge bg-c">C</div>
         <div className="bg-badge bg-py">PY</div>
         <div className="bg-learning-ring"></div>
@@ -199,6 +318,7 @@ const LoginPage = ({ onLogin }) => {
               <span>Main Portal</span>
             </a>
           </div>
+
           <div className="top-badge-row">
             <span className="badge-cyber">
               {mode === 'login' ? <Layers size={13} /> : <UserPlus size={13} />}
@@ -238,12 +358,13 @@ const LoginPage = ({ onLogin }) => {
           </button>
         </div>
 
-        {/* Google Auth Button */}
+        {/* Google Auth Button - Opens full dialog for other users */}
         <button
           type="button"
           className="btn-google-cyber"
           onClick={handleGoogleAuth}
           id="googleAuthBtnCyber"
+          title="Sign in with your Google account"
         >
           <svg width="17" height="17" viewBox="0 0 24 24">
             <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -277,7 +398,7 @@ const LoginPage = ({ onLogin }) => {
                 <input
                   type="text"
                   className="login-input"
-                  placeholder="e.g. aayush"
+                  placeholder="e.g. your_username"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -337,7 +458,7 @@ const LoginPage = ({ onLogin }) => {
                 <input
                   type="text"
                   className="login-input"
-                  placeholder="e.g. Aayush Singh"
+                  placeholder="e.g. Rahul Sharma"
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
@@ -350,7 +471,7 @@ const LoginPage = ({ onLogin }) => {
                 <input
                   type="text"
                   className="login-input"
-                  placeholder="e.g. aayush_coder"
+                  placeholder="e.g. rahul_coder"
                   value={username}
                   onChange={(e) => setUsername(e.target.value)}
                   required
@@ -362,7 +483,7 @@ const LoginPage = ({ onLogin }) => {
                 <input
                   type="email"
                   className="login-input"
-                  placeholder="e.g. aayush@example.com"
+                  placeholder="e.g. rahul@example.com"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
@@ -441,6 +562,157 @@ const LoginPage = ({ onLogin }) => {
           <p className="login-credit">Designed & Engineered by Aayush Singh</p>
         </div>
       </motion.div>
+
+      {/* Google Authentication Dialog for ALL users */}
+      <AnimatePresence>
+        {isGoogleModalOpen && (
+          <div className="google-auth-modal-overlay" onClick={() => setIsGoogleModalOpen(false)}>
+            <motion.div
+              className="google-auth-modal-card glass-card"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ opacity: 0, scale: 0.92, y: 20 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.92, y: 15 }}
+              transition={{ duration: 0.2 }}
+            >
+              <button
+                type="button"
+                className="google-modal-close-btn"
+                onClick={() => setIsGoogleModalOpen(false)}
+                aria-label="Close Google Dialog"
+              >
+                <X size={16} />
+              </button>
+
+              <div className="google-auth-header">
+                <div className="google-auth-logo-badge">
+                  <svg width="26" height="26" viewBox="0 0 24 24">
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
+                    <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
+                  </svg>
+                </div>
+                <h3 className="google-auth-title">
+                  {mode === 'login' ? 'Sign In with Google' : 'Sign Up with Google'}
+                </h3>
+                <p className="google-auth-subtitle">
+                  Choose an account or enter your real name and email to initialize your personalized learning session.
+                </p>
+              </div>
+
+              {googleModalError && (
+                <div className="google-modal-error-box">
+                  <AlertCircle size={15} />
+                  <span>{googleModalError}</span>
+                </div>
+              )}
+
+              {/* Saved accounts section */}
+              {getSavedUsers().length > 0 && googleFormTab === 'select' && (
+                <div className="google-saved-accounts-section">
+                  <p className="google-section-label">Choose an account:</p>
+                  <div className="google-accounts-list">
+                    {getSavedUsers().map((u, idx) => {
+                      const uName = u.fullName || u.username;
+                      const uInitials = uName.split(' ').map((n) => n[0]).join('').slice(0, 2).toUpperCase() || 'U';
+                      return (
+                        <div
+                          key={idx}
+                          className="google-account-card"
+                          onClick={() => handleSelectGoogleAccount(u)}
+                          role="button"
+                          tabIndex={0}
+                        >
+                          <div className="google-account-avatar">
+                            {uInitials}
+                          </div>
+                          <div className="google-account-details">
+                            <span className="google-account-name">{uName}</span>
+                            <span className="google-account-email">{u.email || `${u.username}@gmail.com`}</span>
+                          </div>
+                          <span className="google-account-tag">Saved</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+
+                  <button
+                    type="button"
+                    className="google-use-another-btn"
+                    onClick={() => {
+                      setGoogleFormTab('new');
+                      setGoogleModalError('');
+                    }}
+                  >
+                    <Plus size={15} />
+                    <span>Use another Google account</span>
+                  </button>
+                </div>
+              )}
+
+              {/* New/Other Google Account Form */}
+              {(getSavedUsers().length === 0 || googleFormTab === 'new') && (
+                <form onSubmit={handleGoogleSubmit} className="google-modal-form">
+                  <div className="form-group" style={{ marginBottom: '14px' }}>
+                    <label className="google-form-label">Account Holder Full Name</label>
+                    <div className="google-input-wrapper">
+                      <User size={15} className="google-input-icon" />
+                      <input
+                        type="text"
+                        className="google-input"
+                        placeholder="e.g. Rahul Sharma or Jane Doe"
+                        value={googleName}
+                        onChange={(e) => setGoogleName(e.target.value)}
+                        required
+                        autoFocus
+                      />
+                    </div>
+                  </div>
+
+                  <div className="form-group" style={{ marginBottom: '18px' }}>
+                    <label className="google-form-label">Google Email Address (@gmail.com)</label>
+                    <div className="google-input-wrapper">
+                      <Mail size={15} className="google-input-icon" />
+                      <input
+                        type="email"
+                        className="google-input"
+                        placeholder="e.g. rahul.sharma@gmail.com"
+                        value={googleEmail}
+                        onChange={(e) => setGoogleEmail(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+
+                  <button type="submit" className="google-modal-submit-btn" id="googleModalSubmitBtn">
+                    Continue as {googleName.trim() || 'this User'} →
+                  </button>
+
+                  {getSavedUsers().length > 0 && (
+                    <button
+                      type="button"
+                      className="google-back-to-list-btn"
+                      onClick={() => {
+                        setGoogleFormTab('select');
+                        setGoogleModalError('');
+                      }}
+                    >
+                      ← Back to saved accounts
+                    </button>
+                  )}
+                </form>
+              )}
+
+              <div className="google-modal-privacy-footer">
+                <p>
+                  To continue, Google shares your name and email with Learn with Aayush. Each email address belongs to 1 account holder only.
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
